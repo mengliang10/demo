@@ -319,6 +319,49 @@
     }
 
     /* MATRIX SECTION */
+    /* LANGUAGE PORTAL TILES */
+    .portal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .portal-tile {
+      background: var(--viz-bg-card);
+      border: 1px solid var(--viz-gold-border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      text-decoration: none;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .portal-tile:hover {
+      transform: translateY(-2px);
+      border-color: var(--viz-gold-bright);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+    }
+    .portal-lang {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--viz-gold-bright);
+      letter-spacing: 0.02em;
+    }
+    .portal-meta {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--viz-text-muted);
+      line-height: 1.55;
+    }
+    .portal-cta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: #00e676;
+      margin-top: 4px;
+    }
+
     .matrix-section {
       max-width: 1360px;
       margin: 60px auto 0;
@@ -691,6 +734,44 @@
         </article>
         
   </main>
+
+  <!-- LANGUAGE PORTALS -->
+  <section class="matrix-section">
+    <h3 class="section-title">Language <span>Visualization Portals</span></h3>
+    <p class="section-desc">Dedicated studio collections for C, C++, Go, Julia, R, and Rust — each framework has its own interactive studio and portal index.</p>
+    <div class="portal-grid">
+      <a class="portal-tile" href="C%20Visualization/index.html">
+        <span class="portal-lang">C</span>
+        <span class="portal-meta">Cairo, Graphviz, Nuklear, OpenGL, PLplot, Raylib, SDL2</span>
+        <span class="portal-cta">Open C Portal &rarr;</span>
+      </a>
+      <a class="portal-tile" href="C%20Plus%20Plus%20Visualization/index.html">
+        <span class="portal-lang">C++</span>
+        <span class="portal-meta">Dear ImGui, Magnum, matplotlib-cpp, OGDF, Ogre3D, OpenSceneGraph, Qt Charts, VTK</span>
+        <span class="portal-cta">Open C++ Portal &rarr;</span>
+      </a>
+      <a class="portal-tile" href="Go%20Visualization/index.html">
+        <span class="portal-lang">Go</span>
+        <span class="portal-meta">go-echarts, go-graphviz, gonum/plot, fyne, gio, Ebitengine, chart, svgo</span>
+        <span class="portal-cta">Open Go Portal &rarr;</span>
+      </a>
+      <a class="portal-tile" href="Julia%20Visualization/index.html">
+        <span class="portal-lang">Julia</span>
+        <span class="portal-meta">Makie, Plots.jl, Gadfly.jl, StatsPlots.jl, GraphRecipes.jl, GeoMakie.jl, Pluto.jl, Genie.jl</span>
+        <span class="portal-cta">Open Julia Portal &rarr;</span>
+      </a>
+      <a class="portal-tile" href="R%20Visualization/index.html">
+        <span class="portal-lang">R</span>
+        <span class="portal-meta">ggplot2, plotly, shiny, leaflet, visNetwork, dygraphs, ggiraph, corrplot</span>
+        <span class="portal-cta">Open R Portal &rarr;</span>
+      </a>
+      <a class="portal-tile" href="Rust%20VIsualization/index.html">
+        <span class="portal-lang">Rust</span>
+        <span class="portal-meta">plotters, egui, bevy, wgpu, kiss3d, leptos, petgraph, geo</span>
+        <span class="portal-cta">Open Rust Portal &rarr;</span>
+      </a>
+    </div>
+  </section>
 
   <!-- SOFTWARE CAPABILITIES MATRIX -->
   <section class="matrix-section">
