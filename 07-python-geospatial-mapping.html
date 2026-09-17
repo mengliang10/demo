@@ -1,0 +1,1962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Geospatial & Mapping Visualization | Visualization Masterclass</title>
+  <meta name="description" content="20 Spatial Cartographic Paradigms across Folium, GeoPandas, Cartopy, Geoplotlib, and Pydeck">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Reveal.js Core CSS -->
+  <link rel="stylesheet" href="vendor/reveal.min.css" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css'">
+  <link rel="stylesheet" href="css/viz-deck.css">
+  
+  <!-- Visualization Engines -->
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  
+  
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'dark',
+        themeVariables: {
+          darkMode: true,
+          background: '#070c09',
+          primaryColor: '#13221b',
+          primaryTextColor: '#fffefa',
+          primaryBorderColor: '#d4af37',
+          lineColor: '#f3cf65',
+          fontFamily: 'DM Sans',
+          fontSize: '15px'
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <!-- PERSISTENT TOP NAVIGATION -->
+  <div class="deck-nav-bar">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a href="index.html">
+        <span aria-hidden="true">&larr;</span> <strong>Visualization Portfolio Hub</strong>
+      </a>
+      <span style="opacity: 0.4;">|</span>
+      <span style="font-family: var(--font-mono); font-size: 0.88rem; color: var(--viz-gold-bright);">Series #07</span>
+      <span style="opacity: 0.4;">|</span>
+      <span style="color: #fffefa; font-weight: 500; font-family: var(--font-heading); font-size: 1.2rem;">Python Geospatial & Mapping Visualization</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span class="tech-badge">Python Geospatial & Maps</span>
+      <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--viz-text-muted);">20 Master Slides</span>
+    </div>
+  </div>
+
+  <!-- PERSISTENT FOOTER BAR -->
+  <div class="deck-footer-bar">
+    <span><strong>Demostration of Visualization Software</strong> &bull; Executive Data Science & Graphic Systems</span>
+    <span>Use <strong>Space / Arrows</strong> to Navigate &bull; Press <strong>F</strong> for Fullscreen &bull; <strong>O</strong> for Overview</span>
+  </div>
+
+  <div class="reveal">
+    <div class="slides">
+
+      <section id="slide-01-pydeck-hex" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">01 / GPU Spatial Columns</span>
+            <h2 class="slide-headline">GPU 3D Hexagon Extrusion: <span>Pydeck HexagonLayer with Pitch</span></h2>
+            <p class="slide-subtitle">Deck.gl Python wrapper rendering 3D spatial column density with dynamic camera pitch and lighting.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Pydeck (Deck.gl Python)</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-01-pydeck-hex">
+            
+              <div id="pydeck-hex-stage" class="plotly-graph" style="width:100%; height:100%;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const el = document.getElementById('pydeck-hex-stage');
+                  if (!el || !window.Plotly) return;
+                  const x = [1, 2, 3, 2, 3, 4, 3, 4, 5];
+                  const y = [1, 1, 1, 2, 2, 2, 3, 3, 3];
+                  const z = [180, 320, 510, 420, 850, 610, 340, 560, 380];
+                  Plotly.newPlot('pydeck-hex-stage', [{
+                    type: 'scatter3d', mode: 'markers',
+                    x: x, y: y, z: z,
+                    marker: { size: 16, color: z, colorscale: 'YlGnBu', symbol: 'square' }
+                  }], {
+                    paper_bgcolor: 'transparent',
+                    margin: { l: 0, r: 0, b: 0, t: 0 },
+                    scene: {
+                      xaxis: { color: '#9ba9a1' }, yaxis: { color: '#9ba9a1' }, zaxis: { color: '#f3cf65' },
+                      camera: { eye: { x: 1.4, y: 1.4, z: 1.1 } }
+                    }
+                  }, { responsive: true, displayModeBar: false });
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Spatial quantization into Uber H3 discrete global hexagonal grid cells with GPU-driven elevation extrusion.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Urban rideshare demand density, multi-property guest pickup aggregation, mobile app telemetry.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Seamlessly handles millions of rows directly from Pandas/Polars DataFrames without browser lag.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>import pydeck as pdk
+layer = pdk.Layer(
+    "HexagonLayer", data=df, get_position='[lon, lat]',
+    auto_highlight=True, elevation_scale=50, pickable=True,
+    elevation_range=[0, 3000], extruded=True
+)
+r = pdk.Deck(layers=[layer], initial_view_state=view_state)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Engine</span>
+            <span class="val">Deck.gl WebGL2</span>
+            <span class="sub">Pydeck Wrapper</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Data Binding</span>
+            <span class="val">Pandas / Polars</span>
+            <span class="sub">Zero Copy Arrow</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Camera</span>
+            <span class="val">Pitch & Bearing</span>
+            <span class="sub">3D Oblique</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Throughput</span>
+            <span class="val">5M+ Points</span>
+            <span class="sub">GPU Instanced</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-02-folium-choropleth" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">02 / Interactive Leaflet Python</span>
+            <h2 class="slide-headline">Interactive Leaflet Wrappers: <span>Folium Choropleth with Tooltips</span></h2>
+            <p class="slide-subtitle">Pythonic Leaflet wrapper binding GeoJSON country boundaries to Pandas metrics with dynamic color scales.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Folium / Leaflet.js</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-02-folium-choropleth">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 380 240" style="width:100%; max-height:260px;">
+                  <polygon points="50,40 140,30 180,90 120,150 40,110" fill="#00e676" stroke="#fff" stroke-width="1"/>
+                  <polygon points="140,30 260,20 290,100 180,90" fill="#d4af37" stroke="#fff" stroke-width="1"/>
+                  <polygon points="120,150 180,90 270,160 210,210 100,200" fill="#f3cf65" stroke="#fff" stroke-width="1"/>
+                  <polygon points="180,90 290,100 330,170 270,160" fill="#ff1744" stroke="#fff" stroke-width="1"/>
+                  <!-- Tooltip popup simulation -->
+                  <rect x="190" y="45" width="130" height="34" fill="#070c09" stroke="#f3cf65" rx="4"/>
+                  <text x="200" y="60" fill="#fffefa" font-family="DM Sans" font-size="10" font-weight="bold">Region Beta: 68% Direct</text>
+                  <text x="200" y="72" fill="#00e676" font-family="JetBrains Mono" font-size="9">RevPAR: $284.50</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Choropleth scalar normalization mapping Pandas Series $x$ to discrete ColorBrewer quintile intervals.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Regional market share reporting, state sales tax distribution, international hotel demand penetration.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Exports directly to standalone self-contained HTML files or embeds smoothly in Jupyter notebooks.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>import folium
+m = folium.Map(location=[1.35, 103.82], zoom_start=11)
+folium.Choropleth(
+    geo_data=geojson_data, data=df,
+    columns=['Region', 'RevPAR'], key_on='feature.properties.name',
+    fill_color='YlGn', legend_name='Direct RevPAR ($)'
+).add_to(m)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Python Core</span>
+            <span class="val">folium.Choropleth</span>
+            <span class="sub">Leaflet Engine</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Data Format</span>
+            <span class="val">GeoJSON + Pandas</span>
+            <span class="sub">Key-On ID</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Color Maps</span>
+            <span class="val">ColorBrewer</span>
+            <span class="sub">Perceptual Quintiles</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Tooltips</span>
+            <span class="val">GeoJsonTooltip</span>
+            <span class="sub">HTML Rich</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-03-geopandas-sjoin" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">03 / Vector Spatial Algebra</span>
+            <h2 class="slide-headline">Vector Geometric Operations: <span>GeoPandas Spatial Join (sjoin)</span></h2>
+            <p class="slide-subtitle">R-tree spatial indexing executing fast point-in-polygon queries and geometric buffer intersections.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">GeoPandas / Shapely</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-03-geopandas-sjoin">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Buffer Polygon 1 -->
+                  <circle cx="140" cy="120" r="70" fill="rgba(0,230,118,0.25)" stroke="#00e676" stroke-width="2"/>
+                  <!-- Buffer Polygon 2 -->
+                  <circle cx="210" cy="120" r="70" fill="rgba(212,175,55,0.25)" stroke="#d4af37" stroke-width="2"/>
+                  <!-- Intersection Lens (Bright Gold) -->
+                  <path d="M 175 62 A 70 70 0 0 1 175 178 A 70 70 0 0 1 175 62 Z" fill="rgba(243,207,101,0.6)"/>
+                  <text x="175" y="124" text-anchor="middle" fill="#070c09" font-family="JetBrains Mono" font-size="9" font-weight="bold">Intersection</text>
+                  <!-- Seed Center Points -->
+                  <circle cx="140" cy="120" r="4" fill="#fff"/>
+                  <circle cx="210" cy="120" r="4" fill="#fff"/>
+                  <text x="175" y="215" text-anchor="middle" fill="#fffefa" font-family="DM Sans" font-size="10">Spatial Join: Buffer(A) ∩ Buffer(B)</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Dimensionally Extended 9-Intersection Model (DE-9IM) evaluated via GEOS C++ library backend.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Retail cannibalization between sibling properties, catchment area overlap, environmental buffer zones.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Treats spatial geometries as standard Pandas DataFrame columns with full vectorization.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>import geopandas as gpd
+hotels_gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.lon, df.lat))
+buffers = hotels_gdf.buffer(distance=5000) # 5km
+joined = gpd.sjoin(points_gdf, buffers, predicate='intersects')</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Data Model</span>
+            <span class="val">GeoDataFrame</span>
+            <span class="sub">Shapely Geometry</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Index Struct</span>
+            <span class="val">R-Tree Spatial</span>
+            <span class="sub">O(log N) Lookup</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Backend C++</span>
+            <span class="val">GEOS / GDAL</span>
+            <span class="sub">Industry Core</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Operations</span>
+            <span class="val">Union / Intersect</span>
+            <span class="sub">DE-9IM Topology</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-04-cartopy-robinson" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">04 / Publication Cartography</span>
+            <h2 class="slide-headline">Global Equal-Area Balance: <span>Cartopy Robinson World Projection</span></h2>
+            <p class="slide-subtitle">Pseudocylindrical map projection balancing shape and area distortions for global publication maps.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Cartopy (SciTools UK Met)</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-04-cartopy-robinson">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 400 240" style="width:100%; max-height:260px;">
+                  <!-- Curved Robinson Boundary Outline -->
+                  <path d="M 60 40 Q 200 25, 340 40 C 370 120, 370 120, 340 200 Q 200 215, 60 200 C 30 120, 30 120, 60 40 Z" fill="#0a140f" stroke="#d4af37" stroke-width="2"/>
+                  <!-- Graticule Lines -->
+                  <path d="M 45 120 Q 200 120, 355 120" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                  <path d="M 200 30 Q 200 120, 200 210" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                  <!-- Continents Schematic -->
+                  <ellipse cx="140" cy="90" rx="35" ry="25" fill="#1b382b"/>
+                  <ellipse cx="270" cy="90" rx="45" ry="30" fill="#1b382b"/>
+                  <ellipse cx="285" cy="160" rx="25" ry="20" fill="#1b382b"/>
+                  <ellipse cx="160" cy="155" rx="20" ry="30" fill="#1b382b"/>
+                  <!-- Property Hub Pins -->
+                  <circle cx="280" cy="115" r="5" fill="#00e676"/>
+                  <circle cx="130" cy="85" r="4" fill="#f3cf65"/>
+                  <circle cx="240" cy="80" r="4" fill="#f3cf65"/>
+                  <text x="200" y="230" text-anchor="middle" fill="#f3cf65" font-family="DM Sans" font-size="10">Robinson Projection &bull; Minimal Polar Distortion</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Arthur H. Robinson pseudocylindrical compromise projection using tabular interpolation of latitude offsets.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Annual sustainability ESG global footprint reports, international supply chain maps, academic atlases.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Deep PROJ.4 integration allowing seamless coordinate transformation between any two global projections.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>import cartopy.crs as ccrs
+import matplotlib.pyplot as plt
+fig = plt.figure(figsize=(10, 5))
+ax = fig.add_subplot(1, 1, 1, projection=ccrs.Robinson())
+ax.stock_img()
+ax.coastlines(color='#d4af37')</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Projection</span>
+            <span class="val">Robinson World</span>
+            <span class="sub">Compromise</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Institution</span>
+            <span class="val">SciTools UK Met</span>
+            <span class="sub">Atmospheric Std</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Distortion</span>
+            <span class="val">Visually Pleasing</span>
+            <span class="sub">Balanced</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Natural Earth</span>
+            <span class="val">Built-In Vectors</span>
+            <span class="sub">Coastlines/Borders</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-05-geoplotlib-voronoi" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">05 / Real-Time Spatial GPU</span>
+            <h2 class="slide-headline">High-Cadence Dot Density: <span>Geoplotlib Hardware Tessellation</span></h2>
+            <p class="slide-subtitle">Pyglet/OpenGL accelerated spatial visualization rendering live point distributions and dynamic Voronoi cells.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Geoplotlib (Pyglet/OpenGL)</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-05-geoplotlib-voronoi">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Voronoi Polygon Mosaic -->
+                  <g fill="none" stroke="#00e676" stroke-width="1.2">
+                    <polygon points="60,50 140,30 180,90 90,110" fill="rgba(0,230,118,0.15)"/>
+                    <polygon points="140,30 240,40 270,110 180,90" fill="rgba(212,175,55,0.15)"/>
+                    <polygon points="90,110 180,90 200,180 110,190" fill="rgba(0,229,255,0.15)"/>
+                    <polygon points="180,90 270,110 290,180 200,180" fill="rgba(243,207,101,0.15)"/>
+                  </g>
+                  <!-- High density points inside -->
+                  <circle cx="110" cy="70" r="2" fill="#fff"/>
+                  <circle cx="120" cy="75" r="2" fill="#fff"/>
+                  <circle cx="115" cy="80" r="2" fill="#fff"/>
+                  <circle cx="210" cy="75" r="2" fill="#fff"/>
+                  <text x="175" y="225" text-anchor="middle" fill="#00e676" font-family="JetBrains Mono" font-size="10">OpenGL Real-Time Dot Density</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Delaunay triangulation and Voronoi diagram computation compiled directly into OpenGL display lists.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Crime incident dot mapping, voter turnout precinct clustering, delivery driver density.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Hardware-accelerated pan and zoom with sub-pixel dot antialiasing.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>import geoplotlib
+geoplotlib.voronoi(data, cmap='hot')
+geoplotlib.dot(data, color=[0, 230, 118, 255])
+geoplotlib.show()</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Graphics Engine</span>
+            <span class="val">Pyglet / OpenGL</span>
+            <span class="sub">Direct Draw</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Density Type</span>
+            <span class="val">Dot Density + Voronoi</span>
+            <span class="sub">Dual Display</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Speed</span>
+            <span class="val">Interactive 60 FPS</span>
+            <span class="sub">Hardware Sync</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">License</span>
+            <span class="val">Open Source</span>
+            <span class="sub">Python Native</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-06-pydeck-arcs" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">06 / Great-Circle Flight Arcs</span>
+            <h2 class="slide-headline">Flight Network Telemetry: <span>Pydeck Great Circle ArcLayer</span></h2>
+            <p class="slide-subtitle">Bézier flight trajectories elevating international airline transit flows above dark base satellite tiles.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Pydeck ArcLayer</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-06-pydeck-arcs">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 400 240" style="width:100%; max-height:260px;">
+                  <!-- Base Map Grid -->
+                  <rect x="30" y="30" width="340" height="180" fill="#08100c" stroke="rgba(255,255,255,0.12)" rx="6"/>
+                  <!-- Parabolic Arcs -->
+                  <path d="M 70 150 Q 180 30, 310 140" fill="none" stroke="#00e676" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M 70 150 Q 150 50, 240 160" fill="none" stroke="#f3cf65" stroke-width="2.5" stroke-linecap="round"/>
+                  <!-- Nodes -->
+                  <circle cx="70" cy="150" r="7" fill="#00e676"/>
+                  <circle cx="310" cy="140" r="6" fill="#f3cf65"/>
+                  <circle cx="240" cy="160" r="6" fill="#f3cf65"/>
+                  <text x="70" y="175" text-anchor="middle" fill="#00e676" font-family="JetBrains Mono" font-size="9">SIN Hub</text>
+                  <text x="310" y="165" text-anchor="middle" fill="#f3cf65" font-family="JetBrains Mono" font-size="9">LHR</text>
+                  <text x="240" y="185" text-anchor="middle" fill="#f3cf65" font-family="JetBrains Mono" font-size="9">DXB</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Spherical linear interpolation (SLERP) computing geodesic shortest-distance flight curves.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Aviation fleet routes, inter-hotel guest origin tracking, international cargo logistics.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Direct GPU vertex shader elevation calculation with animated pulse particles along the arcs.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>arc_layer = pdk.Layer(
+    "ArcLayer", data=flights_df,
+    get_source_position='[origin_lon, origin_lat]',
+    get_target_position='[dest_lon, dest_lat]',
+    get_source_color=[0, 230, 118], get_target_color=[243, 207, 101]
+)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Arc Curve</span>
+            <span class="val">SLERP Geodesic</span>
+            <span class="sub">True Shortest</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">GPU Shaders</span>
+            <span class="val">Instanced Draw</span>
+            <span class="sub">100k Arcs</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Animation</span>
+            <span class="val">Pulse Particles</span>
+            <span class="sub">Trip Duration</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Ecosystem</span>
+            <span class="val">Deck.gl Python</span>
+            <span class="sub">Uber Tech</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-07-folium-heat-time" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">07 / Spatiotemporal Heatmaps</span>
+            <h2 class="slide-headline">Temporal Heatwave Evolution: <span>Folium HeatMapWithTime Slider</span></h2>
+            <p class="slide-subtitle">Playback controls animating hourly tourist foot traffic migration across city districts over 24-hour cycles.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Folium.plugins</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-07-folium-heat-time">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:15px; box-sizing:border-box;">
+                <svg viewBox="0 0 350 180" style="width:100%; max-height:190px;">
+                  <rect x="20" y="20" width="310" height="140" fill="#08100c" stroke="rgba(255,255,255,0.15)" rx="6"/>
+                  <circle cx="150" cy="80" r="45" fill="rgba(0,230,118,0.4)" filter="blur(6px)"/>
+                  <circle cx="150" cy="80" r="20" fill="rgba(255,23,68,0.7)" filter="blur(4px)"/>
+                  <circle cx="230" cy="100" r="30" fill="rgba(212,175,55,0.4)" filter="blur(5px)"/>
+                </svg>
+                <!-- Playback Slider Bar -->
+                <div style="width:80%; display:flex; align-items:center; gap:10px; margin-top:8px;">
+                  <button class="ctrl-btn" style="background:#00e676; color:#070c09; font-weight:bold;">&#9658; Play</button>
+                  <div style="flex:1; height:6px; background:rgba(255,255,255,0.15); border-radius:3px; position:relative;">
+                    <div style="position:absolute; left:0; width:65%; height:100%; background:#00e676; border-radius:3px;"></div>
+                  </div>
+                  <span style="font-family:JetBrains Mono; font-size:0.75rem; color:#fffefa;">18:00 Peak</span>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Temporal slice indexing: $H_t(x, y) = \text{KDE}(P_t)$ sequenced across continuous time frames.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Tourist footfall migration across nightlife districts, peak taxi demand times, epidemic spread tracking.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Interactive play/pause slider widget embedded directly into standalone HTML outputs.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>from folium.plugins import HeatMapWithTime
+HeatMapWithTime(data_by_hour, radius=25, auto_play=True,
+                max_opacity=0.8).add_to(m)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Playback</span>
+            <span class="val">Animated Slider</span>
+            <span class="sub">Play/Pause</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Slices</span>
+            <span class="val">24-Hour Cadence</span>
+            <span class="sub">Hourly Steps</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Smoothing</span>
+            <span class="val">Gaussian Blur</span>
+            <span class="sub">Dynamic Radius</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Output</span>
+            <span class="val">Standalone HTML</span>
+            <span class="sub">Zero Server</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-08-cartopy-polar" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">08 / Climatological Projections</span>
+            <h2 class="slide-headline">High-Latitude Sea Ice: <span>Cartopy Polar Stereographic Contours</span></h2>
+            <p class="slide-subtitle">True polar projection mapping multi-year Arctic ice concentration contours and navigation corridors.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Cartopy NorthPolarStereo</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-08-cartopy-polar">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 280 280" style="width:250px; height:250px;">
+                  <circle cx="140" cy="140" r="110" fill="#070d09" stroke="#d4af37" stroke-width="2"/>
+                  <!-- Polar Graticules -->
+                  <circle cx="140" cy="140" r="80" fill="none" stroke="rgba(255,255,255,0.12)" stroke-dasharray="3"/>
+                  <circle cx="140" cy="140" r="50" fill="none" stroke="rgba(255,255,255,0.12)" stroke-dasharray="3"/>
+                  <!-- Arctic Ice Extent Area -->
+                  <path d="M 140 70 Q 190 90, 190 140 T 130 190 T 90 130 Z" fill="rgba(0,229,255,0.3)" stroke="#00e5ff" stroke-width="1.5"/>
+                  <circle cx="140" cy="140" r="4" fill="#fff"/>
+                  <text x="140" y="130" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="9">North Pole</text>
+                  <text x="140" y="225" text-anchor="middle" fill="#00e5ff" font-family="JetBrains Mono" font-size="9">Sea Ice Concentration &gt; 85%</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Conformal stereographic azimuthal projection centered at $90^\circ\text{N}$ with true scale at $71^\circ\text{N}$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Arctic maritime Northwest Passage transit planning, global climate sea-ice monitoring, polar aviation.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Eliminates boundary wrapping tears inherent in Mercator projections around the poles.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>ax = plt.subplot(111, projection=ccrs.NorthPolarStereo())
+ax.set_extent([-180, 180, 60, 90], ccrs.PlateCarree())
+ax.contourf(lons, lats, ice_conc, transform=ccrs.PlateCarree())</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Projection</span>
+            <span class="val">NorthPolarStereo</span>
+            <span class="sub">Conformal</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Scale Lat</span>
+            <span class="val">71°N True Scale</span>
+            <span class="sub">NSIDC Standard</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Contours</span>
+            <span class="val">Ice Concentration</span>
+            <span class="sub">Filled Isobars</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Science</span>
+            <span class="val">Cryosphere GIS</span>
+            <span class="sub">IPCC Standard</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-09-geopandas-alpha" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">09 / Value-by-Alpha Mapping</span>
+            <h2 class="slide-headline">Bivariate Uncertainty Mapping: <span>GeoPandas Value-by-Alpha</span></h2>
+            <p class="slide-subtitle">Color hue encodes metric performance while alpha transparency reflects statistical sample confidence.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">GeoPandas Cartography</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-09-geopandas-alpha">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- High Sample Confidence (High Alpha) -->
+                  <polygon points="50,40 150,30 170,110 60,120" fill="#00e676" opacity="0.95" stroke="#fff" stroke-width="1"/>
+                  <text x="105" y="80" text-anchor="middle" fill="#070c09" font-family="DM Sans" font-size="10" font-weight="bold">High N (α=0.95)</text>
+                  <!-- Low Sample Confidence (Low Alpha) -->
+                  <polygon points="150,30 270,40 280,120 170,110" fill="#00e676" opacity="0.2" stroke="#fff" stroke-width="1" stroke-dasharray="3"/>
+                  <text x="215" y="80" text-anchor="middle" fill="#fff" font-family="DM Sans" font-size="10">Low N (α=0.20)</text>
+                  <polygon points="60,120 170,110 160,190 70,180" fill="#ff1744" opacity="0.9" stroke="#fff" stroke-width="1"/>
+                  <polygon points="170,110 280,120 270,190 160,190" fill="#ff1744" opacity="0.25" stroke="#fff" stroke-width="1" stroke-dasharray="3"/>
+                  <text x="175" y="225" text-anchor="middle" fill="#f3cf65" font-family="DM Sans" font-size="10">Color = Net RevPAR Delta &bull; Alpha = Sample Size</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Dual-channel encoding: $\text{Color} = f(\text{Metric})$, $\alpha = g(\text{Confidence})$, where $\alpha \propto \sqrt{N}$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Preventing executive over-reaction to small-sample regional anomalies, election polling maps.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Suppresses noisy rural regions with tiny sample sizes while emphasizing statistically robust metro hubs.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>colors = [to_rgba(c, alpha=a) for c, a in zip(metric_colors, sample_weights)]
+gdf.plot(color=colors, edgecolor='black', linewidth=0.5)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Color Hue</span>
+            <span class="val">Performance Yield</span>
+            <span class="sub">Green / Red</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Alpha Channel</span>
+            <span class="val">Sample Weight (N)</span>
+            <span class="sub">Opacity Shading</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Cognitive</span>
+            <span class="val">Suppresses Noise</span>
+            <span class="sub">De-biasing</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Framework</span>
+            <span class="val">GeoPandas Plot</span>
+            <span class="sub">RGBA Mapping</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-10-pydeck-screengrid" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">10 / Screen-Space Clustering</span>
+            <h2 class="slide-headline">Screen-Space Aggregations: <span>Pydeck ScreenGridLayer Density</span></h2>
+            <p class="slide-subtitle">Aggregates points into fixed-pixel screen-space grid cells dynamically on the GPU during panning.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Pydeck ScreenGridLayer</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-10-pydeck-screengrid">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Screen Grid Matrix -->
+                  <g fill="#00e676" stroke="#070c09" stroke-width="1.5">
+                    <rect x="70" y="50" width="30" height="30" fill="#070c09"/>
+                    <rect x="105" y="50" width="30" height="30" fill="#1b382b"/>
+                    <rect x="140" y="50" width="30" height="30" fill="#00e676" opacity="0.8"/>
+                    <rect x="175" y="50" width="30" height="30" fill="#f3cf65"/>
+                    <rect x="70" y="85" width="30" height="30" fill="#1b382b"/>
+                    <rect x="105" y="85" width="30" height="30" fill="#00e676"/>
+                    <rect x="140" y="85" width="30" height="30" fill="#fffefa"/>
+                    <rect x="175" y="85" width="30" height="30" fill="#00e676"/>
+                    <rect x="70" y="120" width="30" height="30" fill="#070c09"/>
+                    <rect x="105" y="120" width="30" height="30" fill="#1b382b"/>
+                    <rect x="140" y="120" width="30" height="30" fill="#00e676" opacity="0.6"/>
+                    <rect x="175" y="120" width="30" height="30" fill="#1b382b"/>
+                  </g>
+                  <text x="175" y="195" text-anchor="middle" fill="#fffefa" font-family="JetBrains Mono" font-size="10">Pixel Cell Size: 30px &bull; GPU Binning</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Screen-space binning: points mapped into fixed $W \times H$ pixel buckets directly in fragment shader.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Emergency 911 incident dispatch density, nationwide cellular handover drops, taxi hailing hotspots.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Cell size remains invariant to map zoom level, providing consistent screen legibility.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>pdk.Layer(
+    "ScreenGridLayer", data=df,
+    get_position='[lon, lat]', cell_size_pixels=30,
+    color_range=[[0, 230, 118], [243, 207, 101], [255, 23, 68]]
+)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Coordinate</span>
+            <span class="val">Screen Pixels</span>
+            <span class="sub">Viewport Fixed</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Aggregation</span>
+            <span class="val">GPU Fragment</span>
+            <span class="sub">Ultra Fast</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Zoom Stability</span>
+            <span class="val">Constant Size</span>
+            <span class="sub">No Flickering</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Capacity</span>
+            <span class="val">10M Points</span>
+            <span class="sub">Zero Lag</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-11-folium-cluster" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">11 / Dynamic Pin Clustering</span>
+            <h2 class="slide-headline">Dynamic Spatial Clustering: <span>Folium MarkerCluster with HTML Popups</span></h2>
+            <p class="slide-subtitle">Hierarchical distance-based marker clustering expanding into custom luxury HTML card summaries upon click.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Folium MarkerCluster</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-11-folium-cluster">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Cluster Circle Core -->
+                  <circle cx="120" cy="110" r="32" fill="#1b2822" stroke="#d4af37" stroke-width="2.5" filter="drop-shadow(0 0 10px #d4af37)"/>
+                  <text x="120" y="115" text-anchor="middle" fill="#f3cf65" font-family="JetBrains Mono" font-size="14" font-weight="bold">18</text>
+                  <!-- Popup Card on Right -->
+                  <rect x="180" y="60" width="150" height="95" fill="#101a16" stroke="#00e676" rx="6"/>
+                  <text x="190" y="80" fill="#fffefa" font-family="DM Sans" font-size="11" font-weight="bold">Orchard Flagship</text>
+                  <text x="190" y="96" fill="#00e676" font-family="JetBrains Mono" font-size="9">Direct RevPAR: $340</text>
+                  <text x="190" y="110" fill="#d4af37" font-family="JetBrains Mono" font-size="9">Occupancy: 84.5%</text>
+                  <text x="190" y="135" fill="#9ba9a1" font-family="DM Sans" font-size="8">Managed by OpCo Asia</text>
+                  <!-- Connector Line -->
+                  <line x1="152" y1="110" x2="180" y2="105" stroke="#00e676" stroke-width="1.5" stroke-dasharray="2"/>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>K-d tree hierarchical spatial clustering grouping coordinates whose pixel distance $< D_{\text{thresh}}$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Hotel chain global property directories, real estate listings portals, store locator search engines.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Prevents visual marker collision when viewing thousands of properties at national zoom levels.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>from folium.plugins import MarkerCluster
+mc = MarkerCluster().add_to(m)
+for _, row in df.iterrows():
+    html = f"<b>{row.name}</b><br>RevPAR: ${row.revpar}"
+    folium.Marker([row.lat, row.lon], popup=html).add_to(mc)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Algorithm</span>
+            <span class="val">Distance Clustering</span>
+            <span class="sub">Pixel Radius</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Popup</span>
+            <span class="val">Rich HTML5 Card</span>
+            <span class="sub">Bootstrap/CSS</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Spiderfy</span>
+            <span class="val">Overlapping Points</span>
+            <span class="sub">Spiral Fanout</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Performance</span>
+            <span class="val">10,000 Pins</span>
+            <span class="sub">Fast Cluster</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-12-cartopy-ortho" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">12 / Celestial Cartography</span>
+            <h2 class="slide-headline">Day / Night Solar Boundary: <span>Cartopy Orthographic Terminator</span></h2>
+            <p class="slide-subtitle">True orthographic Earth view showing real-time solar declination and astronomical day/night shadow boundaries.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Cartopy Nightshade</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-12-cartopy-ortho">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 280 280" style="width:250px; height:250px;">
+                  <defs>
+                    <clipPath id="earthClip">
+                      <circle cx="140" cy="140" r="110"/>
+                    </clipPath>
+                  </defs>
+                  <!-- Base Earth Circle -->
+                  <circle cx="140" cy="140" r="110" fill="#0d281a" stroke="#d4af37" stroke-width="2"/>
+                  <!-- Night Shade Half -->
+                  <path d="M 140 30 Q 180 140, 140 250 A 110 110 0 0 1 140 30 Z" fill="#040806" opacity="0.85" clip-path="url(#earthClip)"/>
+                  <!-- Sun Position -->
+                  <circle cx="90" cy="120" r="6" fill="#f3cf65" filter="drop-shadow(0 0 10px #f3cf65)"/>
+                  <text x="90" y="105" text-anchor="middle" fill="#f3cf65" font-family="JetBrains Mono" font-size="9">Solar Zenith</text>
+                  <!-- Terminator Line -->
+                  <path d="M 140 30 Q 180 140, 140 250" fill="none" stroke="#d4af37" stroke-width="1.5" stroke-dasharray="3"/>
+                  <text x="140" y="265" text-anchor="middle" fill="#fffefa" font-family="DM Sans" font-size="10">Solar Terminator Night Boundary</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Astronomical ephemeris solar position calculation $(\delta, \alpha)$ projecting great-circle night shadow boundary.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Global 24/7 call center staffing handover, international market opening hours, satellite solar panel tracking.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Simulates authentic orbital view of Earth as seen from deep space with precise solar illumination.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>from cartopy.feature.nightshade import Nightshade
+ax = plt.subplot(111, projection=ccrs.Orthographic(central_longitude=100))
+ax.add_feature(Nightshade(datetime.now(), alpha=0.5))</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Projection</span>
+            <span class="val">Orthographic</span>
+            <span class="sub">Infinite Viewpoint</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Ephemeris</span>
+            <span class="val">Solar Declination</span>
+            <span class="sub">Astronomical</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Shadow</span>
+            <span class="val">Nightshade Polygon</span>
+            <span class="sub">Day/Night Split</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Precision</span>
+            <span class="val">Sub-Minute</span>
+            <span class="sub">UTC Synced</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-13-geoplotlib-graph" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">13 / Spatial Network Routing</span>
+            <h2 class="slide-headline">Geographic Network Flows: <span>Geoplotlib Spatial Graph Aggregation</span></h2>
+            <p class="slide-subtitle">Fast OpenGL graph layer drawing weighted trade and communication routes between geographic nodes.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Geoplotlib Graph</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-13-geoplotlib-graph">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <g stroke="#00e676" stroke-linecap="round">
+                    <line x1="80" y1="130" x2="175" y2="90" stroke-width="4"/>
+                    <line x1="175" y1="90" x2="280" y2="110" stroke-width="3"/>
+                    <line x1="80" y1="130" x2="200" y2="180" stroke-width="2" stroke-opacity="0.6"/>
+                    <line x1="175" y1="90" x2="200" y2="180" stroke-width="2.5" stroke-opacity="0.7"/>
+                  </g>
+                  <circle cx="80" cy="130" r="10" fill="#00e676"/>
+                  <circle cx="175" cy="90" r="14" fill="#f3cf65"/>
+                  <circle cx="280" cy="110" r="9" fill="#00e5ff"/>
+                  <circle cx="200" cy="180" r="8" fill="#d4af37"/>
+                  <text x="175" y="70" text-anchor="middle" fill="#f3cf65" font-family="JetBrains Mono" font-size="10">Hub Node (Volume: $42M)</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Spatial network $G = (V, E)$ where nodes possess fixed geographic $(x, y)$ coordinates and edge width $w \propto \text{Flow}$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Inter-branch financial cash logistics, global cloud data replication routes, maritime freight flows.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Renders tens of thousands of geographic edges smoothly using compiled OpenGL vertex arrays.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>import geoplotlib
+geoplotlib.graph(network_data, src_lat='lat1', src_lon='lon1',
+                 dest_lat='lat2', dest_lon='lon2', color=[0, 230, 118, 200])
+geoplotlib.show()</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Network Type</span>
+            <span class="val">Spatial Graph</span>
+            <span class="sub">Fixed Coordinates</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Edge Weight</span>
+            <span class="val">Width = Volume</span>
+            <span class="sub">Proportional</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Render Backend</span>
+            <span class="val">PyOpenSSL / GL</span>
+            <span class="sub">Desktop Hardware</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Throughput</span>
+            <span class="val">50,000 Links</span>
+            <span class="sub">Zero Lag</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-14-geopandas-cartogram" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">14 / Non-Contiguous Cartograms</span>
+            <h2 class="slide-headline">Value-Distorted Geographies: <span>GeoPandas Value-Distorted Cartogram</span></h2>
+            <p class="slide-subtitle">Rescales polygon surface areas strictly proportional to direct booking revenue rather than physical landmass.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">GeoPandas Cartogram</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-14-geopandas-cartogram">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Distorted Region Squares -->
+                  <rect x="50" y="40" width="110" height="110" fill="#00e676" stroke="#fff" stroke-width="1.5" rx="4"/>
+                  <text x="105" y="95" text-anchor="middle" fill="#070c09" font-family="DM Sans" font-size="11" font-weight="bold">Singapore (Small Land)</text>
+                  <text x="105" y="112" text-anchor="middle" fill="#070c09" font-family="JetBrains Mono" font-size="10">$48M Direct Rev</text>
+                  
+                  <rect x="180" y="60" width="130" height="70" fill="#d4af37" stroke="#fff" stroke-width="1.5" rx="4"/>
+                  <text x="245" y="95" text-anchor="middle" fill="#070c09" font-family="DM Sans" font-size="11" font-weight="bold">London Annex</text>
+                  <text x="245" y="112" text-anchor="middle" fill="#070c09" font-family="JetBrains Mono" font-size="10">$32M Direct Rev</text>
+
+                  <rect x="110" y="165" width="60" height="45" fill="#6c7d73" stroke="#fff" stroke-width="1" rx="4"/>
+                  <text x="140" y="192" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="8">Regional Asset</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Gastner-Newman diffusion-based cartogram algorithm: warping geographic coordinates so density $\rho(x,y) = \text{const}$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Revenue-weighted territory balance, electoral vote representation, regional hotel EBITDA contribution.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Eliminates landmass bias where huge geographic territories with low population dominate visual charts.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>import geocartogram
+cartogram_gdf = geocartogram.transform(gdf, value='direct_revenue')
+cartogram_gdf.plot(color='#00e676', edgecolor='white')</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Algorithm</span>
+            <span class="val">Gastner-Newman</span>
+            <span class="sub">Diffusion Flow</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Area Meaning</span>
+            <span class="val">Proportional to $</span>
+            <span class="sub">Revenue-Scaled</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Bias Elimination</span>
+            <span class="val">Landmass Neutral</span>
+            <span class="sub">True Weight</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Topology</span>
+            <span class="val">Preserved Contiguity</span>
+            <span class="sub">Border Shared</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-15-pydeck-terrain" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">15 / 3D DEM Raster Shaders</span>
+            <h2 class="slide-headline">3D Satellite Shading: <span>Pydeck TerrainLayer with DEM Tiles</span></h2>
+            <p class="slide-subtitle">GPU-accelerated heightmap elevation decoding rendering real-world mountain topography.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Pydeck TerrainLayer</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-15-pydeck-terrain">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Mountain Peak Shaded Contours -->
+                  <polygon points="175,30 280,180 70,180" fill="url(#peakGrad)" stroke="#d4af37" stroke-width="1.5"/>
+                  <polygon points="175,30 240,180 175,180" fill="#00e676" opacity="0.3"/>
+                  <polygon points="175,30 110,180 175,180" fill="#d4af37" opacity="0.4"/>
+                  <!-- Base elevation wire -->
+                  <line x1="40" y1="180" x2="310" y2="180" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                  <text x="175" y="215" text-anchor="middle" fill="#f3cf65" font-family="JetBrains Mono" font-size="10">Alpine Resort &bull; 2,850m Summit DEM</text>
+                  <defs>
+                    <linearGradient id="peakGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#fffefa"/>
+                      <stop offset="40%" stop-color="#00e676"/>
+                      <stop offset="100%" stop-color="#08100c"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>RGB-encoded elevation decoding: $\text{Elevation} = -10000 + (R \cdot 256^2 + G \cdot 256 + B) \cdot 0.1$ evaluated in vertex shaders.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Ski resort slope planning, view-line shadow analysis for high-rise luxury penthouses, telecom line-of-sight.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Streams standard Mapbox/Terrarium elevation tiles with sub-second mesh reconstruction.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>pdk.Layer(
+    "TerrainLayer", elevation_decoder={"rScaler": 6553.6, "gScaler": 25.6, "bScaler": 0.1, "offset": -10000},
+    elevation_data='https://.../terrain-rgb/{z}/{x}/{y}.png',
+    texture='https://.../satellite/{z}/{x}/{y}.png'
+)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Tile Protocol</span>
+            <span class="val">Mapbox Terrain-RGB</span>
+            <span class="sub">Normal Map</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Decoding</span>
+            <span class="val">Hardware Shader</span>
+            <span class="sub">GPU Vertex</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Lighting</span>
+            <span class="val">Hillshade Normal</span>
+            <span class="sub">Sun Angle</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Framerate</span>
+            <span class="val">60 FPS 3D</span>
+            <span class="sub">Orbit / Pitch</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-16-folium-dualmap" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">16 / Synchronized Split Maps</span>
+            <h2 class="slide-headline">Dual-Pane Cartographic Locks: <span>Folium DualMap Synchronized View</span></h2>
+            <p class="slide-subtitle">Twin coordinated map viewports locking pan, zoom, and pitch across comparative marketing datasets.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Folium DualMap Plugin</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-16-folium-dualmap">
+            
+              <div style="width:100%; height:100%; display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:15px; box-sizing:border-box;">
+                <div style="background:#09120e; border:1px solid #00e676; border-radius:6px; padding:10px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <span style="font-family:JetBrains Mono; font-size:0.8rem; color:#00e676;">Layer A: Direct Bookings</span>
+                  <div style="text-align:center; font-family:Newsreader; font-size:1.8rem; color:#00e676;">74% Net Share</div>
+                  <span style="font-size:0.75rem; color:#9ba9a1;">Zero Intermediary Leak</span>
+                </div>
+                <div style="background:#09120e; border:1px solid #ff1744; border-radius:6px; padding:10px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <span style="font-family:JetBrains Mono; font-size:0.8rem; color:#ff1744;">Layer B: OTA Commissions</span>
+                  <div style="text-align:center; font-family:Newsreader; font-size:1.8rem; color:#ff1744;">$920k Intermediary Toll</div>
+                  <span style="font-size:0.75rem; color:#9ba9a1;">Masked Relay Emails</span>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Synchronized event listeners binding Map A center $(\phi_A, \lambda_A)$ and zoom $z_A$ directly to Map B.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Side-by-side competitor rate monitoring, demographic income vs direct booking propensity.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Pre-built Python plugin with zero complex JavaScript event synchronization required.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>from folium.plugins import DualMap
+m = DualMap(location=[1.35, 103.82], zoom_start=12)
+folium.TileLayer('cartodbpositron').add_to(m.m1)
+folium.TileLayer('cartodbdark_matter').add_to(m.m2)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Python Plugin</span>
+            <span class="val">plugins.DualMap</span>
+            <span class="sub">Folium Extended</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Sync Lock</span>
+            <span class="val">Pan + Zoom</span>
+            <span class="sub">Zero Lag</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Layers</span>
+            <span class="val">Independent Tiles</span>
+            <span class="sub">Dual Datasets</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Export</span>
+            <span class="val">Self-Contained HTML</span>
+            <span class="sub">Single File</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-17-cartopy-homolosine" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">17 / Equal-Area Interruption</span>
+            <h2 class="slide-headline">Zero Land Distortion: <span>Goode Homolosine Interrupted World</span></h2>
+            <p class="slide-subtitle">Composite equal-area pseudocylindrical projection slicing ocean basins to present continents with true relative sizes.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Cartopy GoodeHomolosine</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-17-cartopy-homolosine">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 380 220" style="width:100%; max-height:240px;">
+                  <!-- Interrupted lobes schematic -->
+                  <g fill="#13221b" stroke="#d4af37" stroke-width="1.5">
+                    <!-- Americas Lobe -->
+                    <path d="M 50 180 Q 90 40, 130 180 Z"/>
+                    <!-- Europe/Africa Lobe -->
+                    <path d="M 140 180 Q 180 30, 220 180 Z"/>
+                    <!-- Asia/Australia Lobe -->
+                    <path d="M 230 180 Q 290 30, 350 180 Z"/>
+                  </g>
+                  <text x="190" y="210" text-anchor="middle" fill="#f3cf65" font-family="DM Sans" font-size="10">Goode Homolosine: Strictly Equal-Area Worldwide</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Piecewise combination: Sinusoidal projection between latitudes $0^\circ - 44^\circ$ and Mollweide projection above $44^\circ$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Accurately representing true global market shares without inflating Greenland and Antarctica.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Preserves true areal proportions across all continents simultaneously without shape squashing.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>import cartopy.crs as ccrs
+ax = plt.subplot(111, projection=ccrs.InterruptedGoodeHomolosine())
+ax.coastlines(color='#00e676')</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Projection Type</span>
+            <span class="val">Equal-Area (Homolographic)</span>
+            <span class="sub">True Land Area</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Interruption</span>
+            <span class="val">Multi-Lobed Oceans</span>
+            <span class="sub">Min Distort</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Standard</span>
+            <span class="val">USGS / Academic</span>
+            <span class="sub">True Area Std</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Implementation</span>
+            <span class="val">Cartopy PROJ</span>
+            <span class="sub">SciTools</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-18-geopandas-ellipses" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">18 / Spatial Statistics</span>
+            <h2 class="slide-headline">Directional Spatial Drift: <span>Standard Deviational Ellipse (SDE)</span></h2>
+            <p class="slide-subtitle">Calculates the central geographic mean, spatial dispersion dispersion, and directional trend of guest origins.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">PySAL / GeoPandas</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-18-geopandas-ellipses">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Standard Deviational Ellipse rotated 35 degrees -->
+                  <g transform="translate(175, 120) rotate(35)">
+                    <ellipse cx="0" cy="0" rx="95" ry="45" fill="rgba(0,230,118,0.2)" stroke="#00e676" stroke-width="2"/>
+                    <!-- Major Axis -->
+                    <line x1="-95" y1="0" x2="95" y2="0" stroke="#f3cf65" stroke-width="1.5" stroke-dasharray="3"/>
+                    <!-- Minor Axis -->
+                    <line x1="0" y1="-45" x2="0" y2="45" stroke="#f3cf65" stroke-width="1.5" stroke-dasharray="3"/>
+                    <!-- Mean Center -->
+                    <circle cx="0" cy="0" r="5" fill="#fff"/>
+                  </g>
+                  <text x="175" y="220" text-anchor="middle" fill="#00e676" font-family="JetBrains Mono" font-size="10">Directional Trend: Northeast Corridor (θ=35°)</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Standard deviational ellipse principal axis calculation from spatial covariance matrix: $\tan 2\theta = \frac{2\sum \tilde{x}_i \tilde{y}_i}{\sum \tilde{x}_i^2 - \sum \tilde{y}_i^2}$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Evaluating geographic directional drift in hotel guest source markets over multi-year cycles.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Summarizes thousands of scattered customer GPS points into a concise, rigorous 1-sigma ellipse.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>from pointpats import PointPattern
+pp = PointPattern(coords)
+sde_center, major_len, minor_len, angle = pp.sde</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Statistics</span>
+            <span class="val">1-Sigma SDE</span>
+            <span class="sub">68% Coordinates</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Direction</span>
+            <span class="val">Eigenvector Angle</span>
+            <span class="sub">Major Axis θ</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Dispersion</span>
+            <span class="val">Standard Deviation</span>
+            <span class="sub">σx and σy</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Library</span>
+            <span class="val">PySAL / Pointpats</span>
+            <span class="sub">Spatial Stats</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-19-pydeck-pointcloud" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">19 / GPU LiDAR Point Clouds</span>
+            <h2 class="slide-headline">GPU Urban Canopy Scans: <span>Pydeck PointCloudLayer Slices</span></h2>
+            <p class="slide-subtitle">Direct GPU vertex rendering of millions of urban 3D laser coordinates with height-based RGB coloring.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Pydeck PointCloudLayer</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-19-pydeck-pointcloud">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <g fill="#00e676" opacity="0.8">
+                    <circle cx="90" cy="180" r="3"/> <circle cx="120" cy="170" r="3"/> <circle cx="150" cy="165" r="3"/>
+                    <circle cx="100" cy="150" r="3"/> <circle cx="140" cy="140" r="3"/> <circle cx="180" cy="130" r="3"/>
+                  </g>
+                  <g fill="#d4af37" opacity="0.9">
+                    <circle cx="160" cy="90" r="4"/> <circle cx="170" cy="75" r="4.5"/> <circle cx="185" cy="80" r="5"/>
+                  </g>
+                  <text x="175" y="225" text-anchor="middle" fill="#fffefa" font-family="JetBrains Mono" font-size="10">Pydeck PointCloudLayer &bull; Sub-Centimeter WebGL</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>GPU instanced point primitives rendered via Deck.gl PointCloudLayer with custom point size and lighting attenuation.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Architectural façade laser scans, urban tree canopy biomass calculation, heritage asset digital twins.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Streams binary LAS/LAZ files directly into browser WebGL buffers through Python.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>pdk.Layer(
+    "PointCloudLayer", data=point_df,
+    get_position='[x, y, z]', get_color='[r, g, b]',
+    point_size=3
+)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Primitive</span>
+            <span class="val">gl.POINTS WebGL</span>
+            <span class="sub">Hardware Point</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">LAS Support</span>
+            <span class="val">Direct Stream</span>
+            <span class="sub">Binary LAS/LAZ</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Attenuation</span>
+            <span class="val">Perspective Sizing</span>
+            <span class="sub">Distance Scaling</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Language</span>
+            <span class="val">Python + Deck.gl</span>
+            <span class="sub">Modern GPU</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-20-folium-vt" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">20 / Real-Time Vector Pipelines</span>
+            <h2 class="slide-headline">Production Vector Pipelines: <span>Folium Dynamic GeoJSON Vector Pipeline</span></h2>
+            <p class="slide-subtitle">End-to-end Python pipeline streaming live hotel rate parity and availability GeoJSON polygons.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Folium GeoJSON Pipeline</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-20-folium-vt">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; padding:15px; box-sizing:border-box;">
+                <table class="viz-table">
+                  <thead>
+                    <tr>
+                      <th>Property Asset</th>
+                      <th>Country</th>
+                      <th>Direct Share</th>
+                      <th>Rate Parity Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="color:#00e676; font-weight:bold;">Singapore Urban Luxury</td>
+                      <td>Singapore (SIN)</td>
+                      <td style="font-family:JetBrains Mono;">64%</td>
+                      <td><span style="color:#00e676; font-weight:bold;">100% PARITY LOCK</span></td>
+                    </tr>
+                    <tr>
+                      <td style="color:#f3cf65; font-weight:bold;">London Heritage Flagship</td>
+                      <td>United Kingdom (UK)</td>
+                      <td style="font-family:JetBrains Mono;">52%</td>
+                      <td><span style="color:#00e676; font-weight:bold;">100% PARITY LOCK</span></td>
+                    </tr>
+                    <tr>
+                      <td style="color:#ffab00; font-weight:bold;">Tokyo Ginza Suites</td>
+                      <td>Japan (JP)</td>
+                      <td style="font-family:JetBrains Mono;">48%</td>
+                      <td><span style="color:#ffab00; font-weight:bold;">MINOR OTA LEAK (-4%)</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Event-driven spatial dictionary ingestion: feature collections serialized into compact GeoJSON buffers.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Automated daily commercial executive dashboard distribution, real-time rate leakage mapping.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Requires zero external map server infrastructure; generates self-contained interactive files.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>folium.GeoJson(
+    geojson_data, style_function=lambda x: {
+        'fillColor': '#00e676' if x['properties']['parity'] else '#ff1744',
+        'color': '#ffffff', 'weight': 1.5, 'fillOpacity': 0.7
+    }
+).add_to(m)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Data Format</span>
+            <span class="val">GeoJSON Feature</span>
+            <span class="sub">W3C Standard</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Automation</span>
+            <span class="val">Nightly Cron</span>
+            <span class="sub">Python Script</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Security</span>
+            <span class="val">Self-Contained</span>
+            <span class="sub">No Leaked APIs</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Client Engine</span>
+            <span class="val">Leaflet v1.9</span>
+            <span class="sub">Fastest Mobile</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+    </div>
+  </div>
+
+  <!-- Reveal.js & Dynamic Resize Engine -->
+  <script src="vendor/reveal.min.js" onerror="this.src='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js'"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      controls: true,
+      progress: true,
+      center: false,
+      overview: true,
+      width: 1400,
+      height: 860,
+      margin: 0.03,
+      minScale: 0.2,
+      maxScale: 2.0,
+      transition: 'fade',
+      backgroundTransition: 'fade'
+    });
+
+    // Universal auto-resize hook for Plotly, ECharts, Leaflet, Three.js, etc.
+    Reveal.on('slidechanged', event => {
+      const current = event.currentSlide;
+      
+      // Plotly resize
+      const plotlyGraphs = current.querySelectorAll('.plotly-graph');
+      plotlyGraphs.forEach(graph => {
+        if (window.Plotly && graph._fullLayout) {
+          Plotly.Plots.resize(graph);
+        }
+      });
+      
+      // ECharts resize
+      const echartsContainers = current.querySelectorAll('.echarts-chart');
+      echartsContainers.forEach(container => {
+        if (window.echarts) {
+          const inst = echarts.getInstanceByDom(container);
+          if (inst) inst.resize();
+        }
+      });
+
+      // Leaflet resize
+      const leafletMaps = current.querySelectorAll('.leaflet-map');
+      leafletMaps.forEach(mapContainer => {
+        if (mapContainer._leaflet_map) {
+          mapContainer._leaflet_map.invalidateSize();
+        }
+      });
+
+      // Re-trigger Mermaid if present
+      if (window.mermaid) {
+        const mermaids = current.querySelectorAll('.mermaid');
+        if (mermaids.length > 0) {
+          mermaid.run({ nodes: mermaids });
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,2148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Timelines, Gantt & Temporal Data | Visualization Masterclass</title>
+  <meta name="description" content="20 Temporal Visual Paradigms across TimelineJS, Vis.js Timeline, Frappe Gantt, DHTMLX, Timelines-Chart, and CanvasJS">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Reveal.js Core CSS -->
+  <link rel="stylesheet" href="vendor/reveal.min.css" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css'">
+  <link rel="stylesheet" href="css/viz-deck.css">
+  
+  <!-- Visualization Engines -->
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  
+  
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'dark',
+        themeVariables: {
+          darkMode: true,
+          background: '#070c09',
+          primaryColor: '#13221b',
+          primaryTextColor: '#fffefa',
+          primaryBorderColor: '#d4af37',
+          lineColor: '#f3cf65',
+          fontFamily: 'DM Sans',
+          fontSize: '15px'
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <!-- PERSISTENT TOP NAVIGATION -->
+  <div class="deck-nav-bar">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a href="index.html">
+        <span aria-hidden="true">&larr;</span> <strong>Visualization Portfolio Hub</strong>
+      </a>
+      <span style="opacity: 0.4;">|</span>
+      <span style="font-family: var(--font-mono); font-size: 0.88rem; color: var(--viz-gold-bright);">Series #02</span>
+      <span style="opacity: 0.4;">|</span>
+      <span style="color: #fffefa; font-weight: 500; font-family: var(--font-heading); font-size: 1.2rem;">JavaScript Timelines, Gantt & Temporal Data</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span class="tech-badge">Timelines & Gantt</span>
+      <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--viz-text-muted);">20 Master Slides</span>
+    </div>
+  </div>
+
+  <!-- PERSISTENT FOOTER BAR -->
+  <div class="deck-footer-bar">
+    <span><strong>Demostration of Visualization Software</strong> &bull; Executive Data Science & Graphic Systems</span>
+    <span>Use <strong>Space / Arrows</strong> to Navigate &bull; Press <strong>F</strong> for Fullscreen &bull; <strong>O</strong> for Overview</span>
+  </div>
+
+  <div class="reveal">
+    <div class="slides">
+
+      <section id="slide-01-vis-timeline" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">01 / Multi-Track Temporal Axis</span>
+            <h2 class="slide-headline">Zoomable Multi-Track Axis: <span>Vis.js Hierarchical Grouping</span></h2>
+            <p class="slide-subtitle">Dynamic real-time zooming across centuries down to milliseconds with custom resource lanes.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Vis.js Timeline</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-01-vis-timeline">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; padding:15px; box-sizing:border-box;">
+                <svg viewBox="0 0 450 300" style="width:100%; max-height:340px;">
+                  <!-- Time Axis Header -->
+                  <rect x="0" y="10" width="450" height="28" fill="#13221b" rx="4"/>
+                  <text x="50" y="28" fill="#f3cf65" font-family="JetBrains Mono" font-size="11">Q1 Jan</text>
+                  <text x="150" y="28" fill="#f3cf65" font-family="JetBrains Mono" font-size="11">Q2 Apr</text>
+                  <text x="260" y="28" fill="#f3cf65" font-family="JetBrains Mono" font-size="11">Q3 Jul</text>
+                  <text x="370" y="28" fill="#f3cf65" font-family="JetBrains Mono" font-size="11">Q4 Oct</text>
+                  
+                  <!-- Group 1: Brand Marketing -->
+                  <rect x="10" y="55" width="80" height="26" fill="#1b2822" rx="4"/>
+                  <text x="20" y="72" fill="#d4af37" font-family="DM Sans" font-size="11" font-weight="bold">Marketing</text>
+                  <rect x="100" y="55" width="160" height="26" fill="rgba(0,230,118,0.25)" stroke="#00e676" rx="4"/>
+                  <text x="115" y="72" fill="#fffefa" font-family="DM Sans" font-size="11">Spring Direct Push (Jan-May)</text>
+
+                  <!-- Group 2: Revenue Management -->
+                  <rect x="10" y="100" width="80" height="26" fill="#1b2822" rx="4"/>
+                  <text x="20" y="117" fill="#d4af37" font-family="DM Sans" font-size="11" font-weight="bold">Revenue</text>
+                  <rect x="220" y="100" width="140" height="26" fill="rgba(212,175,55,0.25)" stroke="#d4af37" rx="4"/>
+                  <text x="235" y="117" fill="#fffefa" font-family="DM Sans" font-size="11">Dynamic Summer Yield</text>
+
+                  <!-- Group 3: Tech & AI Integration -->
+                  <rect x="10" y="145" width="80" height="26" fill="#1b2822" rx="4"/>
+                  <text x="20" y="162" fill="#d4af37" font-family="DM Sans" font-size="11" font-weight="bold">IT & AI</text>
+                  <rect x="150" y="145" width="220" height="26" fill="rgba(0,229,255,0.25)" stroke="#00e5ff" rx="4"/>
+                  <text x="165" y="162" fill="#fffefa" font-family="DM Sans" font-size="11">MCP Direct Booking Protocol</text>
+
+                  <!-- Milestone Markers -->
+                  <line x1="280" y1="40" x2="280" y2="220" stroke="#ff1744" stroke-width="2" stroke-dasharray="3"/>
+                  <rect x="240" y="225" width="80" height="22" fill="#ff1744" rx="4"/>
+                  <text x="250" y="240" fill="#fffefa" font-family="JetBrains Mono" font-size="10" font-weight="bold">Aug 15 Launch</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Continuous 1D coordinate affine transform: $x = (t - t_{\min}) / (t_{\max} - t_{\min}) \cdot W$ with virtual DOM culling.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Corporate project portfolio roadmaps, resource room booking calendars, event logs.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Sub-millisecond inertia scrolling, DOM windowing, dynamic item clustering.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const timeline = new vis.Timeline(container, items, groups, {
+  zoomMin: 1000 * 60 * 60,
+  zoomMax: 1000 * 60 * 60 * 24 * 365 * 10
+});</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Render Type</span>
+            <span class="val">DOM / CSS3</span>
+            <span class="sub">Hardware Smooth</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Zoom Range</span>
+            <span class="val">ms to Millennia</span>
+            <span class="sub">Dynamic Scale</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Clustering</span>
+            <span class="val">Automatic</span>
+            <span class="sub">Density Reduction</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Interactivity</span>
+            <span class="val">Drag / Pinch</span>
+            <span class="sub">Touch Native</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-02-critical-path-gantt" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">02 / Project Precedence</span>
+            <h2 class="slide-headline">Precedence Engineering: <span>Critical Path Method (CPM) Gantt</span></h2>
+            <p class="slide-subtitle">Topologically sorted tasks with early/late start calculation and automated slack time visualization.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Frappe / DHTMLX Gantt</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-02-critical-path-gantt">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:10px;">
+                <svg viewBox="0 0 450 300" style="width:100%; max-height:340px;">
+                  <!-- Grid -->
+                  <line x1="120" y1="20" x2="120" y2="280" stroke="rgba(255,255,255,0.1)"/>
+                  <line x1="220" y1="20" x2="220" y2="280" stroke="rgba(255,255,255,0.06)"/>
+                  <line x1="320" y1="20" x2="320" y2="280" stroke="rgba(255,255,255,0.06)"/>
+                  <line x1="420" y1="20" x2="420" y2="280" stroke="rgba(255,255,255,0.06)"/>
+
+                  <!-- Task 1: Audit -->
+                  <text x="110" y="55" text-anchor="end" fill="#fffefa" font-family="DM Sans" font-size="11">1. Forensic Audit</text>
+                  <rect x="130" y="40" width="80" height="22" fill="#ff1744" rx="3"/>
+                  <text x="140" y="55" fill="#fff" font-family="JetBrains Mono" font-size="10">Crit: 14d</text>
+
+                  <!-- Task 2: Architecture -->
+                  <text x="110" y="105" text-anchor="end" fill="#fffefa" font-family="DM Sans" font-size="11">2. Data Contract</text>
+                  <rect x="210" y="90" width="90" height="22" fill="#ff1744" rx="3"/>
+                  <text x="220" y="105" fill="#fff" font-family="JetBrains Mono" font-size="10">Crit: 21d</text>
+
+                  <!-- Task 3: Content (Slack) -->
+                  <text x="110" y="155" text-anchor="end" fill="#9ba9a1" font-family="DM Sans" font-size="11">3. Asset Ingestion</text>
+                  <rect x="210" y="140" width="60" height="22" fill="#d4af37" opacity="0.8" rx="3"/>
+                  <rect x="270" y="140" width="50" height="22" fill="none" stroke="#d4af37" stroke-dasharray="3" rx="3"/>
+                  <text x="280" y="155" fill="#d4af37" font-family="JetBrains Mono" font-size="10">Slack 10d</text>
+
+                  <!-- Task 4: Deployment -->
+                  <text x="110" y="205" text-anchor="end" fill="#fffefa" font-family="DM Sans" font-size="11">4. Engine Cutover</text>
+                  <rect x="300" y="190" width="80" height="22" fill="#ff1744" rx="3"/>
+                  <text x="310" y="205" fill="#fff" font-family="JetBrains Mono" font-size="10">Crit: 18d</text>
+
+                  <!-- Dependency Connectors -->
+                  <path d="M 210 51 L 220 51 L 220 90 L 212 90" fill="none" stroke="#ff1744" stroke-width="2"/>
+                  <path d="M 300 101 L 310 101 L 310 190 L 302 190" fill="none" stroke="#ff1744" stroke-width="2"/>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Directed Acyclic Graph (DAG) longest-path topological algorithm computing zero-float paths.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Hotel capital expenditure (CapEx) refurbishments, enterprise software ERP cutovers.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Automated recalculation of dependent milestones upon upstream delays; constraint locking.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>gantt.addTask({
+  id: 4, text: "Engine Cutover", start_date: "12-05-2026",
+  duration: 18, critical: true
+});</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Algorithm</span>
+            <span class="val">CPM / PERT</span>
+            <span class="sub">Zero Float</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Critical Path</span>
+            <span class="val">Automated</span>
+            <span class="sub">Red Highlight</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Dependencies</span>
+            <span class="val">Finish-to-Start</span>
+            <span class="sub">FS / SS / FF</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Interactivity</span>
+            <span class="val">Drag Duration</span>
+            <span class="sub">Real-time Math</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-03-timelinejs-narrative" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">03 / Narrative Chronology</span>
+            <h2 class="slide-headline">Editorial Storytelling: <span>Knight Lab Media Timeline</span></h2>
+            <p class="slide-subtitle">Narrative chronological sequencing pairing multimedia artifacts with exact historical epochs.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">TimelineJS (Knight Lab)</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-03-timelinejs-narrative">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:space-between; padding:20px; box-sizing:border-box;">
+                <div style="background:rgba(21,34,27,0.85); border:1px solid #d4af37; border-radius:8px; padding:18px;">
+                  <span style="font-family:JetBrains Mono; font-size:0.85rem; color:#f3cf65; text-transform:uppercase;">Epoch: November 2022</span>
+                  <h4 style="font-family:Newsreader; font-size:1.6rem; color:#fffefa; margin:8px 0;">The Generative AI Inception</h4>
+                  <p style="font-size:0.95rem; color:#cde4d8; line-height:1.5;">
+                    ChatGPT launches, initiating the transition from keyword query engines to conversational synthesizers. Intermediary OTAs scramble to build prompt plugins.
+                  </p>
+                </div>
+                <!-- Timeline Slider Track -->
+                <div style="position:relative; height:60px; background:#0e1713; border-top:1px solid rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:space-around;">
+                  <div style="text-align:center;">
+                    <div style="width:12px; height:12px; background:#6c7d73; border-radius:50%; margin:0 auto 4px;"></div>
+                    <span style="font-family:JetBrains Mono; font-size:0.75rem; color:#9ba9a1;">2015 GHA</span>
+                  </div>
+                  <div style="text-align:center;">
+                    <div style="width:16px; height:16px; background:#f3cf65; border-radius:50%; margin:0 auto 4px; box-shadow:0 0 10px #f3cf65;"></div>
+                    <span style="font-family:JetBrains Mono; font-size:0.75rem; color:#f3cf65; font-weight:bold;">2022 LLM</span>
+                  </div>
+                  <div style="text-align:center;">
+                    <div style="width:12px; height:12px; background:#6c7d73; border-radius:50%; margin:0 auto 4px;"></div>
+                    <span style="font-family:JetBrains Mono; font-size:0.75rem; color:#9ba9a1;">2024 GEO</span>
+                  </div>
+                  <div style="text-align:center;">
+                    <div style="width:12px; height:12px; background:#00e676; border-radius:50%; margin:0 auto 4px;"></div>
+                    <span style="font-family:JetBrains Mono; font-size:0.75rem; color:#00e676;">2026 Agentic</span>
+                  </div>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Sequential narrative state-machine linking discrete temporal timestamps to rich HTML DOM nodes.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Corporate history retrospectives, litigation chronologies, product evolution showcases.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Seamless YouTube/Vimeo/Wikipedia embeds, responsive touch carousel, Google Sheets data backend.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>window.timeline = new TL.Timeline('timeline-embed',
+  'https://docs.google.com/spreadsheets/d/...',
+  { hash_bookmark: true, language: 'en' }
+);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Media Type</span>
+            <span class="val">Rich Multimedia</span>
+            <span class="sub">Video / Text</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Data Source</span>
+            <span class="val">JSON / Sheets</span>
+            <span class="sub">Low Code</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Navigation</span>
+            <span class="val">Bi-directional</span>
+            <span class="sub">Slider + Key</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Provenance</span>
+            <span class="val">Knight Lab</span>
+            <span class="sub">Journalism Std</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-04-d3-swimlanes" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">04 / Temporal Density</span>
+            <h2 class="slide-headline">Concurrent Activity Bands: <span>D3 Swimlane Density Bands</span></h2>
+            <p class="slide-subtitle">Multi-channel horizontal swimlanes mapping concurrent booking density across rolling operational quarters.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">D3.js v7 Custom SVG</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-04-d3-swimlanes">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:15px;">
+                <svg viewBox="0 0 450 280" style="width:100%; max-height:330px;">
+                  <!-- Swimlanes -->
+                  <g font-family="DM Sans" font-size="11">
+                    <!-- Lane 1 -->
+                    <rect x="10" y="30" width="430" height="45" fill="rgba(19,34,27,0.7)" rx="4"/>
+                    <text x="20" y="56" fill="#00e676" font-weight="bold">Direct Engine</text>
+                    <rect x="120" y="42" width="18" height="22" fill="#00e676" opacity="0.8"/>
+                    <rect x="145" y="42" width="35" height="22" fill="#00e676" opacity="0.9"/>
+                    <rect x="210" y="42" width="80" height="22" fill="#00e676"/>
+                    <rect x="320" y="42" width="60" height="22" fill="#00e676" opacity="0.85"/>
+
+                    <!-- Lane 2 -->
+                    <rect x="10" y="90" width="430" height="45" fill="rgba(19,34,27,0.7)" rx="4"/>
+                    <text x="20" y="116" fill="#f3cf65" font-weight="bold">Google Meta</text>
+                    <rect x="160" y="102" width="50" height="22" fill="#f3cf65" opacity="0.8"/>
+                    <rect x="230" y="102" width="40" height="22" fill="#f3cf65" opacity="0.9"/>
+                    <rect x="290" y="102" width="70" height="22" fill="#f3cf65"/>
+
+                    <!-- Lane 3 -->
+                    <rect x="10" y="150" width="430" height="45" fill="rgba(19,34,27,0.7)" rx="4"/>
+                    <text x="20" y="176" fill="#ff1744" font-weight="bold">Wholesale GDS</text>
+                    <rect x="130" y="162" width="30" height="22" fill="#ff1744" opacity="0.7"/>
+                    <rect x="280" y="162" width="90" height="22" fill="#ff1744" opacity="0.9"/>
+
+                    <!-- Time Axis -->
+                    <line x1="10" y1="215" x2="440" y2="215" stroke="rgba(255,255,255,0.2)"/>
+                    <text x="120" y="235" fill="#9ba9a1" font-family="JetBrains Mono">Jan</text>
+                    <text x="220" y="235" fill="#9ba9a1" font-family="JetBrains Mono">Apr</text>
+                    <text x="320" y="235" fill="#9ba9a1" font-family="JetBrains Mono">Jul</text>
+                    <text x="400" y="235" fill="#9ba9a1" font-family="JetBrains Mono">Oct</text>
+                  </g>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Interval partitioning: non-overlapping rectangle packing within discrete categorical horizontal bands.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Flight fleet turnarounds, hospital operating room scheduling, cloud microservice execution logs.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Direct spatial comparison of activity across disjoint departments without clutter.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const x = d3.scaleTime().domain([start, end]).range([0, width]);
+svg.selectAll('rect').data(events)
+  .join('rect').attr('x', d => x(d.start)).attr('width', d => x(d.end) - x(d.start));</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Structure</span>
+            <span class="val">Categorical Band</span>
+            <span class="sub">Parallel Lanes</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Overlap</span>
+            <span class="val">1D Packing</span>
+            <span class="sub">Collision Free</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Precision</span>
+            <span class="val">Continuous Date</span>
+            <span class="sub">d3.scaleTime</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Animation</span>
+            <span class="val">d3.transition</span>
+            <span class="sub">Staggered</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-05-timelines-chart" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">05 / Discrete State Sequences</span>
+            <h2 class="slide-headline">Temporal State Transitions: <span>Hierarchical State Evolution</span></h2>
+            <p class="slide-subtitle">Color-coded discrete machine states tracking operational status (Available, Occupied, Maintenance).</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">timelines-chart</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-05-timelines-chart">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; gap:10px; padding:20px; box-sizing:border-box;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                  <span style="font-family:JetBrains Mono; font-size:0.8rem; color:#f3cf65;">State Machine: 350 Room Fleet</span>
+                  <div style="display:flex; gap:12px; font-size:0.75rem;">
+                    <span style="color:#00e676;">&#9632; Occupied</span>
+                    <span style="color:#00e5ff;">&#9632; Reserved</span>
+                    <span style="color:#ff1744;">&#9632; Out of Order</span>
+                  </div>
+                </div>
+                <!-- 4 room rows -->
+                <div style="display:flex; height:24px; border-radius:4px; overflow:hidden; gap:2px;">
+                  <div style="flex:4; background:#00e676;"></div>
+                  <div style="flex:2; background:#00e5ff;"></div>
+                  <div style="flex:5; background:#00e676;"></div>
+                  <div style="flex:1; background:#ff1744;"></div>
+                </div>
+                <div style="display:flex; height:24px; border-radius:4px; overflow:hidden; gap:2px;">
+                  <div style="flex:3; background:#00e5ff;"></div>
+                  <div style="flex:6; background:#00e676;"></div>
+                  <div style="flex:2; background:#00e676;"></div>
+                  <div style="flex:1; background:#00e5ff;"></div>
+                </div>
+                <div style="display:flex; height:24px; border-radius:4px; overflow:hidden; gap:2px;">
+                  <div style="flex:8; background:#00e676;"></div>
+                  <div style="flex:2; background:#ff1744;"></div>
+                  <div style="flex:2; background:#00e676;"></div>
+                </div>
+                <div style="display:flex; height:24px; border-radius:4px; overflow:hidden; gap:2px;">
+                  <div style="flex:2; background:#00e676;"></div>
+                  <div style="flex:4; background:#00e5ff;"></div>
+                  <div style="flex:5; background:#00e676;"></div>
+                  <div style="flex:1; background:#00e676;"></div>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Piecewise constant step-function $S(t) \in \{S_1, S_2, \dots, S_k\}$ partitioned along 1D time continuum.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Industrial IoT machine state logs, data center server health, hotel room occupancy states.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Seamless zoomable transitions between macro aggregate years down to microsecond states.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>TimelinesChart()(document.getElementById('chart'))
+  .data(roomStates)
+  .zColorScale(d3.scaleOrdinal().range(['#00e676', '#00e5ff', '#ff1744']));</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">State Model</span>
+            <span class="val">Discrete FSM</span>
+            <span class="sub">Piecewise</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Granularity</span>
+            <span class="val">Microsecond</span>
+            <span class="sub">Continuous</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Compression</span>
+            <span class="val">Run-Length</span>
+            <span class="sub">High Scalability</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Color Maps</span>
+            <span class="val">Status-Coded</span>
+            <span class="sub">Instant Alert</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-06-resource-workload" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">06 / Capacity Allocation</span>
+            <h2 class="slide-headline">Workload Balancing: <span>Resource Allocation Matrix</span></h2>
+            <p class="slide-subtitle">Capacity threshold monitoring identifying over-allocation and personnel burnout points.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">AnyChart Gantt Engine</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-06-resource-workload">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; gap:14px; padding:20px; box-sizing:border-box;">
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+                    <span style="color:#fffefa;">Executive Advisory Team</span>
+                    <span style="color:#00e676; font-family:JetBrains Mono;">85% Nominal Capacity</span>
+                  </div>
+                  <div style="height:20px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden;">
+                    <div style="width:85%; height:100%; background:#00e676;"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+                    <span style="color:#fffefa;">Revenue Management Pod</span>
+                    <span style="color:#ff1744; font-family:JetBrains Mono;">118% OVER-ALLOCATED</span>
+                  </div>
+                  <div style="height:20px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden;">
+                    <div style="width:100%; height:100%; background:#ff1744; box-shadow:0 0 10px #ff1744;"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+                    <span style="color:#fffefa;">Data Science & AI Engineering</span>
+                    <span style="color:#d4af37; font-family:JetBrains Mono;">94% Peak Load</span>
+                  </div>
+                  <div style="height:20px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden;">
+                    <div style="width:94%; height:100%; background:#d4af37;"></div>
+                  </div>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Cumulative workload integration: $W(t) = \sum_{i} c_i(t)$ checked against threshold capacity limits $C_{\max}$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Consulting personnel scheduling, hospital nurse staffing, cloud cluster CPU limits.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Instant visual detection of scheduling bottlenecks and automated leveling recommendations.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>var chart = anychart.ganttResource();
+chart.data(resourceData);
+chart.getTimeline().elements().rendering().drawer(customWorkloadDrawer);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Measurement</span>
+            <span class="val">Capacity %</span>
+            <span class="sub">Over-Allocation</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Threshold</span>
+            <span class="val">100% Red Alert</span>
+            <span class="sub">Safe vs Warning</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Resolution</span>
+            <span class="val">Daily / Hourly</span>
+            <span class="sub">Configurable</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Leveling</span>
+            <span class="val">Heuristic Shift</span>
+            <span class="sub">Optimization</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-07-canvasjs-ticks" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">07 / Microsecond Frequency</span>
+            <h2 class="slide-headline">Millisecond Tick Execution: <span>Sub-Second Financial Stream</span></h2>
+            <p class="slide-subtitle">High-frequency event timeline tracking sub-second algorithmic trading and dynamic rate auction updates.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">CanvasJS Fast Engine</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-07-canvasjs-ticks">
+            
+              <div id="canvasjs-ticks-stage" class="plotly-graph" style="width:100%; height:100%;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const el = document.getElementById('canvasjs-ticks-stage');
+                  if (!el || !window.Plotly) return;
+                  const times = [], prices = [];
+                  let p = 240.0;
+                  for(let i=0; i<150; i++) {
+                    times.push("09:30:" + (i < 10 ? "0" : "") + Math.floor(i/10) + "." + (i%10) + "00");
+                    p += (Math.random() - 0.48) * 0.8;
+                    prices.push(p);
+                  }
+                  const trace = {
+                    x: times, y: prices, mode: 'lines+markers',
+                    line: { color: '#00e676', width: 2 },
+                    marker: { size: 3, color: '#f3cf65' }
+                  };
+                  const layout = {
+                    paper_bgcolor: 'transparent', plot_bgcolor: 'transparent',
+                    font: { color: '#9ba9a1', family: 'JetBrains Mono', size: 10 },
+                    margin: { l: 40, r: 20, t: 15, b: 35 },
+                    xaxis: { gridcolor: 'rgba(255,255,255,0.06)' },
+                    yaxis: { gridcolor: 'rgba(255,255,255,0.06)' }
+                  };
+                  Plotly.newPlot('canvasjs-ticks-stage', [trace], layout, { responsive: true, displayModeBar: false });
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Brownian motion stochastic process: $dS_t = \mu S_t dt + \sigma S_t dW_t$ rendered via hardware Canvas 2D.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>High-frequency trading latency tracking, real-time ad bid exchanges, telemetry logs.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Renders 100,000 data points in under 100ms; zero frame rate drop.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>var chart = new CanvasJS.Chart("chartContainer", {
+  animationEnabled: true,
+  data: [{ type: "line", dataPoints: tickPoints }]
+});
+chart.render();</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Render Speed</span>
+            <span class="val">100K pts / 100ms</span>
+            <span class="sub">CanvasJS Core</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Precision</span>
+            <span class="val">Microsecond</span>
+            <span class="sub">Timestamp Sync</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Stochastic</span>
+            <span class="val">Brownian Motion</span>
+            <span class="sub">Real-time Drift</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Markers</span>
+            <span class="val">Sub-Pixel Dot</span>
+            <span class="sub">Point Picking</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-08-broken-barh" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">08 / Discontinuous Horizons</span>
+            <h2 class="slide-headline">Discontinuous Timelines: <span>Broken Barh Machine Uptime</span></h2>
+            <p class="slide-subtitle">Non-contiguous horizontal bars mapping server downtime, maintenance intervals, and active uptime bursts.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Matplotlib Engine / SVG</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-08-broken-barh">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:15px;">
+                <svg viewBox="0 0 450 260" style="width:100%; max-height:300px;">
+                  <!-- Y Axis Labels -->
+                  <text x="80" y="60" text-anchor="end" fill="#fffefa" font-family="DM Sans" font-size="11">Node Alpha</text>
+                  <text x="80" y="120" text-anchor="end" fill="#fffefa" font-family="DM Sans" font-size="11">Node Beta</text>
+                  <text x="80" y="180" text-anchor="end" fill="#fffefa" font-family="DM Sans" font-size="11">Node Gamma</text>
+
+                  <!-- Node Alpha Bars -->
+                  <rect x="100" y="45" width="80" height="24" fill="#00e676" rx="3"/>
+                  <rect x="200" y="45" width="120" height="24" fill="#00e676" rx="3"/>
+                  <rect x="340" y="45" width="70" height="24" fill="#ff1744" rx="3"/>
+
+                  <!-- Node Beta Bars -->
+                  <rect x="100" y="105" width="140" height="24" fill="#00e676" rx="3"/>
+                  <rect x="260" y="105" width="40" height="24" fill="#d4af37" rx="3"/>
+                  <rect x="320" y="105" width="90" height="24" fill="#00e676" rx="3"/>
+
+                  <!-- Node Gamma Bars -->
+                  <rect x="120" y="165" width="60" height="24" fill="#ff1744" rx="3"/>
+                  <rect x="200" y="165" width="210" height="24" fill="#00e676" rx="3"/>
+
+                  <!-- Axis -->
+                  <line x1="100" y1="210" x2="420" y2="210" stroke="rgba(255,255,255,0.2)"/>
+                  <text x="100" y="230" fill="#9ba9a1" font-family="JetBrains Mono" font-size="10">00:00</text>
+                  <text x="260" y="230" fill="#9ba9a1" font-family="JetBrains Mono" font-size="10">12:00</text>
+                  <text x="400" y="230" fill="#9ba9a1" font-family="JetBrains Mono" font-size="10">24:00</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Segment collection encoding pairs of (start, duration): $[(x_1, \Delta x_1), (x_2, \Delta x_2), \dots]$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Data center hardware outages, manufacturing plant maintenance, sleep study actigraphy.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Compact representation of discontinuous intervals without filling zero-data space.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>ax.broken_barh(
+  [(10, 80), (200, 120)], (40, 20), facecolors=('#00e676')
+)
+ax.broken_barh([(340, 70)], (40, 20), facecolors=('#ff1744'))</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Data Format</span>
+            <span class="val">List of Tuples</span>
+            <span class="sub">(Start, Duration)</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Continuity</span>
+            <span class="val">Discontinuous</span>
+            <span class="sub">Zero Clutter</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Categories</span>
+            <span class="val">Multi-Resource</span>
+            <span class="sub">Discrete Y</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Efficiency</span>
+            <span class="val">High Density</span>
+            <span class="sub">Low Memory</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-09-circadian-timeline" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">09 / Cyclical Chronology</span>
+            <h2 class="slide-headline">24-Hour Periodic Cycles: <span>Circular Dial Chrono-Map</span></h2>
+            <p class="slide-subtitle">Clock-face polar timeline showing cyclical demand surges, staff shifts, and night audit cutoffs.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">D3 Polar Clock</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-09-circadian-timeline">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 300 300" style="width:260px; height:260px;">
+                  <circle cx="150" cy="150" r="110" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="18"/>
+                  <!-- Morning Shift Arc -->
+                  <circle cx="150" cy="150" r="110" fill="none" stroke="#00e676" stroke-width="18"
+                          stroke-dasharray="691" stroke-dashoffset="460" stroke-linecap="round"/>
+                  <!-- Evening Shift Arc -->
+                  <circle cx="150" cy="150" r="110" fill="none" stroke="#d4af37" stroke-width="18"
+                          stroke-dasharray="691" stroke-dashoffset="300" stroke-linecap="round"/>
+                  <!-- Night Audit Arc -->
+                  <circle cx="150" cy="150" r="110" fill="none" stroke="#ff1744" stroke-width="18"
+                          stroke-dasharray="691" stroke-dashoffset="600" stroke-linecap="round"/>
+                  <text x="150" y="30" text-anchor="middle" fill="#9ba9a1" font-family="JetBrains Mono" font-size="11">00:00</text>
+                  <text x="270" y="155" text-anchor="middle" fill="#9ba9a1" font-family="JetBrains Mono" font-size="11">06:00</text>
+                  <text x="150" y="280" text-anchor="middle" fill="#9ba9a1" font-family="JetBrains Mono" font-size="11">12:00</text>
+                  <text x="30" y="155" text-anchor="middle" fill="#9ba9a1" font-family="JetBrains Mono" font-size="11">18:00</text>
+                  <text x="150" y="145" text-anchor="middle" fill="#fffefa" font-family="Newsreader" font-size="18">Circadian</text>
+                  <text x="150" y="165" text-anchor="middle" fill="#f3cf65" font-family="DM Sans" font-size="11">24h Shift Cycle</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Modular arithmetic modulo 24 hours ($t \pmod{24}$) mapped to polar angles $\theta = 2\pi (t/24)$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Emergency room duty shifts, 24/7 security patrol routes, airline overnight layover schedules.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Eliminates artificial midnight boundary disconnects inherent in linear timelines.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const arc = d3.arc()
+  .innerRadius(100).outerRadius(120)
+  .startAngle(d => (d.startHour / 24) * 2 * Math.PI)
+  .endAngle(d => (d.endHour / 24) * 2 * Math.PI);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Periodicity</span>
+            <span class="val">Modulo 24 Hours</span>
+            <span class="sub">Continuous Loop</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Coordinate</span>
+            <span class="val">Polar (r, θ)</span>
+            <span class="sub">Clock Face</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Shifts</span>
+            <span class="val">3 Distinct Arcs</span>
+            <span class="sub">Color Coded</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Perception</span>
+            <span class="val">Intuitive</span>
+            <span class="sub">Time Natural</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-10-milestone-stem" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">10 / Discrete Events</span>
+            <h2 class="slide-headline">Discrete Anchor Callouts: <span>Alternating Milestone Stems</span></h2>
+            <p class="slide-subtitle">Vertical lollipop stems anchoring historical enterprise events above and below a central axis.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">SVG Stem Framework</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-10-milestone-stem">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:15px;">
+                <svg viewBox="0 0 450 260" style="width:100%; max-height:300px;">
+                  <!-- Central Horizon Axis -->
+                  <line x1="20" y1="130" x2="430" y2="130" stroke="#d4af37" stroke-width="2.5"/>
+                  
+                  <!-- Milestone 1: Top -->
+                  <line x1="80" y1="130" x2="80" y2="50" stroke="#00e676" stroke-width="2"/>
+                  <circle cx="80" cy="50" r="7" fill="#00e676"/>
+                  <rect x="35" y="15" width="90" height="24" fill="#13221b" stroke="#00e676" rx="4"/>
+                  <text x="80" y="31" text-anchor="middle" fill="#fff" font-family="DM Sans" font-size="10">Direct Engine Go-Live</text>
+
+                  <!-- Milestone 2: Bottom -->
+                  <line x1="180" y1="130" x2="180" y2="210" stroke="#f3cf65" stroke-width="2"/>
+                  <circle cx="180" cy="210" r="7" fill="#f3cf65"/>
+                  <rect x="135" y="220" width="90" height="24" fill="#13221b" stroke="#f3cf65" rx="4"/>
+                  <text x="180" y="236" text-anchor="middle" fill="#fff" font-family="DM Sans" font-size="10">Parity Enforcement</text>
+
+                  <!-- Milestone 3: Top -->
+                  <line x1="290" y1="130" x2="290" y2="50" stroke="#00e5ff" stroke-width="2"/>
+                  <circle cx="290" cy="50" r="7" fill="#00e5ff"/>
+                  <rect x="245" y="15" width="90" height="24" fill="#13221b" stroke="#00e5ff" rx="4"/>
+                  <text x="290" y="31" text-anchor="middle" fill="#fff" font-family="DM Sans" font-size="10">CDP Mesh Deployed</text>
+
+                  <!-- Milestone 4: Bottom -->
+                  <line x1="390" y1="130" x2="390" y2="210" stroke="#ff1744" stroke-width="2"/>
+                  <circle cx="390" cy="210" r="7" fill="#ff1744"/>
+                  <rect x="345" y="220" width="90" height="24" fill="#13221b" stroke="#ff1744" rx="4"/>
+                  <text x="390" y="236" text-anchor="middle" fill="#fff" font-family="DM Sans" font-size="10">OTA Contract Re-cut</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Alternating polarity layout: $y_{\text{stem}} = y_0 + (-1)^i \cdot H$ to prevent callout label collision.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Executive quarterly roadmap milestones, regulatory approval timelines, corporate history.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>High readability, elegant typography alignment, zero label overlap.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>stems.forEach((d, i) => {
+  const sign = i % 2 === 0 ? -1 : 1;
+  drawLine(d.x, y0, d.x, y0 + sign * height);
+  drawBadge(d.x, y0 + sign * (height + 15), d.text);
+});</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Collision Avoid</span>
+            <span class="val">Alternating ±y</span>
+            <span class="sub">Staggered</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Stem Render</span>
+            <span class="val">Vector Lines</span>
+            <span class="sub">Crisp High-DPI</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Labels</span>
+            <span class="val">Enclosed Badges</span>
+            <span class="sub">Glassmorphic</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Anchors</span>
+            <span class="val">Point In Time</span>
+            <span class="sub">Exact Date</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-11-release-gantt" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">11 / Release Management</span>
+            <h2 class="slide-headline">Software Release Waves: <span>Multi-Tiered Version Track</span></h2>
+            <p class="slide-subtitle">Simultaneous staging of Alpha, Beta, Production, and Deprecation lifecycle windows.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Enterprise Release Gantt</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-11-release-gantt">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; gap:12px; padding:20px; box-sizing:border-box;">
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:4px;">
+                  <span style="color:#d4af37; font-weight:bold;">v2.4 LTS Engine</span>
+                  <span style="color:#9ba9a1; font-family:JetBrains Mono;">Deprecation Phase</span>
+                </div>
+                <div style="height:16px; background:rgba(255,255,255,0.06); border-radius:3px; position:relative;">
+                  <div style="position:absolute; left:0; width:40%; height:100%; background:#6c7d73; border-radius:3px;"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:4px; margin-top:8px;">
+                  <span style="color:#00e676; font-weight:bold;">v3.0 Current Production</span>
+                  <span style="color:#00e676; font-family:JetBrains Mono;">Active Wave</span>
+                </div>
+                <div style="height:16px; background:rgba(255,255,255,0.06); border-radius:3px; position:relative;">
+                  <div style="position:absolute; left:25%; width:60%; height:100%; background:#00e676; border-radius:3px; box-shadow:0 0 8px rgba(0,230,118,0.5);"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:4px; margin-top:8px;">
+                  <span style="color:#00e5ff; font-weight:bold;">v3.5 Agentic Beta</span>
+                  <span style="color:#00e5ff; font-family:JetBrains Mono;">Private Pilot</span>
+                </div>
+                <div style="height:16px; background:rgba(255,255,255,0.06); border-radius:3px; position:relative;">
+                  <div style="position:absolute; left:70%; width:25%; height:100%; background:#00e5ff; border-radius:3px;"></div>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Temporal interval overlaps with multi-stage status state transitions (Dev, Beta, GA, EOL).</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>SaaS version lifecycle roadmaps, hotel PMS version upgrade schedules, API version deprecations.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Provides clear visual guidance on legacy technical debt sunset dates.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const versions = [
+  { ver: 'v2.4', start: '2024-01', end: '2026-06', status: 'EOL' },
+  { ver: 'v3.0', start: '2025-06', end: '2027-12', status: 'GA' }
+];</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Lifecycle</span>
+            <span class="val">4 Stages</span>
+            <span class="sub">Dev to EOL</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Overlap</span>
+            <span class="val">Side-by-Side</span>
+            <span class="sub">Dual Versioning</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Audience</span>
+            <span class="val">DevOps & Exec</span>
+            <span class="sub">Strategic Track</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Deprecation</span>
+            <span class="val">Highlighted</span>
+            <span class="sub">Risk Mitigation</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-12-streaming-telemetry" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">12 / Incident Logs</span>
+            <h2 class="slide-headline">Severity Pulse Streams: <span>Incident Telemetry Matrix</span></h2>
+            <p class="slide-subtitle">High-velocity temporal heatmap logging rate parity violations and API response timeouts.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Live Telemetry Log</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-12-streaming-telemetry">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; padding:15px; box-sizing:border-box;">
+                <div style="display:grid; grid-template-columns: repeat(20, 1fr); gap:4px; margin-bottom:8px;">
+                  <!-- Row of 20 mini pulse blocks -->
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#ffab00; border-radius:2px;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#ff1744; border-radius:2px; box-shadow:0 0 6px #ff1744;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#ffab00; border-radius:2px;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#ff1744; border-radius:2px; box-shadow:0 0 6px #ff1744;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                  <div style="height:28px; background:#00e676; border-radius:2px;"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-family:JetBrains Mono; font-size:0.75rem; color:#9ba9a1;">
+                  <span>14:00:00 (100% Parity)</span>
+                  <span style="color:#ff1744;">14:15:22 (Agoda Leakage)</span>
+                  <span>14:30:00 (Resolved)</span>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Rolling FIFO buffer: $B = [e_t, e_{t-1}, \dots, e_{t-k}]$ mapped to discrete color threshold lookup.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Rate parity leakage detection, CRS booking engine latency spikes, cybersecurity intrusion alarms.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Constant-memory footprint, continuous animation without DOM bloat.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>function pushEvent(severity) {
+  events.shift();
+  events.push(severity);
+  renderGrid(events);
+}</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Data Buffer</span>
+            <span class="val">FIFO Rolling</span>
+            <span class="sub">Real-Time</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Latency</span>
+            <span class="val">< 10 ms</span>
+            <span class="sub">Instant Alert</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Severity</span>
+            <span class="val">Tri-Color</span>
+            <span class="sub">Green/Gold/Red</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Memory</span>
+            <span class="val">Fixed O(1)</span>
+            <span class="sub">No Leaks</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-13-epoch-chrono" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">13 / Non-Linear Scaling</span>
+            <h2 class="slide-headline">Logarithmic Eras: <span>Non-Linear Epoch Scaling</span></h2>
+            <p class="slide-subtitle">Logarithmic temporal transformations mapping broad macro eras alongside high-resolution modern events.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Logarithmic D3 Time</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-13-epoch-chrono">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; padding:20px; box-sizing:border-box;">
+                <div style="display:flex; height:50px; border-radius:6px; overflow:hidden; border:1px solid #d4af37;">
+                  <div style="flex:1; background:#1b2822; padding:8px; border-right:1px solid #d4af37;">
+                    <strong style="color:#9ba9a1; font-size:0.8rem; display:block;">GDS Era</strong>
+                    <span style="color:#6c7d73; font-size:0.75rem;">1970 - 1995 (25y)</span>
+                  </div>
+                  <div style="flex:1.5; background:#23352c; padding:8px; border-right:1px solid #d4af37;">
+                    <strong style="color:#f3cf65; font-size:0.8rem; display:block;">OTA Boom</strong>
+                    <span style="color:#9ba9a1; font-size:0.75rem;">1996 - 2010 (15y)</span>
+                  </div>
+                  <div style="flex:2.5; background:#154531; padding:8px; border-right:1px solid #d4af37;">
+                    <strong style="color:#00e676; font-size:0.8rem; display:block;">Metasearch & Mobile</strong>
+                    <span style="color:#cde4d8; font-size:0.75rem;">2011 - 2022 (12y)</span>
+                  </div>
+                  <div style="flex:4; background:#0c5e3d; padding:8px;">
+                    <strong style="color:#f3cf65; font-size:0.85rem; display:block;">AI & Autonomous Agents</strong>
+                    <span style="color:#fffefa; font-size:0.75rem; font-weight:bold;">2023 - 2030+ (High Velocity)</span>
+                  </div>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Logarithmic / power-law time scale: $x = \log(t - t_0)$ compressing ancient history to expand current events.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Macro economic technological cycles, geological strata mapping, patent evolution.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Enables simultaneous analysis of 50-year structural changes and 6-month AI disruptions.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const timeScale = d3.scalePow().exponent(2.5)
+  .domain([new Date(1970, 0, 1), new Date(2030, 0, 1)])
+  .range([0, width]);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Scale Type</span>
+            <span class="val">Logarithmic Time</span>
+            <span class="sub">Power Law</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Resolution</span>
+            <span class="val">Adaptive</span>
+            <span class="sub">High Near Present</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Compression</span>
+            <span class="val">Ancient Eras</span>
+            <span class="sub">Saves Space</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Relevance</span>
+            <span class="val">Strategic View</span>
+            <span class="sub">Tech S-Curves</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-14-calendar-heatmap" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">14 / Spatiotemporal Matrix</span>
+            <h2 class="slide-headline">Rolling Annual Activity: <span>Calendar Matrix Heatmap</span></h2>
+            <p class="slide-subtitle">52-week grid (7 days × 52 weeks) encoding daily booking conversion intensity and direct yield.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Calendar Heatmap Core</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-14-calendar-heatmap">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:15px;">
+                <svg viewBox="0 0 450 140" style="width:100%; max-height:180px;">
+                  <g transform="translate(10, 20)">
+                    <!-- Grid of 52 weeks simulated with clusters -->
+                    <!-- Repeat squares -->
+                    <script>
+                      // Simulated via static SVG rects
+                    </script>
+                    <rect x="0" y="0" width="12" height="12" fill="#0e1713" rx="2"/>
+                    <rect x="16" y="0" width="12" height="12" fill="#1b382b" rx="2"/>
+                    <rect x="32" y="0" width="12" height="12" fill="#2d5a44" rx="2"/>
+                    <rect x="48" y="0" width="12" height="12" fill="#00e676" rx="2"/>
+                    <rect x="64" y="0" width="12" height="12" fill="#00e676" rx="2"/>
+                    <rect x="80" y="0" width="12" height="12" fill="#d4af37" rx="2"/>
+                    <!-- Repeat multi rows -->
+                    <text x="0" y="45" fill="#9ba9a1" font-family="JetBrains Mono" font-size="10">Mon</text>
+                    <text x="0" y="75" fill="#9ba9a1" font-family="JetBrains Mono" font-size="10">Wed</text>
+                    <text x="0" y="105" fill="#9ba9a1" font-family="JetBrains Mono" font-size="10">Fri</text>
+                    <!-- Matrix Block -->
+                    <g transform="translate(30, 30)">
+                      <rect x="0" y="0" width="390" height="75" fill="none" stroke="rgba(255,255,255,0.08)" rx="4"/>
+                      <text x="195" y="42" text-anchor="middle" fill="#00e676" font-family="JetBrains Mono" font-size="14">365 Days &bull; 92.4% Direct Uptime</text>
+                    </g>
+                  </g>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>2D mapping: $\text{WeekNumber} = \lfloor \text{DayOfYear} / 7 \rfloor, \text{DayOfWeek} = t \pmod 7$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Direct website sales activity, developer code contributions, guest check-in volume patterns.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Instantly reveals weekly day-of-week seasonality (Sunday drops vs Friday spikes).</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const cell = svg.selectAll('rect')
+  .data(days).join('rect')
+  .attr('x', d => week(d) * cellSize)
+  .attr('y', d => day(d) * cellSize);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Dimensions</span>
+            <span class="val">7 Days x 52 Wks</span>
+            <span class="sub">364 Cells</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Color Quant</span>
+            <span class="val">5 Quintiles</span>
+            <span class="sub">Emerald Scale</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Seasonality</span>
+            <span class="val">Weekly Cycle</span>
+            <span class="sub">Weekend Peak</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Standard</span>
+            <span class="val">GitHub Style</span>
+            <span class="sub">Universally Known</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-15-transit-schedule" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">15 / Multimodal Logistics</span>
+            <h2 class="slide-headline">Cargo Transit Windows: <span>Multimodal Logistics Schedule</span></h2>
+            <p class="slide-subtitle">Sequential transit legs tracking maritime port dwelling, customs clearance, and last-mile delivery.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Logistics Flow Engine</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-15-transit-schedule">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; gap:12px; padding:20px; box-sizing:border-box;">
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem;">
+                  <span style="color:#00e5ff; font-weight:bold;">Leg 1: Ocean Freight (Singapore &rarr; Rotterdam)</span>
+                  <span style="color:#9ba9a1; font-family:JetBrains Mono;">18 Days &bull; On Time</span>
+                </div>
+                <div style="height:16px; background:rgba(0,229,255,0.25); border:1px solid #00e5ff; border-radius:3px;"></div>
+                
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-top:6px;">
+                  <span style="color:#ffab00; font-weight:bold;">Leg 2: Customs & Port Clearance</span>
+                  <span style="color:#ffab00; font-family:JetBrains Mono;">3 Days &bull; Inspection</span>
+                </div>
+                <div style="height:16px; background:rgba(255,171,0,0.25); border:1px solid #ffab00; border-radius:3px; margin-left:35%; width:20%;"></div>
+
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-top:6px;">
+                  <span style="color:#00e676; font-weight:bold;">Leg 3: Rail / Inland Distribution</span>
+                  <span style="color:#00e676; font-family:JetBrains Mono;">2 Days &bull; Scheduled</span>
+                </div>
+                <div style="height:16px; background:rgba(0,230,118,0.25); border:1px solid #00e676; border-radius:3px; margin-left:55%; width:45%;"></div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Sequential path interval concatenation: $t_{\text{arrival}} = t_0 + \sum \Delta t_i + \sum \text{slack}_i$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Hotel refurbishment FF&E import logistics, cross-border supply chain predictability.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Clear hand-off accountability between ocean shipping, port operators, and inland rail.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const journey = [
+  { mode: 'Ocean', duration: 18, delayRisk: 'Low' },
+  { mode: 'Customs', duration: 3, delayRisk: 'Med' }
+];</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Modalities</span>
+            <span class="val">Ocean / Port / Rail</span>
+            <span class="sub">Multi-Carrier</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Tracking</span>
+            <span class="val">Real-Time AIS</span>
+            <span class="sub">GPS Synced</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Buffer Time</span>
+            <span class="val">3-Day Buffer</span>
+            <span class="sub">Port Congestion</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Visibility</span>
+            <span class="val">End-to-End</span>
+            <span class="sub">Custody Chain</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-16-relative-race" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">16 / Mission Timelines</span>
+            <h2 class="slide-headline">Mission Control Horizons: <span>T-Minus to T-Plus Elapsed Countdown</span></h2>
+            <p class="slide-subtitle">Zero-centered countdown relative temporal reference anchored to a critical launch event.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Aerospace Mission Chrono</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-16-relative-race">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:20px;">
+                <div style="font-family:Newsreader; font-size:1.8rem; color:#f3cf65; margin-bottom:8px;">New Property Brand Unveil</div>
+                <div style="font-family:JetBrains Mono; font-size:3.2rem; color:#00e676; font-weight:700; text-shadow:0 0 15px rgba(0,230,118,0.4);">
+                  T-MINUS 14:08:32
+                </div>
+                <div style="font-size:0.95rem; color:#9ba9a1; margin-top:10px;">
+                  All distribution endpoints locked &bull; Pre-opening member rates active
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Relative temporal displacement: $\Delta t = t_{\text{current}} - t_{\text{target}}$ with sign reversal at zero.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Hotel grand openings, enterprise software cutover checklists, financial IPO countdowns.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Unifies global multi-timezone teams around a single relative operational heartbeat.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>function getTMinus(targetEpoch) {
+  const diff = targetEpoch - Date.now();
+  return (diff >= 0 ? 'T-' : 'T+') + formatDuration(Math.abs(diff));
+}</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Time Base</span>
+            <span class="val">Relative (T±)</span>
+            <span class="sub">Zero Anchor</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Update Rate</span>
+            <span class="val">1,000 ms</span>
+            <span class="sub">High Precision</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Timezones</span>
+            <span class="val">UTC Universal</span>
+            <span class="sub">Global Sync</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Status</span>
+            <span class="val">Green Go</span>
+            <span class="sub">All Systems</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-17-clinical-episodes" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">17 / Cohort Progression</span>
+            <h2 class="slide-headline">Longitudinal Observations: <span>Patient Cohort Progression</span></h2>
+            <p class="slide-subtitle">Multi-subject timeline tracking treatment dosage epochs, side effect episodes, and recovery biomarkers.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Biomedical D3 Timeline</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-17-clinical-episodes">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; gap:12px; padding:20px; box-sizing:border-box;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span style="font-family:JetBrains Mono; font-size:0.8rem; color:#f3cf65; width:80px;">Cohort A</span>
+                  <div style="flex:1; height:18px; background:rgba(0,230,118,0.25); border-left:4px solid #00e676; border-radius:2px;"></div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span style="font-family:JetBrains Mono; font-size:0.8rem; color:#f3cf65; width:80px;">Cohort B</span>
+                  <div style="flex:1; height:18px; background:rgba(212,175,55,0.25); border-left:4px solid #d4af37; border-radius:2px;"></div>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span style="font-family:JetBrains Mono; font-size:0.8rem; color:#f3cf65; width:80px;">Control</span>
+                  <div style="flex:1; height:18px; background:rgba(108,125,115,0.25); border-left:4px solid #6c7d73; border-radius:2px;"></div>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Survival analysis Kaplan-Meier event timelines: $\hat{S}(t) = \prod_{t_i \le t} (1 - d_i / n_i)$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Pharmaceutical clinical trials, customer retention cohort churn, guest lifetime value curves.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Aligns disparate individual start dates to a normalized $T_0$ baseline for fair comparison.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const normalized = patients.map(p => ({
+  id: p.id,
+  events: p.events.map(e => ({ ...e, day: (e.date - p.admitDate) / 86400000 }))
+}));</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Baseline</span>
+            <span class="val">Normalized T0</span>
+            <span class="sub">Aligned Cohorts</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Episodes</span>
+            <span class="val">Multi-Interval</span>
+            <span class="sub">Discrete Events</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Biomarkers</span>
+            <span class="val">Color Gradients</span>
+            <span class="sub">Efficacy Metric</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Compliance</span>
+            <span class="val">FDA 21 CFR</span>
+            <span class="sub">Audit Standard</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-18-daw-waveform" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">18 / Multimedia Editing</span>
+            <h2 class="slide-headline">Digital Audio Workstation (DAW): <span>Multi-Track Waveform Timeline</span></h2>
+            <p class="slide-subtitle">Synchronized audio peak waveforms with cue markers, automation envelopes, and timecode scrubs.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Web Audio API + Canvas</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-18-daw-waveform">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; gap:8px; padding:15px; box-sizing:border-box;">
+                <div style="height:35px; background:#0e1713; border:1px solid #d4af37; border-radius:4px; display:flex; align-items:center; padding:0 8px;">
+                  <span style="font-family:JetBrains Mono; font-size:0.75rem; color:#f3cf65; width:70px;">Voice Track</span>
+                  <div style="flex:1; height:20px; background:linear-gradient(90deg, #00e676 0%, #00e676 40%, transparent 40%, transparent 60%, #00e676 60%);"></div>
+                </div>
+                <div style="height:35px; background:#0e1713; border:1px solid #b5935b; border-radius:4px; display:flex; align-items:center; padding:0 8px;">
+                  <span style="font-family:JetBrains Mono; font-size:0.75rem; color:#f3cf65; width:70px;">Backing Bed</span>
+                  <div style="flex:1; height:20px; background:linear-gradient(90deg, #d4af37, #f3cf65);"></div>
+                </div>
+                <div style="height:35px; background:#0e1713; border:1px solid #00e5ff; border-radius:4px; display:flex; align-items:center; padding:0 8px;">
+                  <span style="font-family:JetBrains Mono; font-size:0.75rem; color:#00e5ff; width:70px;">SFX Stems</span>
+                  <div style="flex:1; height:20px; background:linear-gradient(90deg, transparent 20%, #00e5ff 25%, transparent 30%, #00e5ff 70%, transparent 75%);"></div>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Fast Fourier Transform (FFT) peak decimation mapping audio buffers to Canvas draw lines.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Podcast production, video advertisement editing, speech AI phonetic alignment.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Sample-accurate playback synchronization via Web Audio API clock ($t_{\text{ctx}}$).</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const audioCtx = new AudioContext();
+const source = audioCtx.createBufferSource();
+source.buffer = audioBuffer;
+source.connect(audioCtx.destination);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Sample Rate</span>
+            <span class="val">48.0 kHz</span>
+            <span class="sub">Broadcast Grade</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Decimation</span>
+            <span class="val">Min/Max Peaks</span>
+            <span class="sub">Fast Canvas</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Sync Clock</span>
+            <span class="val">AudioContext</span>
+            <span class="sub">Zero Jitter</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Automation</span>
+            <span class="val">Bézier Envelopes</span>
+            <span class="sub">Volume Pan</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-19-spatiotemporal-3d" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">19 / Space-Time Cubes</span>
+            <h2 class="slide-headline">The Space-Time Cube: <span>3D Trajectory Ribbons</span></h2>
+            <p class="slide-subtitle">Hägerstrand space-time path mapping 2D geographic movement along a vertical temporal Z-axis.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Three.js / Vis-Graph3D</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-19-spatiotemporal-3d">
+            
+              <div id="spacetime-stage" class="plotly-graph" style="width:100%; height:100%;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const el = document.getElementById('spacetime-stage');
+                  if (!el || !window.Plotly) return;
+                  const t = [], x = [], y = [];
+                  for(let i=0; i<80; i++) {
+                    t.push(i);
+                    x.push(Math.sin(i/8) * 20 + i*0.2);
+                    y.push(Math.cos(i/8) * 20);
+                  }
+                  const trace = {
+                    type: 'scatter3d', mode: 'lines+markers',
+                    x: x, y: y, z: t,
+                    line: { color: '#00e676', width: 4 },
+                    marker: { size: 3, color: '#f3cf65' }
+                  };
+                  const layout = {
+                    paper_bgcolor: 'transparent',
+                    margin: { l: 0, r: 0, b: 0, t: 0 },
+                    scene: {
+                      xaxis: { title: 'Latitude (X)', color: '#9ba9a1', gridcolor: 'rgba(255,255,255,0.08)' },
+                      yaxis: { title: 'Longitude (Y)', color: '#9ba9a1', gridcolor: 'rgba(255,255,255,0.08)' },
+                      zaxis: { title: 'Time (Epoch)', color: '#f3cf65', gridcolor: 'rgba(255,255,255,0.08)' },
+                      camera: { eye: { x: 1.5, y: 1.5, z: 1.2 } }
+                    }
+                  };
+                  Plotly.newPlot('spacetime-stage', [trace], layout, { responsive: true, displayModeBar: false });
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Torsten Hägerstrand time-geography: 3D trajectory $\gamma(t) = (x(t), y(t), t)$ inside a bounded prism.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>VIP executive travel itinerary tracking, wildlife migration, naval fleet patrols.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Disentangles spatial loops: when a traveler returns to the same location, time advances upward.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>Plotly.newPlot('cube', [{
+  type: 'scatter3d', mode: 'lines',
+  x: lats, y: lons, z: timestamps
+}]);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Concept</span>
+            <span class="val">Space-Time Prism</span>
+            <span class="sub">Hägerstrand</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Axes</span>
+            <span class="val">X, Y (Geo), Z (Time)</span>
+            <span class="sub">3D Continuous</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Loop Resolution</span>
+            <span class="val">Disentangled</span>
+            <span class="sub">Z Separation</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Render Type</span>
+            <span class="val">WebGL 3D</span>
+            <span class="sub">Plotly Engine</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-20-flight-board" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">20 / Operational Display</span>
+            <h2 class="slide-headline">Tactical Dispatch Boards: <span>Aviation Departure Timeline</span></h2>
+            <p class="slide-subtitle">High-contrast split-flap airport flight board timeline organizing gate slots, delays, and arrivals.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Tactical Dispatch UI</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-20-flight-board">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; padding:15px; box-sizing:border-box;">
+                <table class="viz-table">
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Flight</th>
+                      <th>Destination</th>
+                      <th>Gate</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="font-family:JetBrains Mono; color:#f3cf65;">14:15</td>
+                      <td style="font-family:JetBrains Mono;">SQ 318</td>
+                      <td>London Heathrow (LHR)</td>
+                      <td>B04</td>
+                      <td><span style="color:#00e676; font-weight:bold;">BOARDING</span></td>
+                    </tr>
+                    <tr>
+                      <td style="font-family:JetBrains Mono; color:#f3cf65;">14:30</td>
+                      <td style="font-family:JetBrains Mono;">BA 012</td>
+                      <td>Singapore Changi (SIN)</td>
+                      <td>C12</td>
+                      <td><span style="color:#00e676; font-weight:bold;">FINAL CALL</span></td>
+                    </tr>
+                    <tr>
+                      <td style="font-family:JetBrains Mono; color:#f3cf65;">14:55</td>
+                      <td style="font-family:JetBrains Mono;">EK 405</td>
+                      <td>Dubai International (DXB)</td>
+                      <td>A08</td>
+                      <td><span style="color:#ffab00; font-weight:bold;">DELAYED 20m</span></td>
+                    </tr>
+                    <tr>
+                      <td style="font-family:JetBrains Mono; color:#f3cf65;">15:20</td>
+                      <td style="font-family:JetBrains Mono;">QF 001</td>
+                      <td>Sydney Kingsford (SYD)</td>
+                      <td>B10</td>
+                      <td><span style="color:#9ba9a1;">SCHEDULED</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Chronological priority queue ordering: $Q = \text{sort}(\{f_i\}, \text{key}=t_{\text{est}})$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Airport terminal displays, train station departures, hotel guest check-in arrival dashboards.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Ultra-clear typography, high ambient light contrast, instant glanceability.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>flights.sort((a, b) => a.estimatedTime - b.estimatedTime);
+renderSplitFlapTable(flights);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Display Mode</span>
+            <span class="val">High Contrast</span>
+            <span class="sub">Airport Standard</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Queue Order</span>
+            <span class="val">Earliest First</span>
+            <span class="sub">Priority Queue</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Refresh</span>
+            <span class="val">WebSocket Push</span>
+            <span class="sub">Instant State</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Font</span>
+            <span class="val">JetBrains Mono</span>
+            <span class="sub">Fixed Width</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+    </div>
+  </div>
+
+  <!-- Reveal.js & Dynamic Resize Engine -->
+  <script src="vendor/reveal.min.js" onerror="this.src='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js'"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      controls: true,
+      progress: true,
+      center: false,
+      overview: true,
+      width: 1400,
+      height: 860,
+      margin: 0.03,
+      minScale: 0.2,
+      maxScale: 2.0,
+      transition: 'fade',
+      backgroundTransition: 'fade'
+    });
+
+    // Universal auto-resize hook for Plotly, ECharts, Leaflet, Three.js, etc.
+    Reveal.on('slidechanged', event => {
+      const current = event.currentSlide;
+      
+      // Plotly resize
+      const plotlyGraphs = current.querySelectorAll('.plotly-graph');
+      plotlyGraphs.forEach(graph => {
+        if (window.Plotly && graph._fullLayout) {
+          Plotly.Plots.resize(graph);
+        }
+      });
+      
+      // ECharts resize
+      const echartsContainers = current.querySelectorAll('.echarts-chart');
+      echartsContainers.forEach(container => {
+        if (window.echarts) {
+          const inst = echarts.getInstanceByDom(container);
+          if (inst) inst.resize();
+        }
+      });
+
+      // Leaflet resize
+      const leafletMaps = current.querySelectorAll('.leaflet-map');
+      leafletMaps.forEach(mapContainer => {
+        if (mapContainer._leaflet_map) {
+          mapContainer._leaflet_map.invalidateSize();
+        }
+      });
+
+      // Re-trigger Mermaid if present
+      if (window.mermaid) {
+        const mermaids = current.querySelectorAll('.mermaid');
+        if (mermaids.length > 0) {
+          mermaid.run({ nodes: mermaids });
+        }
+      }
+    });
+  </script>
+</body>
+</html>

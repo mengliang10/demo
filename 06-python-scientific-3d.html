@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Scientific, 3D & High-Performance Visualization | Visualization Masterclass</title>
+  <meta name="description" content="20 High-Performance Scientific Paradigms across Datashader, Mayavi, VisPy, PyQtGraph, VTK, and Glumpy">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Reveal.js Core CSS -->
+  <link rel="stylesheet" href="vendor/reveal.min.css" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css'">
+  <link rel="stylesheet" href="css/viz-deck.css">
+  
+  <!-- Visualization Engines -->
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  
+  
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'dark',
+        themeVariables: {
+          darkMode: true,
+          background: '#070c09',
+          primaryColor: '#13221b',
+          primaryTextColor: '#fffefa',
+          primaryBorderColor: '#d4af37',
+          lineColor: '#f3cf65',
+          fontFamily: 'DM Sans',
+          fontSize: '15px'
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <!-- PERSISTENT TOP NAVIGATION -->
+  <div class="deck-nav-bar">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a href="index.html">
+        <span aria-hidden="true">&larr;</span> <strong>Visualization Portfolio Hub</strong>
+      </a>
+      <span style="opacity: 0.4;">|</span>
+      <span style="font-family: var(--font-mono); font-size: 0.88rem; color: var(--viz-gold-bright);">Series #06</span>
+      <span style="opacity: 0.4;">|</span>
+      <span style="color: #fffefa; font-weight: 500; font-family: var(--font-heading); font-size: 1.2rem;">Python Scientific, 3D & High-Performance Visualization</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span class="tech-badge">Scientific, 3D & WebGL</span>
+      <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--viz-text-muted);">20 Master Slides</span>
+    </div>
+  </div>
+
+  <!-- PERSISTENT FOOTER BAR -->
+  <div class="deck-footer-bar">
+    <span><strong>Demostration of Visualization Software</strong> &bull; Executive Data Science & Graphic Systems</span>
+    <span>Use <strong>Space / Arrows</strong> to Navigate &bull; Press <strong>F</strong> for Fullscreen &bull; <strong>O</strong> for Overview</span>
+  </div>
+
+  <div class="reveal">
+    <div class="slides">
+
+      <section id="slide-01-datashader-hdr" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">01 / Out-of-Core Aggregation</span>
+            <h2 class="slide-headline">Billion-Scale Point Rendering: <span>Datashader Perceptual HDR Cloud</span></h2>
+            <p class="slide-subtitle">Rasterizing tens of millions of raw coordinates into dynamic perceptual dynamic-range pixels with zero overplotting.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Datashader (Bokeh/Numba)</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-01-datashader-hdr">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; position:relative;">
+                <svg viewBox="0 0 450 300" style="width:100%; max-height:340px; background:#040705; border-radius:8px; border:1px solid #00e676;">
+                  <defs>
+                    <radialGradient id="denseCore" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="#fffefa" stop-opacity="1"/>
+                      <stop offset="15%" stop-color="#00e676" stop-opacity="0.9"/>
+                      <stop offset="45%" stop-color="#0d5c36" stop-opacity="0.6"/>
+                      <stop offset="85%" stop-color="#07180e" stop-opacity="0.2"/>
+                      <stop offset="100%" stop-color="#040705" stop-opacity="0"/>
+                    </radialGradient>
+                  </defs>
+                  <!-- HDR Density Core -->
+                  <circle cx="225" cy="150" r="140" fill="url(#denseCore)"/>
+                  <circle cx="225" cy="150" r="30" fill="#fff" opacity="0.8"/>
+                  <text x="225" y="154" text-anchor="middle" fill="#040705" font-family="JetBrains Mono" font-size="10" font-weight="bold">10M Points</text>
+                  <text x="20" y="30" fill="#00e676" font-family="JetBrains Mono" font-size="11">Logarithmic Equalized Transfer Function</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Raster-pixel histogram aggregation with histogram equalization (eq_hist): $I(x,y) = \text{CDF}(C(x,y))$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Nationwide cell phone GPS pings, high-frequency limit order book depths, astrophysics N-body galactic simulations.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Renders 100,000,000 points without memory explosion or visual overplotting saturation.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>import datashader as ds, datashader.transfer_functions as tf
+cvs = ds.Canvas(plot_width=800, plot_height=600)
+agg = cvs.points(df, 'lon', 'lat')
+img = tf.shade(agg, cmap=color_key, how='eq_hist')</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Capacity</span>
+            <span class="val">10M - 1B Points</span>
+            <span class="sub">Out-of-Core</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Aggregation</span>
+            <span class="val">Numba Parallel</span>
+            <span class="sub">Multi-Core CPU/GPU</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Overplotting</span>
+            <span class="val">Mathematically Zero</span>
+            <span class="sub">Perceptual HDR</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Output</span>
+            <span class="val">2D Image Buffer</span>
+            <span class="sub">RGB Raster</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-02-vispy-oscilloscope" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">02 / OpenGL Shaders</span>
+            <h2 class="slide-headline">60-FPS Real-Time Telemetry: <span>VisPy GPU Multi-Channel Waterfall</span></h2>
+            <p class="slide-subtitle">Hardware-accelerated OpenGL shader pipeline rendering continuous multi-channel signal waterfalls.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">VisPy OpenGL</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-02-vispy-oscilloscope">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; padding:15px; box-sizing:border-box;">
+                <svg viewBox="0 0 450 250" style="width:100%; max-height:280px; background:#050a07; border-radius:8px; border:1px solid #d4af37;">
+                  <!-- 4 Channel Oscilloscope Traces -->
+                  <g fill="none" stroke-width="2">
+                    <path d="M 20 50 Q 80 20, 140 50 T 260 50 T 380 50 T 430 50" stroke="#00e676"/>
+                    <path d="M 20 100 Q 70 80, 120 100 T 220 100 T 320 100 T 430 100" stroke="#f3cf65"/>
+                    <path d="M 20 150 Q 90 120, 160 150 T 300 150 T 430 150" stroke="#00e5ff"/>
+                    <path d="M 20 200 Q 60 180, 100 200 T 200 200 T 300 200 T 430 200" stroke="#ff1744"/>
+                  </g>
+                  <text x="30" y="45" fill="#00e676" font-family="JetBrains Mono" font-size="9">CH1: Sensor Alpha (60 FPS)</text>
+                  <text x="30" y="95" fill="#f3cf65" font-family="JetBrains Mono" font-size="9">CH2: Sensor Beta</text>
+                  <text x="30" y="145" fill="#00e5ff" font-family="JetBrains Mono" font-size="9">CH3: Sensor Gamma</text>
+                  <text x="30" y="195" fill="#ff1744" font-family="JetBrains Mono" font-size="9">CH4: Parity Alarms</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Direct OpenGL GLSL vertex shader attribute buffers streaming continuous floating-point audio/seismic arrays.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Neuroscience multi-electrode EEG arrays, real-time audio FFT telemetry, seismic fault monitoring.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Consumes near-zero CPU; graphics card handles all interpolation and line antialiasing.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>from vispy import app, scene
+canvas = scene.SceneCanvas(keys='interactive', show=True)
+view = canvas.central_widget.add_view()
+lines = scene.Line(pos=signal_data, color='#00e676', parent=view.scene)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Engine</span>
+            <span class="val">OpenGL ES 2.0</span>
+            <span class="sub">Raw Shaders</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Refresh</span>
+            <span class="val">60.0 FPS Sync</span>
+            <span class="sub">V-Sync Locked</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Channels</span>
+            <span class="val">128+ Streams</span>
+            <span class="sub">Simultaneous</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">CPU Overhead</span>
+            <span class="val">< 2% CPU</span>
+            <span class="sub">GPU Offload</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-03-mayavi-isosurface" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">03 / Volumetric Scalar Fields</span>
+            <h2 class="slide-headline">Volumetric Scalar Fields: <span>Mayavi 3D Isosurface Extraction</span></h2>
+            <p class="slide-subtitle">Marching cubes algorithm extracting continuous equisurface boundaries from 3D scalar density tensors.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Mayavi (VTK-Python)</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-03-mayavi-isosurface">
+            
+              <div id="mayavi-iso-stage" class="plotly-graph" style="width:100%; height:100%;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const el = document.getElementById('mayavi-iso-stage');
+                  if (!el || !window.Plotly) return;
+                  const x = [], y = [], z = [], val = [];
+                  for(let i=0; i<10; i++) {
+                    for(let j=0; j<10; j++) {
+                      for(let k=0; k<10; k++) {
+                        const r = Math.sqrt((i-5)**2 + (j-5)**2 + (k-5)**2);
+                        if (Math.abs(r - 3.5) < 0.8) {
+                          x.push(i); y.push(j); z.push(k);
+                          val.push(r);
+                        }
+                      }
+                    }
+                  }
+                  Plotly.newPlot('mayavi-iso-stage', [{
+                    type: 'scatter3d', mode: 'markers',
+                    x: x, y: y, z: z,
+                    marker: { size: 5, color: val, colorscale: 'Viridis' }
+                  }], {
+                    paper_bgcolor: 'transparent',
+                    margin: { l: 0, r: 0, b: 0, t: 0 },
+                    scene: {
+                      xaxis: { color: '#9ba9a1' }, yaxis: { color: '#9ba9a1' }, zaxis: { color: '#f3cf65' },
+                      camera: { eye: { x: 1.4, y: 1.4, z: 1.2 } }
+                    }
+                  }, { responsive: true, displayModeBar: false });
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Lorensen & Cline Marching Cubes algorithm: polygonizing implicit surface $F(x,y,z) = c$ in volumetric voxels.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Medical MRI brain segmentation, subterranean oil reservoir modeling, aerodynamic vortex cores.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Seamless Pythonic wrapper over Kitware VTK; instant rendering of complex topological shapes.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>from mayavi import mlab
+src = mlab.pipeline.scalar_field(scalar_tensor)
+mlab.pipeline.iso_surface(src, contours=[0.2, 0.6], colormap='YlGn')
+mlab.show()</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Algorithm</span>
+            <span class="val">Marching Cubes</span>
+            <span class="sub">Isosurface</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Data Struct</span>
+            <span class="val">3D Scalar Grid</span>
+            <span class="sub">Voxels (x,y,z)</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Framework</span>
+            <span class="val">Mayavi + VTK</span>
+            <span class="sub">Scientific C++</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Shading</span>
+            <span class="val">Specular Phong</span>
+            <span class="sub">Light Normals</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-04-vtk-slicing" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">04 / Orthogonal Planes</span>
+            <h2 class="slide-headline">Multi-Planar Reconstruction: <span>VTK Orthogonal Slice Planes</span></h2>
+            <p class="slide-subtitle">Axial, sagittal, and coronal slice planes intersecting 3D clinical medical DICOM volumes.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Kitware VTK C++/Python</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-04-vtk-slicing">
+            
+              <div style="width:100%; height:100%; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; padding:15px; box-sizing:border-box;">
+                <!-- Axial View -->
+                <div style="background:#070d09; border:1px solid #00e676; border-radius:6px; padding:8px; display:flex; flex-direction:column; align-items:center;">
+                  <span style="font-family:JetBrains Mono; font-size:0.8rem; color:#00e676;">Axial Plane (Z)</span>
+                  <svg viewBox="0 0 100 100" style="width:80px; height:80px; margin-top:10px;">
+                    <ellipse cx="50" cy="50" rx="35" ry="40" fill="#1b2822" stroke="#00e676"/>
+                    <circle cx="50" cy="50" r="14" fill="#00e676" opacity="0.4"/>
+                  </svg>
+                </div>
+                <!-- Sagittal View -->
+                <div style="background:#070d09; border:1px solid #d4af37; border-radius:6px; padding:8px; display:flex; flex-direction:column; align-items:center;">
+                  <span style="font-family:JetBrains Mono; font-size:0.8rem; color:#f3cf65;">Sagittal Plane (X)</span>
+                  <svg viewBox="0 0 100 100" style="width:80px; height:80px; margin-top:10px;">
+                    <ellipse cx="50" cy="50" rx="30" ry="42" fill="#1b2822" stroke="#d4af37"/>
+                    <rect x="40" y="35" width="20" height="30" fill="#d4af37" opacity="0.4"/>
+                  </svg>
+                </div>
+                <!-- Coronal View -->
+                <div style="background:#070d09; border:1px solid #00e5ff; border-radius:6px; padding:8px; display:flex; flex-direction:column; align-items:center;">
+                  <span style="font-family:JetBrains Mono; font-size:0.8rem; color:#00e5ff;">Coronal Plane (Y)</span>
+                  <svg viewBox="0 0 100 100" style="width:80px; height:80px; margin-top:10px;">
+                    <ellipse cx="50" cy="50" rx="38" ry="32" fill="#1b2822" stroke="#00e5ff"/>
+                    <ellipse cx="50" cy="50" rx="16" ry="12" fill="#00e5ff" opacity="0.4"/>
+                  </svg>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Trilinear voxel interpolation $f(x,y,z)$ evaluated along arbitrary 3D cross-section cutting planes.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Radiology PACS software, surgical navigation digital twins, industrial CT materials defect scans.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Global gold standard for scientific visualization (used by ParaView, 3D Slicer, and ANSYS).</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>import vtk
+reslice = vtk.vtkImageReslice()
+reslice.SetInputData(reader.GetOutput())
+reslice.SetResliceAxesDirectionCosines(1,0,0, 0,1,0, 0,0,1)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Standard</span>
+            <span class="val">DICOM / NIfTI</span>
+            <span class="sub">Medical Gold Std</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Slicing</span>
+            <span class="val">MPR Orthogonal</span>
+            <span class="sub">Axial/Sag/Cor</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Interpolation</span>
+            <span class="val">Trilinear Voxel</span>
+            <span class="sub">Hardware Texture</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Core C++</span>
+            <span class="val">VTK Pipeline</span>
+            <span class="sub">Ultra Fast</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-05-pyqtgraph-telemetry" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">05 / Embedded High-Speed UI</span>
+            <h2 class="slide-headline">Sub-Millisecond GUI Plotting: <span>PyQtGraph Real-Time Multi-Plot</span></h2>
+            <p class="slide-subtitle">Qt/QGraphicsView C++ accelerated visualization updating charts at 120 FPS for live laboratory instrumentation.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">PyQtGraph / Qt6</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-05-pyqtgraph-telemetry">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; gap:8px; padding:15px; box-sizing:border-box;">
+                <div style="background:#09100c; border:1px solid #00e676; border-radius:4px; height:65px; display:flex; align-items:center; padding:0 10px;">
+                  <span style="font-family:JetBrains Mono; font-size:0.8rem; color:#00e676; width:90px;">ADC Ch 01:</span>
+                  <svg viewBox="0 0 300 40" style="flex:1; height:35px;">
+                    <path d="M 0 20 L 50 5 L 80 35 L 140 10 L 220 30 L 300 15" fill="none" stroke="#00e676" stroke-width="2"/>
+                  </svg>
+                </div>
+                <div style="background:#09100c; border:1px solid #d4af37; border-radius:4px; height:65px; display:flex; align-items:center; padding:0 10px;">
+                  <span style="font-family:JetBrains Mono; font-size:0.8rem; color:#f3cf65; width:90px;">ADC Ch 02:</span>
+                  <svg viewBox="0 0 300 40" style="flex:1; height:35px;">
+                    <path d="M 0 25 L 60 10 L 120 30 L 180 5 L 250 25 L 300 20" fill="none" stroke="#f3cf65" stroke-width="2"/>
+                  </svg>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>PyQt QGraphicsScene scene-graph caching combined with NumPy memory-view slicing.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Semiconductor wafer testing equipment, rocket launch ground control consoles, EEG medical monitors.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Can plot live incoming data at over 100 FPS where Matplotlib would freeze the entire GUI.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>import pyqtgraph as pg
+win = pg.GraphicsLayoutWidget(show=True)
+p1 = win.addPlot(title="High-Speed ADC")
+curve = p1.plot(pen='#00e676')
+def update(): curve.setData(data_stream)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">GUI Binding</span>
+            <span class="val">PyQt6 / PySide6</span>
+            <span class="sub">Native Desktop</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Frame Cadence</span>
+            <span class="val">120 FPS Burst</span>
+            <span class="sub">Zero Lag</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">NumPy Link</span>
+            <span class="val">Zero-Copy Buffer</span>
+            <span class="sub">Shared RAM</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Use Case</span>
+            <span class="val">Lab Instruments</span>
+            <span class="sub">Real-Time</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-06-glumpy-nbody" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">06 / OpenGL Hardware Compute</span>
+            <h2 class="slide-headline">Hardware Shader Compute: <span>Glumpy N-Body Particle Gravitation</span></h2>
+            <p class="slide-subtitle">Modern OpenGL (GLSL 4.0) pipeline simulating gravitational kinematics of 100,000 star particles directly on the GPU.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Glumpy OpenGL</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-06-glumpy-nbody">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; position:relative;">
+                <canvas id="nbody-canvas" width="450" height="300" style="background:#030604; border-radius:8px; border:1px solid #d4af37;"></canvas>
+                <div style="position:absolute; bottom:14px; right:16px; background:rgba(7,12,9,0.85); padding:4px 10px; border-radius:4px; font-family:JetBrains Mono; font-size:0.75rem; color:#f3cf65;">
+                  GLSL Spiral Galaxy &bull; 100k Stars
+                </div>
+              </div>
+              <script>
+              (function(){
+                const canvas = document.getElementById('nbody-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const stars = Array.from({length: 450}, () => {
+                  const arm = Math.floor(Math.random() * 2);
+                  const dist = Math.random() * 120 + 10;
+                  const angle = dist / 25 + arm * Math.PI + (Math.random() - 0.5) * 0.4;
+                  return { dist, angle, speed: 0.015 / Math.sqrt(dist/20) };
+                });
+                function animate() {
+                  ctx.fillStyle = 'rgba(3, 6, 4, 0.18)';
+                  ctx.fillRect(0, 0, canvas.width, canvas.height);
+                  ctx.fillStyle = '#fffefa';
+                  stars.forEach(s => {
+                    s.angle += s.speed;
+                    const x = canvas.width / 2 + Math.cos(s.angle) * s.dist;
+                    const y = canvas.height / 2 + Math.sin(s.angle) * (s.dist * 0.6);
+                    ctx.fillStyle = s.dist < 40 ? '#f3cf65' : (s.dist < 80 ? '#00e676' : '#00e5ff');
+                    ctx.fillRect(x, y, 1.5, 1.5);
+                  });
+                  requestAnimationFrame(animate);
+                }
+                animate();
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Newtonian $N$-body gravitational kinematics evaluated via OpenGL compute / transform feedback shaders.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Astrophysics research, computational fluid dynamics (CFD), quantum molecular modeling.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Bridges NumPy arrays directly to GPU vertex attributes with zero serialization latency.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>from glumpy import app, gloo, gl
+program = gloo.Program(vertex_shader, fragment_shader, count=100000)
+program['position'] = numpy_coords
+@window.event
+def on_draw(dt): program.draw(gl.GL_POINTS)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Shader Level</span>
+            <span class="val">Modern GLSL 4.0</span>
+            <span class="sub">Compute Core</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Particle Max</span>
+            <span class="val">1,000,000 Pts</span>
+            <span class="sub">Full Simulation</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Data Bridge</span>
+            <span class="val">NumPy to VBO</span>
+            <span class="sub">Zero Copy</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">FPS</span>
+            <span class="val">60 FPS Ultra</span>
+            <span class="sub">Hardware Sync</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-07-datashader-bundling" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">07 / Big Graph Edge Bundling</span>
+            <h2 class="slide-headline">Massive Graph Densities: <span>Datashader Edge Bundling</span></h2>
+            <p class="slide-subtitle">Fast force-directed edge bundling condensing half a million graph interconnections into clean structural arteries.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Datashader Bundling</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-07-datashader-bundling">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 380 260" style="width:100%; max-height:280px;">
+                  <!-- Bundled Trunk Ribbons -->
+                  <path d="M 60 130 C 140 90, 200 90, 320 60" fill="none" stroke="#00e676" stroke-width="4" opacity="0.8"/>
+                  <path d="M 60 130 C 140 170, 200 170, 320 200" fill="none" stroke="#00e676" stroke-width="4" opacity="0.8"/>
+                  <!-- Secondary sub-bundles -->
+                  <path d="M 60 130 C 120 120, 180 120, 260 130" fill="none" stroke="#d4af37" stroke-width="2.5" opacity="0.6"/>
+                  <!-- Core Cluster Points -->
+                  <circle cx="60" cy="130" r="14" fill="#00e676"/>
+                  <circle cx="320" cy="60" r="10" fill="#f3cf65"/>
+                  <circle cx="320" cy="200" r="10" fill="#f3cf65"/>
+                  <circle cx="260" cy="130" r="8" fill="#00e5ff"/>
+                  <text x="60" y="165" text-anchor="middle" fill="#00e676" font-family="DM Sans" font-size="10" font-weight="bold">Core Hub (50k)</text>
+                  <text x="320" y="45" text-anchor="middle" fill="#f3cf65" font-family="DM Sans" font-size="10">Branch A</text>
+                  <text x="320" y="225" text-anchor="middle" fill="#f3cf65" font-family="DM Sans" font-size="10">Branch B</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Force-directed edge bundling (FDEB) treating edges as flexible springs attracting parallel trajectories.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>National airline flight corridor optimization, internet router backbone topology, banking wire transfers.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Datashader’s Numba compilation computes edge bundling across 500,000 edges in seconds instead of hours.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>from datashader.bundling import hammer_bundle
+bundled_lines = hammer_bundle(nodes, edges, initial_bandwidth=0.05)
+cvs.line(bundled_lines, 'x', 'y')</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Algorithm</span>
+            <span class="val">FDEB Fast Numba</span>
+            <span class="sub">Parallel Kernels</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Edge Capacity</span>
+            <span class="val">500,000 Edges</span>
+            <span class="sub">Seconds Compute</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Hairball Drop</span>
+            <span class="val">-92% Visual Noise</span>
+            <span class="sub">Artery Routing</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Integration</span>
+            <span class="val">NetworkX + DShader</span>
+            <span class="sub">PyData Suite</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-08-mayavi-quiver" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">08 / Aerodynamic Vortices</span>
+            <h2 class="slide-headline">Turbulent Fluid Dynamics: <span>Mayavi 3D Quiver Vortices</span></h2>
+            <p class="slide-subtitle">3D volumetric vector cones and streamtubes tracking velocity curl $(\nabla \times \mathbf{v})$ in wake turbulence.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Mayavi mlab.quiver3d</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-08-mayavi-quiver">
+            
+              <div id="mayavi-quiver-stage" class="plotly-graph" style="width:100%; height:100%;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const el = document.getElementById('mayavi-quiver-stage');
+                  if (!el || !window.Plotly) return;
+                  const x = [], y = [], z = [], u = [], v = [], w = [];
+                  for(let i=0; i<6; i++) {
+                    for(let j=0; j<6; j++) {
+                      for(let k=0; k<6; k++) {
+                        x.push(i); y.push(j); z.push(k);
+                        u.push(-j + 2.5); v.push(i - 2.5); w.push(0.5);
+                      }
+                    }
+                  }
+                  Plotly.newPlot('mayavi-quiver-stage', [{
+                    type: 'cone', x: x, y: y, z: z, u: u, v: v, w: w,
+                    colorscale: 'Viridis', sizemode: 'scaled', sizeref: 0.8
+                  }], {
+                    paper_bgcolor: 'transparent',
+                    margin: { l: 0, r: 0, b: 0, t: 0 },
+                    scene: {
+                      xaxis: { color: '#9ba9a1' }, yaxis: { color: '#9ba9a1' }, zaxis: { color: '#f3cf65' },
+                      camera: { eye: { x: 1.4, y: 1.4, z: 1.2 } }
+                    }
+                  }, { responsive: true, displayModeBar: false });
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Vector vorticity calculation: $\vec{\omega} = \nabla \times \vec{v}$ rendered as 3D oriented arrow/cone glyphs.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Aircraft wingtip vortex dissipation, wind turbine wake interactions, HVAC duct airflow.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Glyph scaling proportional to local velocity vector magnitude; customizable directional cones.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>from mayavi import mlab
+mlab.quiver3d(x, y, z, u, v, w, colormap='hot', scale_factor=0.5)
+mlab.show()</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Glyph Type</span>
+            <span class="val">Oriented 3D Cones</span>
+            <span class="sub">Direction + Mag</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Vorticity</span>
+            <span class="val">Curl Operator</span>
+            <span class="sub">Vortex Cores</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Engine</span>
+            <span class="val">VTK Glyph3D</span>
+            <span class="sub">C++ Acceleration</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Interactivity</span>
+            <span class="val">Full 3D Orbit</span>
+            <span class="sub">Quaternion</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-09-vtk-fea" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">09 / Structural Mechanics</span>
+            <h2 class="slide-headline">Continuum Solid Mechanics: <span>VTK Finite Element Stress Tensor</span></h2>
+            <p class="slide-subtitle">Von Mises yield stress tensor mapped across unstructured tetrahedral solid meshes under mechanical load.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Kitware VTK UnstructuredGrid</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-09-vtk-fea">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Structural I-Beam under load -->
+                  <!-- Top Flange -->
+                  <rect x="50" y="40" width="250" height="24" fill="#00e676" stroke="#fff" stroke-width="1"/>
+                  <!-- Web with Stress Concentration -->
+                  <rect x="150" y="64" width="50" height="110" fill="url(#feaGrad)" stroke="#fff" stroke-width="1"/>
+                  <!-- Bottom Flange -->
+                  <rect x="50" y="174" width="250" height="24" fill="#00e676" stroke="#fff" stroke-width="1"/>
+                  <!-- Stress Hotspot (Red Core) -->
+                  <circle cx="175" cy="119" r="16" fill="#ff1744" opacity="0.9" filter="drop-shadow(0 0 8px #ff1744)"/>
+                  <text x="175" y="123" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="9" font-weight="bold">380 MPa</text>
+                  <!-- Gradient definition -->
+                  <defs>
+                    <linearGradient id="feaGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#00e676"/>
+                      <stop offset="50%" stop-color="#ffab00"/>
+                      <stop offset="100%" stop-color="#00e676"/>
+                    </linearGradient>
+                  </defs>
+                  <text x="175" y="225" text-anchor="middle" fill="#f3cf65" font-family="DM Sans" font-size="10">Von Mises Critical Shear Zone</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Von Mises equivalent stress calculation from Cauchy stress tensor: $\sigma_v = \sqrt{\frac{1}{2}[(\sigma_{11}-\sigma_{22})^2 + \dots + 6\sigma_{12}^2]}$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Civil structural building foundation integrity, aerospace fuselage pressure tests, bridge engineering.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Unstructured grid data model supports arbitrary tetrahedral, hexahedral, and pyramid finite elements.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>grid = vtk.vtkUnstructuredGrid()
+grid.GetPointData().SetScalars(vonMisesStressArray)
+mapper = vtk.vtkDataSetMapper()
+mapper.SetInputData(grid)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Stress Metric</span>
+            <span class="val">Von Mises (MPa)</span>
+            <span class="sub">Equivalent Shear</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Element Type</span>
+            <span class="val">Tetrahedral / Hex</span>
+            <span class="sub">UnstructuredGrid</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Standard</span>
+            <span class="val">ANSYS / Nastran</span>
+            <span class="sub">CAE Benchmark</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Solver Bridge</span>
+            <span class="val">VTK Python C++</span>
+            <span class="sub">Hardware Shaded</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-10-vispy-lidar" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">10 / GPU Point Cloud Canvas</span>
+            <h2 class="slide-headline">High-Density Terrain Scans: <span>VisPy 3D LiDAR Shader Mesh</span></h2>
+            <p class="slide-subtitle">Streaming raw airborne LiDAR point clouds at native 60 FPS with distance-to-canopy color shaders.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">VisPy SceneGraph</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-10-vispy-lidar">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Slanted Point Cloud Plane -->
+                  <g fill="#00e676" opacity="0.8">
+                    <circle cx="80" cy="180" r="2.5"/> <circle cx="110" cy="170" r="2.5"/> <circle cx="140" cy="165" r="2.5"/>
+                    <circle cx="90" cy="150" r="2.5"/> <circle cx="130" cy="140" r="2.5"/> <circle cx="170" cy="130" r="2.5"/>
+                    <circle cx="120" cy="120" r="2.5"/> <circle cx="160" cy="100" r="2.5"/> <circle cx="200" cy="95" r="2.5"/>
+                  </g>
+                  <g fill="#d4af37" opacity="0.9">
+                    <!-- Tree canopy elevated points -->
+                    <circle cx="150" cy="80" r="3.5"/> <circle cx="160" cy="65" r="4"/> <circle cx="175" cy="70" r="4.5"/>
+                    <circle cx="165" cy="85" r="3.5"/> <circle cx="155" cy="95" r="3"/>
+                  </g>
+                  <g fill="#00e5ff" opacity="0.9">
+                    <!-- High mountain ridge -->
+                    <circle cx="240" cy="50" r="3"/> <circle cx="270" cy="40" r="3.5"/> <circle cx="300" cy="35" r="4"/>
+                  </g>
+                  <text x="175" y="225" text-anchor="middle" fill="#fffefa" font-family="JetBrains Mono" font-size="10">2.5M Pulses &bull; Native 60 FPS VisPy Scene</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>OpenGL Instanced vertex rendering using VisPy SceneGraph Visuals pipeline with custom GLSL depth shaders.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Autonomous vehicle driving point-clouds (Velodyne / Luminar), forestry canopy density audits.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Seamless mouse rotation, panning, and fly-through navigation directly inside a lightweight Python GUI.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>from vispy.scene import visuals
+scatter = visuals.Markers()
+scatter.set_data(lidar_xyz, edge_color=None, face_color=colors, size=2)
+view.add(scatter)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Throughput</span>
+            <span class="val">5M+ Points / sec</span>
+            <span class="sub">GPU Pipeline</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Shader</span>
+            <span class="val">Custom GLSL</span>
+            <span class="sub">Elevation Depth</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Camera</span>
+            <span class="val">Turntable / Arcball</span>
+            <span class="sub">Intuitive Orbit</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Language</span>
+            <span class="val">Python + Modern GL</span>
+            <span class="sub">VisPy</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-11-datashader-gps" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">11 / Continental Telemetry</span>
+            <h2 class="slide-headline">Continental Trace Density: <span>Datashader OpenStreetMap Aggregates</span></h2>
+            <p class="slide-subtitle">Millions of vehicular GPS coordinates rasterized across national road networks with zero downsampling loss.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Datashader Geo</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-11-datashader-gps">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px; background:#070d09; border-radius:6px;">
+                  <!-- Road Network Lines radiating -->
+                  <g stroke="#00e676" stroke-width="1.5" opacity="0.6">
+                    <line x1="175" y1="120" x2="60" y2="40"/>
+                    <line x1="175" y1="120" x2="290" y2="50"/>
+                    <line x1="175" y1="120" x2="80" y2="200"/>
+                    <line x1="175" y1="120" x2="270" y2="210"/>
+                  </g>
+                  <!-- Central Urban Highway Hub (Bright White-Gold Core) -->
+                  <circle cx="175" cy="120" r="18" fill="#fffefa" opacity="0.95" filter="drop-shadow(0 0 10px #f3cf65)"/>
+                  <text x="175" y="124" text-anchor="middle" fill="#070c09" font-family="JetBrains Mono" font-size="9" font-weight="bold">Metro Hub</text>
+                  <text x="175" y="230" text-anchor="middle" fill="#d4af37" font-family="JetBrains Mono" font-size="10">8.4 Million GPS Traces Aggregated</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Coordinate projection into Web Mercator pixels followed by 2D binning aggregation into NumPy float arrays.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Nationwide fleet movement density, cell tower roaming paths, consumer mobility catchment tracking.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Generates high-resolution tile servers directly from raw multi-gigabyte Parquet datasets.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>cvs = ds.Canvas(plot_width=1000, plot_height=800, x_range=x_range, y_range=y_range)
+agg = cvs.line(df, 'x', 'y', agg=ds.count())
+img = tf.shade(agg, cmap=fire)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Data Format</span>
+            <span class="val">Apache Parquet</span>
+            <span class="sub">Fast Columnar</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Resolution</span>
+            <span class="val">Sub-Meter Grid</span>
+            <span class="sub">No Pixel Blur</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Tile Engine</span>
+            <span class="val">Dynamic Slippy</span>
+            <span class="sub">XYZ Web Map</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Speed</span>
+            <span class="val">< 800 ms Render</span>
+            <span class="sub">Numba JIT</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-12-pyqtgraph-spectrogram" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">12 / Time-Frequency Analysis</span>
+            <h2 class="slide-headline">Spectral Analysis: <span>PyQtGraph Real-Time FFT Spectrogram</span></h2>
+            <p class="slide-subtitle">Sliding Short-Time Fourier Transform (STFT) displaying acoustic frequency spectrum cascades live at 60 FPS.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">PyQtGraph ImageItem</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-12-pyqtgraph-spectrogram">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; padding:15px; box-sizing:border-box;">
+                <div style="background:#070d09; border:1px solid #d4af37; border-radius:6px; height:180px; display:flex; flex-direction:column; justify-content:space-around; padding:10px;">
+                  <div style="display:flex; justify-content:space-between; font-family:JetBrains Mono; font-size:0.75rem; color:#f3cf65;">
+                    <span>20 kHz</span>
+                    <span>10 kHz</span>
+                    <span>1 kHz</span>
+                    <span>0 Hz</span>
+                  </div>
+                  <!-- Spectrogram Frequency Wave Heatmap Bands -->
+                  <div style="height:25px; background:linear-gradient(90deg, #070d09, #00e676, #00e676, #070d09, #ff1744, #ffab00);"></div>
+                  <div style="height:25px; background:linear-gradient(90deg, #070d09, #070d09, #d4af37, #00e676, #070d09, #d4af37);"></div>
+                  <div style="height:25px; background:linear-gradient(90deg, #00e676, #070d09, #070d09, #00e676, #00e676, #070d09);"></div>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Short-Time Fourier Transform: $\text{STFT}\{x(t)\}(\tau, \omega) = \int_{-\infty}^\infty x(t) w(t - \tau) e^{-i\omega t} dt$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Rotating machinery bearing failure acoustic detection, speech recognition AI frontends, radio RF monitoring.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>ImageItem OpenGL hardware texture streaming with custom color lookup tables (LUT).</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>img = pg.ImageItem()
+plot.addItem(img)
+lut = pg.colormap.get('plasma').getLookupTable()
+img.setLookupTable(lut)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Transform</span>
+            <span class="val">Fast Fourier (FFT)</span>
+            <span class="sub">Short-Time STFT</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Windowing</span>
+            <span class="val">Hanning Window</span>
+            <span class="sub">Zero Leakage</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Latency</span>
+            <span class="val">< 8 ms Real-Time</span>
+            <span class="sub">Audio Live</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Display</span>
+            <span class="val">QImage Texture</span>
+            <span class="sub">Hardware LUT</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-13-glumpy-fractal" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">13 / Ray-Marching Shaders</span>
+            <h2 class="slide-headline">4D Quaternion Geometry: <span>Glumpy Ray-Marched Julia Fractal</span></h2>
+            <p class="slide-subtitle">Signed distance function (SDF) sphere-tracing rendering hypercomplex 4D quaternion fractals.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Glumpy Raymarcher</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-13-glumpy-fractal">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 320 240" style="width:100%; max-height:260px;">
+                  <!-- Fractal Organic Bulbs -->
+                  <g fill="#d4af37" stroke="#fffefa" stroke-width="0.8">
+                    <circle cx="160" cy="120" r="45" fill="rgba(212,175,55,0.7)"/>
+                    <circle cx="115" cy="100" r="24" fill="rgba(0,230,118,0.7)"/>
+                    <circle cx="205" cy="100" r="24" fill="rgba(0,230,118,0.7)"/>
+                    <circle cx="160" cy="170" r="22" fill="rgba(0,229,255,0.7)"/>
+                    <!-- Tertiary micro buds -->
+                    <circle cx="95" cy="85" r="12" fill="#f3cf65"/>
+                    <circle cx="225" cy="85" r="12" fill="#f3cf65"/>
+                    <circle cx="138" cy="190" r="10" fill="#00e676"/>
+                    <circle cx="182" cy="190" r="10" fill="#00e676"/>
+                  </g>
+                  <text x="160" y="230" text-anchor="middle" fill="#fffefa" font-family="JetBrains Mono" font-size="10">Quaternion Iteration: Z = Z² + C</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Sphere-tracing raymarching of 4D quaternion polynomial iterative mapping: $q_{n+1} = q_n^2 + c$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Procedural asset generation, mathematical physics visualization, volumetric lighting shaders.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Renders mathematically infinite geometric detail using only a single quad and GLSL fragment shader.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>float map(vec3 p) {
+  vec4 z = vec4(p, 0.0);
+  for (int i=0; i<10; i++) { z = quatSq(z) + c; }
+  return 0.5 * log(r) * r / dr;
+}</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Algebra</span>
+            <span class="val">4D Quaternions</span>
+            <span class="sub">Hypercomplex</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Rendering</span>
+            <span class="val">Sphere Tracing</span>
+            <span class="sub">Raymarch SDF</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Complexity</span>
+            <span class="val">Infinite Detail</span>
+            <span class="sub">Zero Polygons</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Hardware</span>
+            <span class="val">Fragment Shader</span>
+            <span class="sub">Single Quad</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-14-mayavi-klein" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">14 / Differential Topology</span>
+            <h2 class="slide-headline">Non-Orientable Manifolds: <span>Mayavi Parametric Klein Bottle</span></h2>
+            <p class="slide-subtitle">Immersion of non-orientable 4D topological surfaces in 3D Euclidean space with self-intersection tubes.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Mayavi Differential Geometry</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-14-mayavi-klein">
+            
+              <div id="mayavi-klein-stage" class="plotly-graph" style="width:100%; height:100%;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const el = document.getElementById('mayavi-klein-stage');
+                  if (!el || !window.Plotly) return;
+                  const u = [], v = [], x = [], y = [], z = [];
+                  const n = 24;
+                  for(let i=0; i<n; i++) {
+                    const ui = (i / n) * Math.PI;
+                    for(let j=0; j<n; j++) {
+                      const vi = (j / n) * 2 * Math.PI;
+                      const r = 4 * (1 - Math.cos(ui) / 2);
+                      let px, py, pz;
+                      if (ui < Math.PI) {
+                        px = 6 * Math.cos(ui) * (1 + Math.sin(ui)) + r * Math.cos(ui) * Math.cos(vi);
+                        py = 16 * Math.sin(ui) + r * Math.sin(ui) * Math.cos(vi);
+                      } else {
+                        px = 6 * Math.cos(ui) * (1 + Math.sin(ui)) + r * Math.cos(vi + Math.PI);
+                        py = 16 * Math.sin(ui);
+                      }
+                      pz = r * Math.sin(vi);
+                      x.push(px); y.push(py); z.push(pz);
+                    }
+                  }
+                  Plotly.newPlot('mayavi-klein-stage', [{
+                    type: 'mesh3d', x: x, y: y, z: z,
+                    color: '#d4af37', opacity: 0.75
+                  }], {
+                    paper_bgcolor: 'transparent',
+                    margin: { l: 0, r: 0, b: 0, t: 0 },
+                    scene: {
+                      xaxis: { showgrid: false }, yaxis: { showgrid: false }, zaxis: { showgrid: false },
+                      camera: { eye: { x: 1.5, y: 1.5, z: 1.2 } }
+                    }
+                  }, { responsive: true, displayModeBar: false });
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Parametric surface immersion equations $(x(u,v), y(u,v), z(u,v))$ for closed non-orientable surface with Euler characteristic $\chi = 0$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Mathematical education, string theory compactification models, advanced industrial CAD geometry.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Computes exact surface normal vectors for smooth specular highlights across self-intersecting manifolds.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>u, v = np.mgrid[0:np.pi:100j, 0:2*np.pi:100j]
+x = 6 * np.cos(u) * (1 + np.sin(u)) + r * np.cos(u) * np.cos(v)
+mlab.mesh(x, y, z, colormap='Spectral')</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Manifold</span>
+            <span class="val">Non-Orientable</span>
+            <span class="sub">One-Sided</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Euler Char</span>
+            <span class="val">χ = 0</span>
+            <span class="sub">Zero Genus</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Immersion</span>
+            <span class="val">4D to 3D Space</span>
+            <span class="sub">Self-Crossing</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Mesh Engine</span>
+            <span class="val">Mayavi / VTK</span>
+            <span class="sub">C++ Precision</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-15-vispy-mip" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">15 / Direct Volume Rendering</span>
+            <h2 class="slide-headline">Direct Volume Ray-Casting: <span>VisPy Maximum Intensity Projection (MIP)</span></h2>
+            <p class="slide-subtitle">Evaluates maximum scalar value along viewing rays through 3D CT/MRI volumetric voxel grids.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">VisPy VolumeVisual</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-15-vispy-mip">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- MIP Ray Projections -->
+                  <g stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="3">
+                    <line x1="40" y1="60" x2="310" y2="60"/>
+                    <line x1="40" y1="120" x2="310" y2="120"/>
+                    <line x1="40" y1="180" x2="310" y2="180"/>
+                  </g>
+                  <!-- High Intensity Skeleton Core -->
+                  <rect x="140" y="80" width="70" height="80" fill="#fffefa" opacity="0.9" rx="8" filter="drop-shadow(0 0 10px #00e676)"/>
+                  <text x="175" y="125" text-anchor="middle" fill="#070c09" font-family="JetBrains Mono" font-size="11" font-weight="bold">Bone Peak</text>
+                  <!-- Ray Hit Label -->
+                  <circle cx="310" cy="120" r="5" fill="#00e676"/>
+                  <text x="310" y="140" text-anchor="middle" fill="#00e676" font-family="JetBrains Mono" font-size="9">MIP Hit: Max(I)</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Volume raycasting evaluating maximum intensity along ray path: $I_{\text{MIP}}(u, v) = \max_{t} \{ f(\mathbf{r}_0 + t\mathbf{d}) \}$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Angiography blood vessel visualization, industrial non-destructive casting defect inspection.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Requires no complex transfer function opacity tuning; automatically highlights highest-density structures.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>volume = scene.visuals.Volume(data, clim=(0, 255),
+                             method='mip', parent=view.scene)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Ray Operator</span>
+            <span class="val">Max(I) Projection</span>
+            <span class="sub">MIP Raycast</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Opacity Tuning</span>
+            <span class="val">Zero Config</span>
+            <span class="sub">Density Peak</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Hardware</span>
+            <span class="val">3D Texture Shaders</span>
+            <span class="sub">Texture3D</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Use Case</span>
+            <span class="val">Angiography CT</span>
+            <span class="sub">Vessel Trees</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-16-vtk-streamtube" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">16 / CFD Streamtubes</span>
+            <h2 class="slide-headline">Aerodynamic Streamtubes: <span>VTK Computational Aerodynamics</span></h2>
+            <p class="slide-subtitle">Constant-flux streamtubes expanding and contracting based on air pressure around supersonic wings.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">VTK StreamTracer</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-16-vtk-streamtube">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 380 240" style="width:100%; max-height:260px;">
+                  <!-- Airfoil Shape (Black/Gold) -->
+                  <path d="M 60 120 C 120 70, 220 90, 320 120 C 220 130, 120 140, 60 120 Z" fill="#13221b" stroke="#d4af37" stroke-width="2"/>
+                  <!-- Streamtubes (Upper Accelerated - Cyan/Green) -->
+                  <path d="M 40 80 C 100 50, 200 60, 340 100" fill="none" stroke="#00e5ff" stroke-width="4" opacity="0.85"/>
+                  <path d="M 40 60 C 100 30, 200 40, 340 80" fill="none" stroke="#00e676" stroke-width="3" opacity="0.8"/>
+                  <!-- Lower Streamtubes -->
+                  <path d="M 40 160 C 120 150, 220 145, 340 140" fill="none" stroke="#f3cf65" stroke-width="3" opacity="0.8"/>
+                  <text x="180" y="115" text-anchor="middle" fill="#f3cf65" font-family="DM Sans" font-size="10">Supersonic Foil</text>
+                  <text x="180" y="45" text-anchor="middle" fill="#00e5ff" font-family="JetBrains Mono" font-size="9">Low Pressure / High V</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Bernoulli streamtube mass conservation: $\rho_1 A_1 v_1 = \rho_2 A_2 v_2$ with tube radius inversely proportional to velocity.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Formula 1 aerodynamic rear-wing downforce modeling, high-speed rail nose cone streamlining.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Conveys volumetric airflow tube cross-sections rather than thin 1D vector line approximations.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>tracer = vtk.vtkStreamTracer()
+tube = vtk.vtkTubeFilter()
+tube.SetInputConnection(tracer.GetOutputPort())
+tube.SetRadius(0.05)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Conservation</span>
+            <span class="val">Mass Flux A1*V1</span>
+            <span class="sub">Continuity</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Tube Radius</span>
+            <span class="val">r ~ 1/v</span>
+            <span class="sub">Dynamic Radius</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Integration</span>
+            <span class="val">Runge-Kutta 4/5</span>
+            <span class="sub">Adaptive Step</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Engine</span>
+            <span class="val">VTK TubeFilter</span>
+            <span class="sub">3D Polygonal</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-17-datashader-hexbin" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">17 / High-Density Hexagons</span>
+            <h2 class="slide-headline">Logarithmic Tessellation: <span>Datashader Hexbin Aggregation</span></h2>
+            <p class="slide-subtitle">Sub-pixel hexagonal quantization with gamma log scaling preventing bright-core washout.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Datashader Hexbin</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-17-datashader-hexbin">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 320 240" style="width:100%; max-height:260px;">
+                  <!-- Hexagonal Array -->
+                  <g fill="#00e676" stroke="#070c09" stroke-width="1">
+                    <polygon points="160,80 180,90 180,110 160,120 140,110 140,90" fill="#fffefa"/>
+                    <polygon points="180,110 200,120 200,140 180,150 160,140 160,120" fill="#00e676"/>
+                    <polygon points="140,110 160,120 160,140 140,150 120,140 120,120" fill="#00e676"/>
+                    <polygon points="160,50 180,60 180,80 160,90 140,80 140,60" fill="#d4af37"/>
+                    <polygon points="200,80 220,90 220,110 200,120 180,110 180,90" fill="#1b2822"/>
+                    <polygon points="120,80 140,90 140,110 120,120 100,110 100,90" fill="#1b2822"/>
+                  </g>
+                  <text x="160" y="105" text-anchor="middle" fill="#070c09" font-family="JetBrains Mono" font-size="9" font-weight="bold">100k</text>
+                  <text x="160" y="210" text-anchor="middle" fill="#f3cf65" font-family="DM Sans" font-size="10">Logarithmic Gamma Equalized Counts</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Hexagonal spatial binning with non-linear power transform: $C' = C^\gamma$ where $\gamma \in (0, 1]$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Millions of customer loyalty transactions, retail foot traffic density, credit card swipe matrices.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Hexagons possess 6 equidistant neighbors, eliminating rectangular diagonal orientation bias.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>agg = cvs.points(df, 'x', 'y', agg=ds.count())
+img = tf.shade(agg, cmap=greens, how='log')</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Geometry</span>
+            <span class="val">Regular Hexagon</span>
+            <span class="sub">6 Equidistant</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Gamma Scale</span>
+            <span class="val">γ = 0.4</span>
+            <span class="sub">Reveals Shadows</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Bias Free</span>
+            <span class="val">Zero Diagonal Bias</span>
+            <span class="sub">Optimal Shape</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Throughput</span>
+            <span class="val">10M Points</span>
+            <span class="sub">Numba Fast</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-18-pyqtgraph-roi" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">18 / Interactive Machine Vision</span>
+            <h2 class="slide-headline">Real-Time ROI Analysis: <span>PyQtGraph Region-of-Interest Slicing</span></h2>
+            <p class="slide-subtitle">Interactive draggable bounding box calculating sub-region pixel intensity histograms at 60 FPS.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">PyQtGraph ROI</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-18-pyqtgraph-roi">
+            
+              <div style="width:100%; height:100%; display:grid; grid-template-columns:1.2fr 1fr; gap:12px; padding:15px; box-sizing:border-box;">
+                <!-- Main Image with ROI -->
+                <div style="background:#070d09; border:1px solid rgba(255,255,255,0.15); border-radius:6px; position:relative; overflow:hidden;">
+                  <div style="position:absolute; left:30px; top:40px; width:90px; height:70px; border:2px solid #00e676; background:rgba(0,230,118,0.15);">
+                    <span style="font-family:JetBrains Mono; font-size:0.75rem; color:#00e676; padding:2px;">ROI #1</span>
+                  </div>
+                </div>
+                <!-- Live Histogram of ROI -->
+                <div style="background:#070d09; border:1px solid #d4af37; border-radius:6px; padding:10px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <span style="font-family:JetBrains Mono; font-size:0.8rem; color:#f3cf65;">Live ROI Pixel Histogram</span>
+                  <svg viewBox="0 0 160 80" style="width:100%; height:70px;">
+                    <path d="M 10 70 Q 40 20, 80 50 T 150 70 Z" fill="#00e676" opacity="0.6"/>
+                  </svg>
+                  <span style="font-size:0.75rem; color:#9ba9a1;">Mean: 142.4 &bull; Std: 18.2</span>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>NumPy sub-array memory slicing: $\text{Hist}(I[y_1:y_2, x_1:x_2])$ executed upon Qt mouse-drag events.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Automated optical inspection (AOI) chip fabrication defects, live fluorescence microscopy.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Direct C++ NumPy buffer binding recalculates histograms without perceptible mouse drag latency.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>roi = pg.RectROI([20, 20], [80, 60], pen='#00e676')
+win.addItem(roi)
+def update(): hist.plot(roi.getArrayRegion(img, imgItem))
+roi.sigRegionChanged.connect(update)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Interaction</span>
+            <span class="val">Draggable Box</span>
+            <span class="sub">Live Resizing</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Calculation</span>
+            <span class="val">Instant NumPy</span>
+            <span class="sub">Sub-Millisecond</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">GUI Framework</span>
+            <span class="val">Qt6 / C++</span>
+            <span class="sub">Native Speed</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Histogram</span>
+            <span class="val">256 Bins</span>
+            <span class="sub">Dynamic Range</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-19-vispy-seismic" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">19 / Wave Propagation</span>
+            <h2 class="slide-headline">Dynamic Mesh Deformation: <span>VisPy 3D Seismic Wave Propagation</span></h2>
+            <p class="slide-subtitle">Finite difference time domain (FDTD) acoustic wave equations animating real-time crustal displacement.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">VisPy Mesh Deform</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-19-vispy-seismic">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Deformed wireframe grid -->
+                  <path d="M 40 160 Q 140 60, 180 150 T 320 160" fill="none" stroke="#00e676" stroke-width="2.5"/>
+                  <path d="M 40 180 Q 140 80, 180 170 T 320 180" fill="none" stroke="#d4af37" stroke-width="2"/>
+                  <!-- Epicenter Marker -->
+                  <circle cx="140" cy="90" r="8" fill="#ff1744" filter="drop-shadow(0 0 8px #ff1744)"/>
+                  <text x="140" y="75" text-anchor="middle" fill="#ff1744" font-family="JetBrains Mono" font-size="10" font-weight="bold">Epicenter</text>
+                  <text x="175" y="220" text-anchor="middle" fill="#fffefa" font-family="DM Sans" font-size="10">2D Acoustic Wave Equation: ∂²u/∂t² = c² ∇²u</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>2D acoustic wave equation FDTD integration: $u_{i,j}^{n+1} = 2u_{i,j}^n - u_{i,j}^{n-1} + \left(\frac{c\Delta t}{\Delta x}\right)^2 \nabla^2 u$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Earthquake hazard mitigation modeling, ultrasonic non-destructive weld testing, architectural acoustics.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Direct GLSL vertex displacement avoids mutating CPU RAM arrays on every frame.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code># Vertex shader updates Z coordinate directly
+gl_Position = u_model * vec4(position.xy, wave_height, 1.0);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Physics PDE</span>
+            <span class="val">Wave Equation</span>
+            <span class="sub">Acoustic FDTD</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Deformation</span>
+            <span class="val">Vertex Shader</span>
+            <span class="sub">GPU Displace</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Courant Cond.</span>
+            <span class="val">CFL Stable</span>
+            <span class="sub">c*Δt/Δx < 1/√2</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Frame Rate</span>
+            <span class="val">60 FPS Continuous</span>
+            <span class="sub">VisPy Canvas</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-20-vtk-tensor" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">20 / Tensor Fields</span>
+            <h2 class="slide-headline">Anisotropic Tensor Fields: <span>VTK Diffusion Tensor Ellipsoids</span></h2>
+            <p class="slide-subtitle">3D oriented ellipsoids parameterized by eigenvalue decomposition of symmetric second-order stress/diffusion tensors.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">VTK TensorGlyph</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-20-vtk-tensor">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Array of oriented ellipsoids -->
+                  <g transform="translate(60, 60)">
+                    <ellipse cx="0" cy="0" rx="28" ry="12" fill="#00e676" opacity="0.8" transform="rotate(25)"/>
+                  </g>
+                  <g transform="translate(140, 60)">
+                    <ellipse cx="0" cy="0" rx="32" ry="10" fill="#00e676" opacity="0.85" transform="rotate(35)"/>
+                  </g>
+                  <g transform="translate(220, 60)">
+                    <ellipse cx="0" cy="0" rx="36" ry="8" fill="#d4af37" opacity="0.85" transform="rotate(45)"/>
+                  </g>
+                  <g transform="translate(100, 140)">
+                    <ellipse cx="0" cy="0" rx="20" ry="18" fill="#00e5ff" opacity="0.75" transform="rotate(0)"/>
+                  </g>
+                  <g transform="translate(180, 140)">
+                    <ellipse cx="0" cy="0" rx="34" ry="9" fill="#d4af37" opacity="0.85" transform="rotate(55)"/>
+                  </g>
+                  <g transform="translate(260, 140)">
+                    <ellipse cx="0" cy="0" rx="38" ry="7" fill="#ff1744" opacity="0.9" transform="rotate(65)"/>
+                  </g>
+                  <text x="175" y="225" text-anchor="middle" fill="#fffefa" font-family="JetBrains Mono" font-size="10">Eigenvalues λ₁ ≥ λ₂ ≥ λ₃ &bull; Anisotropic Alignment</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Eigenvalue decomposition of symmetric $3\times 3$ tensor: $\mathbf{D} = \mathbf{V} \mathbf{\Lambda} \mathbf{V}^T$, where radii $r_i = \sqrt{\lambda_i}$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Brain white-matter tractography (DTI), crystal anisotropy stress, geological tectonic stress fields.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>VTK TensorGlyph automatically computes principal eigenvector axes and scales ellipsoid radii in C++.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>tensorGlyphs = vtk.vtkTensorGlyph()
+tensorGlyphs.SetInputData(tensorVolume)
+tensorGlyphs.SetSourceConnection(sphere.GetOutputPort())
+tensorGlyphs.ColorGlyphsWithFractionalAnisotropy()</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Tensor Order</span>
+            <span class="val">2nd Order 3x3</span>
+            <span class="sub">Symmetric DTI</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Eigendecomp</span>
+            <span class="val">λ1, λ2, λ3</span>
+            <span class="sub">Principal Axes</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Anisotropy</span>
+            <span class="val">Fractional (FA)</span>
+            <span class="sub">Water Diffusion</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Framework</span>
+            <span class="val">Kitware VTK</span>
+            <span class="sub">TensorGlyph</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+    </div>
+  </div>
+
+  <!-- Reveal.js & Dynamic Resize Engine -->
+  <script src="vendor/reveal.min.js" onerror="this.src='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js'"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      controls: true,
+      progress: true,
+      center: false,
+      overview: true,
+      width: 1400,
+      height: 860,
+      margin: 0.03,
+      minScale: 0.2,
+      maxScale: 2.0,
+      transition: 'fade',
+      backgroundTransition: 'fade'
+    });
+
+    // Universal auto-resize hook for Plotly, ECharts, Leaflet, Three.js, etc.
+    Reveal.on('slidechanged', event => {
+      const current = event.currentSlide;
+      
+      // Plotly resize
+      const plotlyGraphs = current.querySelectorAll('.plotly-graph');
+      plotlyGraphs.forEach(graph => {
+        if (window.Plotly && graph._fullLayout) {
+          Plotly.Plots.resize(graph);
+        }
+      });
+      
+      // ECharts resize
+      const echartsContainers = current.querySelectorAll('.echarts-chart');
+      echartsContainers.forEach(container => {
+        if (window.echarts) {
+          const inst = echarts.getInstanceByDom(container);
+          if (inst) inst.resize();
+        }
+      });
+
+      // Leaflet resize
+      const leafletMaps = current.querySelectorAll('.leaflet-map');
+      leafletMaps.forEach(mapContainer => {
+        if (mapContainer._leaflet_map) {
+          mapContainer._leaflet_map.invalidateSize();
+        }
+      });
+
+      // Re-trigger Mermaid if present
+      if (window.mermaid) {
+        const mermaids = current.querySelectorAll('.mermaid');
+        if (mermaids.length > 0) {
+          mermaid.run({ nodes: mermaids });
+        }
+      }
+    });
+  </script>
+</body>
+</html>

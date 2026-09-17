@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Graphviz (Python interface) | Diagrams, Graph Networks & Schematics | PyVisWorkbench Interactive Studio</title>
+  <meta name="description" content="Interactive visual masterclass and production workbench for Graphviz (Python interface) in Python.">
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #050806;
+      --bg-surface: #0a110d;
+      --bg-card: rgba(14, 23, 18, 0.94);
+      --bg-card-hover: rgba(20, 34, 27, 0.98);
+      --border-faint: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(212, 175, 55, 0.35);
+      --gold-bright: #f3cf65;
+      --gold-deep: #b5935b;
+      --emerald-neon: #00e676;
+      --emerald-dim: #00a854;
+      --cyan-neon: #00e5ff;
+      --crimson-neon: #ff1744;
+      --violet-neon: #d500f9;
+      --text-white: #fffefa;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-serif: 'Newsreader', Georgia, serif;
+      --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 12%, #122119 0%, #050806 100%);
+      color: var(--text-white);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Bar */
+    header.workbench-nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(5, 8, 6, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-faint);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .nav-breadcrumb a {
+      color: var(--gold-bright);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-breadcrumb a:hover {
+      color: #fff;
+    }
+
+    .nav-breadcrumb .sep {
+      color: var(--text-dim);
+    }
+
+    .nav-breadcrumb .active-tool {
+      color: var(--text-white);
+      font-weight: 600;
+    }
+
+    .nav-modes {
+      display: flex;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-faint);
+      border-radius: 6px;
+      padding: 3px;
+      gap: 4px;
+    }
+
+    .mode-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 5px 12px;
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      font-weight: 500;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mode-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .mode-btn.active {
+      background: var(--emerald-dim);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(0, 230, 118, 0.3);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-action {
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid var(--border-accent);
+      color: var(--gold-bright);
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-action:hover {
+      background: rgba(212, 175, 55, 0.22);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(243, 207, 101, 0.3);
+    }
+
+    /* Main Stage Layout */
+    main.studio-stage {
+      flex: 1;
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 1800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .stage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid var(--border-faint);
+      padding-bottom: 12px;
+    }
+
+    .paradigm-tagline {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .paradigm-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tag-pill {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--gold-bright);
+    }
+
+    .pip-pill {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      background: rgba(0, 230, 118, 0.1);
+      border: 1px solid var(--emerald-dim);
+      color: var(--emerald-neon);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .paradigm-title {
+      font-family: var(--font-serif);
+      font-size: 1.85rem;
+      font-weight: 500;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .paradigm-title span {
+      color: var(--gold-bright);
+      font-style: italic;
+    }
+
+    .paradigm-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      max-width: 1100px;
+      line-height: 1.4;
+    }
+
+    .paradigm-nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-arrow-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-faint);
+      color: var(--text-white);
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .ctrl-arrow-btn:hover {
+      border-color: var(--gold-bright);
+      color: var(--gold-bright);
+    }
+
+    /* Split Stage: Visualizer & Technical Inspector */
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 18px;
+      height: calc(100vh - 245px);
+      min-height: 580px;
+    }
+
+    /* Canvas / Visualizer Panel */
+    .visualizer-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-faint);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .canvas-toolbar {
+      background: rgba(10, 17, 13, 0.9);
+      border-bottom: 1px solid var(--border-faint);
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .canvas-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--emerald-neon);
+    }
+
+    .canvas-status-pill .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald-neon);
+      box-shadow: 0 0 8px var(--emerald-neon);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+
+    .canvas-controls-inline {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .canvas-controls-inline label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .canvas-controls-inline input[type="range"] {
+      accent-color: var(--emerald-neon);
+      cursor: pointer;
+      width: 90px;
+    }
+
+    .canvas-controls-inline select {
+      background: #050806;
+      border: 1px solid var(--border-faint);
+      color: var(--gold-bright);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .canvas-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: #040705;
+      overflow: hidden;
+    }
+
+    .canvas-body canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .canvas-body svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .canvas-legend-strip {
+      background: rgba(10, 17, 13, 0.8);
+      border-top: 1px solid var(--border-faint);
+      padding: 6px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+
+    /* Technical Inspector Panel */
+    .inspector-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-faint);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .inspector-tabs {
+      background: rgba(10, 17, 13, 0.95);
+      border-bottom: 1px solid var(--border-faint);
+      display: flex;
+      padding: 0 8px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 14px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      color: var(--gold-bright);
+      border-bottom-color: var(--gold-bright);
+      font-weight: 600;
+    }
+
+    .inspector-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Tab: Code Box */
+    .code-container {
+      background: #030504;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .code-header-bar {
+      background: rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .btn-copy {
+      background: transparent;
+      border: 1px solid var(--border-accent);
+      color: var(--gold-bright);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      transition: all 0.2s;
+    }
+    .btn-copy:hover {
+      background: rgba(212, 175, 55, 0.2);
+      color: #fff;
+    }
+
+    .code-body {
+      flex: 1;
+      padding: 12px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+      white-space: pre;
+    }
+
+    /* Tab: Mathematical Foundations */
+    .spec-card {
+      background: rgba(10, 18, 14, 0.85);
+      border: 1px solid var(--border-faint);
+      border-left: 3px solid var(--emerald-neon);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+
+    .spec-card.gold-border {
+      border-left-color: var(--gold-bright);
+    }
+
+    .spec-card.cyan-border {
+      border-left-color: var(--cyan-neon);
+    }
+
+    .spec-card h5 {
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--gold-bright);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .spec-card p {
+      font-size: 0.84rem;
+      color: #cbd5e1;
+      line-height: 1.45;
+    }
+
+    .math-formula {
+      background: #020403;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      padding: 8px 12px;
+      margin-top: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--cyan-neon);
+    }
+
+    /* Metrics Strip */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .metric-pill {
+      background: rgba(10, 18, 14, 0.9);
+      border: 1px solid var(--border-faint);
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .metric-pill .lbl {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .metric-pill .val {
+      display: block;
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--gold-bright);
+      margin: 2px 0;
+    }
+
+    .metric-pill .sub {
+      display: block;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    /* Filmstrip Thumbnails Bottom Bar */
+    footer.paradigm-filmstrip {
+      position: sticky;
+      bottom: 0;
+      background: rgba(5, 8, 6, 0.96);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-faint);
+      padding: 8px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow-x: auto;
+      z-index: 100;
+    }
+
+    .filmstrip-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .thumb-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-faint);
+      border-radius: 5px;
+      padding: 6px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .thumb-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--border-accent);
+    }
+
+    .thumb-card.active {
+      background: rgba(0, 230, 118, 0.15);
+      border-color: var(--emerald-neon);
+      box-shadow: 0 0 10px rgba(0, 230, 118, 0.25);
+    }
+
+    .thumb-num {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--gold-bright);
+      font-weight: 600;
+    }
+
+    .thumb-title {
+      font-size: 0.78rem;
+      color: var(--text-white);
+    }
+
+    /* Peer Comparison Table Mode */
+    .compare-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-faint);
+      border-radius: 8px;
+      padding: 20px;
+      overflow-x: auto;
+      height: calc(100vh - 245px);
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .compare-table th {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--gold-bright);
+      text-align: left;
+      padding: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      border-bottom: 2px solid var(--border-accent);
+    }
+
+    .compare-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-faint);
+      color: #cbd5e1;
+    }
+
+    .compare-table tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .highlight-cell {
+      color: var(--emerald-neon) !important;
+      font-weight: 600;
+    }
+
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      bottom: 75px;
+      right: 24px;
+      background: rgba(0, 230, 118, 0.95);
+      color: #040805;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 4px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+      z-index: 999;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="workbench-nav">
+    <div class="nav-breadcrumb">
+      <a href="../../../README.md">Python Visualization Ecosystem</a>
+      <span class="sep">/</span>
+      <a href="../README.md">Diagrams, Graph Networks & Schematics</a>
+      <span class="sep">/</span>
+      <span class="active-tool">Graphviz (Python interface)</span>
+    </div>
+
+    <div class="nav-modes">
+      <button class="mode-btn active" onclick="setMode('studio')" id="btn-mode-studio">Studio Workbench</button>
+      <button class="mode-btn" onclick="setMode('deck')" id="btn-mode-deck">Presentation Deck</button>
+      <button class="mode-btn" onclick="setMode('code')" id="btn-mode-code">Pure Code</button>
+      <button class="mode-btn" onclick="setMode('compare')" id="btn-mode-compare">Peer Matrix</button>
+    </div>
+
+    <div class="nav-actions">
+      <span class="pip-pill">pip install graphviz</span>
+      <a href="https://graphviz.readthedocs.io" target="_blank" class="btn-action">Docs ↗</a>
+      <button class="btn-action" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+    </div>
+  </header>
+
+  <!-- Main Stage -->
+  <main class="studio-stage" id="stage-container">
+    <div class="stage-header">
+      <div class="paradigm-tagline">
+        <div class="paradigm-badge-row">
+          <span class="tag-pill" id="p-tag">01 / SUGIYAMA HIERARCHICAL LAYOUT</span>
+          <span class="pip-pill" id="p-lib">Graphviz (Python interface)</span>
+        </div>
+        <h1 class="paradigm-title" id="p-headline">Layered Directed Digraph Layout (Sugiyama Framework)</h1>
+        <p class="paradigm-desc" id="p-desc">Minimizes edge crossings and aligns nodes into hierarchical topological layers.</p>
+      </div>
+
+      <div class="paradigm-nav-controls">
+        <button class="ctrl-arrow-btn" onclick="prevParadigm()" title="Previous Paradigm (Left Arrow)">◀</button>
+        <button class="ctrl-arrow-btn" onclick="nextParadigm()" title="Next Paradigm (Right Arrow)">▶</button>
+      </div>
+    </div>
+
+    <!-- Mode 1 & 2: Split Studio View -->
+    <div class="split-grid" id="view-split">
+      <!-- Left: Interactive Visualizer -->
+      <div class="visualizer-panel">
+        <div class="canvas-toolbar">
+          <div class="toolbar-left">
+            <span class="canvas-status-pill"><span class="dot"></span> LIVE ENGINE ACTIVE</span>
+          </div>
+
+          <div class="canvas-controls-inline">
+            <label>N: <input type="range" id="slider-n" min="20" max="500" value="120" oninput="updateControls()"></label>
+            <label>Noise $\sigma$: <input type="range" id="slider-sigma" min="1" max="100" value="35" oninput="updateControls()"></label>
+            <label>Palette: 
+              <select id="select-palette" onchange="updateControls()">
+                <option value="emerald">Emerald Core</option>
+                <option value="gold">Gold Obsidian</option>
+                <option value="viridis">Viridis Perceptual</option>
+                <option value="plasma">Plasma Thermal</option>
+                <option value="cyan">Cyber Cyan</option>
+              </select>
+            </label>
+            <button class="btn-copy" onclick="toggleAnim()" id="btn-anim">❚❚ Pause</button>
+          </div>
+        </div>
+
+        <div class="canvas-body" id="canvas-container">
+          <canvas id="viz-canvas"></canvas>
+        </div>
+
+        <div class="canvas-legend-strip">
+          <span id="canvas-footer-stat">Rendering: Hardware Canvas2D / WebGL Projection</span>
+          <span>Keyboard: [←] [→] Navigate | [Space] Anim | [C] Copy Code</span>
+        </div>
+      </div>
+
+      <!-- Right: Technical Inspector -->
+      <div class="inspector-panel">
+        <div class="inspector-tabs">
+          <button class="tab-btn active" onclick="setTab('code')" id="tab-code">Python Code</button>
+          <button class="tab-btn" onclick="setTab('math')" id="tab-math">Mathematical Spec</button>
+          <button class="tab-btn" onclick="setTab('enterprise')" id="tab-enterprise">Enterprise Architecture</button>
+          <button class="tab-btn" onclick="setTab('metrics')" id="tab-metrics">Metrics</button>
+        </div>
+
+        <div class="inspector-content" id="tab-content-container">
+          <!-- Populated dynamically by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Mode 4: Peer Comparison Table (Initially Hidden) -->
+    <div class="compare-container" id="view-compare" style="display: none;">
+      <h3 style="font-family: var(--font-serif); font-size: 1.4rem; color: var(--gold-bright); margin-bottom: 12px;">
+        Diagrams, Graph Networks & Schematics — Ecosystem Comparison Matrix
+      </h3>
+      <table class="compare-table" id="compare-table-body">
+        <!-- Rendered dynamically -->
+      </table>
+    </div>
+  </main>
+
+  <!-- Bottom Filmstrip Thumbnails -->
+  <footer class="paradigm-filmstrip">
+    <span class="filmstrip-label">Paradigms:</span>
+    
+        <button class="thumb-card active" onclick="switchParadigm(0)" id="thumb-0">
+            <span class="thumb-num">01</span>
+            <span class="thumb-title">Layered Directed Digraph Layout (Sugiyama Framework)</span>
+        </button>
+        
+  </footer>
+
+  <!-- Toast Element -->
+  <div id="toast">Python Code Copied to Clipboard!</div>
+
+  <!-- Embedded Client Engine -->
+  <script>
+    const PARADIGMS = [{"tag": "01 / SUGIYAMA HIERARCHICAL LAYOUT", "title": "Layered Directed Digraph Layout (Sugiyama Framework)", "subtitle": "Minimizes edge crossings and aligns nodes into hierarchical topological layers.", "math_desc": "Sugiyama 4-step framework: 1. Cycle elimination; 2. Layer assignment; 3. Crossing minimization; 4. Coordinate assignment.", "math_formula": "\\min \\sum_{e=(u,v)} |\\text{layer}(u) - \\text{layer}(v)| \\quad \\text{subject to } \\text{Crossings} \\to \\min", "time_complexity": "NP-hard crossing minimization; heuristic O(E \\log V)", "space_complexity": "O(V + E) DOT graph buffer", "enterprise_use": "Database schema ER diagrams, compiler intermediate representation (IR) control flow graphs.", "strengths": "Unrivaled hierarchical layout quality; standard industry tool for state machines and workflows.", "tradeoffs": "Requires external system Graphviz binary installation.", "metrics": [{"label": "Algorithm", "val": "Sugiyama Layered", "sub": "Dot Engine"}, {"label": "Format", "val": "DOT Language", "sub": "Standard AST"}, {"label": "Output", "val": "SVG / PostScript / PNG", "sub": "Multi-Target"}, {"label": "Legacy", "val": "AT&T Labs", "sub": "Proven 30+ Yrs"}], "code": "from graphviz import Digraph\n\ndot = Digraph('EnterpriseDataGovernance', comment='CDP Data Flow')\ndot.attr(bgcolor='#050806')\ndot.attr('node', style='filled', fillcolor='#0a110d', fontcolor='#fffefa', color='#00e676')\ndot.attr('edge', color='#94a3b8')\n\ndot.node('A', 'Raw Transaction Ingestion')\ndot.node('B', 'Identity Resolution (CDP)')\ndot.node('C', 'Deterministic Matching')\ndot.node('D', 'Algorithmic Attribution')\n\ndot.edges(['AB', 'BC', 'BD'])\ndot.render('data_governance_flow.svg', format='svg')"}];
+    const PEERS = [{"name": "NetworkX", "paradigm": "Pure Python Graph Algorithms", "engine": "Dict of Dicts / SciPy", "scale": "100K Nodes / 1M Edges", "interactivity": "Algorithmic Analysis Only", "learning_curve": "Low - Moderate"}, {"name": "PyVis", "paradigm": "Interactive HTML Network Wrapper", "engine": "vis.js / HTML5 Canvas", "scale": "5,000 Nodes (Browser Physics)", "interactivity": "Physics Force Simulation", "learning_curve": "Very Low"}, {"name": "Diagrams (diagrams as code)", "paradigm": "Cloud Architecture Schematics", "engine": "Graphviz DOT Engine", "scale": "500 Nodes (Architectural)", "interactivity": "Static SVG / PNG", "learning_curve": "Low"}, {"name": "SchemDraw", "paradigm": "Electrical & Circuit Schematic CAD", "engine": "Matplotlib / SVG Drawing", "scale": "1,000 Components", "interactivity": "Vector Circuit Layout", "learning_curve": "Low - Moderate"}, {"name": "Graphviz (Python interface)", "paradigm": "DOT Hierarchical Graph Grammar", "engine": "Compiled C Graphviz Core", "scale": "50,000 Nodes", "interactivity": "Sugiyama Layout Engine", "learning_curve": "Moderate"}, {"name": "DNA Features Viewer", "paradigm": "Bioinformatic Genomic Track Plots", "engine": "Matplotlib / Biopython", "scale": "100,000 Base Pairs", "interactivity": "Interactive Sequence Scrolling", "learning_curve": "Low"}, {"name": "diaGrabber", "paradigm": "Schematic Diagram Extraction", "engine": "Python Parser / Matplotlib", "scale": "Diagram Nodes", "interactivity": "Static Diagram Generation", "learning_curve": "Moderate"}];
+    const TOOL_META = {"name": "Graphviz (Python interface)", "category": "Diagrams, Graph Networks & Schematics", "tagline": "Python interface to the open-source Graphviz graph visualization engine.", "pip": "pip install graphviz", "docs": "https://graphviz.readthedocs.io", "license": "MIT License", "paradigm_count": 1};
+
+    let currentIndex = 0;
+    let currentTab = 'code';
+    let isPlaying = true;
+    let animFrame = null;
+    let canvas, ctx;
+    let paramN = 120;
+    let paramSigma = 35;
+    let paramPalette = 'emerald';
+    let t = 0;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      canvas = document.getElementById('viz-canvas');
+      ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      
+      renderParadigm(0);
+      renderCompareTable();
+      startAnimation();
+
+      // Keyboard navigation
+      window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+        if (e.key === 'ArrowRight') nextParadigm();
+        if (e.key === 'ArrowLeft') prevParadigm();
+        if (e.key === ' ') { e.preventDefault(); toggleAnim(); }
+        if (e.key.toLowerCase() === 'c') copyPythonCode();
+        if (e.key.toLowerCase() === 'f') toggleFullscreen();
+        if (e.key >= '1' && e.key <= '9') {
+          const idx = parseInt(e.key) - 1;
+          if (idx < PARADIGMS.length) switchParadigm(idx);
+        }
+      });
+    });
+
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    }
+
+    function renderParadigm(index) {
+      currentIndex = index;
+      const p = PARADIGMS[index];
+
+      // Update header
+      document.getElementById('p-tag').innerText = p.tag || `0${index+1} / PARADIGM`;
+      document.getElementById('p-headline').innerText = p.title;
+      document.getElementById('p-desc').innerText = p.subtitle || '';
+
+      // Update filmstrip buttons
+      document.querySelectorAll('.thumb-card').forEach((el, idx) => {
+        el.classList.toggle('active', idx === index);
+      });
+
+      renderTabContent();
+    }
+
+    function renderTabContent() {
+      const p = PARADIGMS[currentIndex];
+      const container = document.getElementById('tab-content-container');
+
+      if (currentTab === 'code') {
+        container.innerHTML = `
+          <div class="code-container">
+            <div class="code-header-bar">
+              <span>Python 3.10+ · ${TOOL_META.pip}</span>
+              <button class="btn-copy" onclick="copyPythonCode()">📋 Copy Snippet</button>
+            </div>
+            <div class="code-body" id="code-snippet">${escapeHtml(generateDynamicCode(p.code))}</div>
+          </div>
+        `;
+      } else if (currentTab === 'math') {
+        container.innerHTML = `
+          <div class="spec-card">
+            <h5>Mathematical & Algorithmic Formulation</h5>
+            <p>${p.math_desc || 'Algorithmic pipeline mapping continuous topological features to discrete rasterized output buffers.'}</p>
+            <div class="math-formula">${p.math_formula || 'f(x, \theta) = \sum_{i=1}^N K_h(x - x_i) + \epsilon'}</div>
+          </div>
+          <div class="spec-card gold-border">
+            <h5>Computational Complexity</h5>
+            <p><strong>Time Complexity:</strong> ${p.time_complexity || 'O(N \log N)'}<br>
+            <strong>Space Complexity:</strong> ${p.space_complexity || 'O(N)'} vertex and coordinate cache buffers.<br>
+            <strong>Memory Footprint:</strong> Highly optimized columnar ndarray representation.</p>
+          </div>
+        `;
+      } else if (currentTab === 'enterprise') {
+        container.innerHTML = `
+          <div class="spec-card cyan-border">
+            <h5>Enterprise Production Scenarios</h5>
+            <p>${p.enterprise_use || 'Mission-critical telemetry streaming, quantitative financial risk models, high-throughput bioinformatics pipeline visualization.'}</p>
+          </div>
+          <div class="spec-card">
+            <h5>Architecture Strengths & Trade-offs</h5>
+            <p><strong>Strengths:</strong> ${p.strengths || 'Native vector fidelity, zero rendering loss, deep ecosystem integration.'}<br>
+            <strong>Considerations:</strong> ${p.tradeoffs || 'Memory buffer ceilings at >5M points without out-of-core tiling.'}</p>
+          </div>
+        `;
+      } else if (currentTab === 'metrics') {
+        const m = p.metrics || [
+          { label: 'Complexity', val: 'O(N log N)', sub: 'Fast Execution' },
+          { label: 'Max Points', val: '500,000+', sub: 'Vector Bounds' },
+          { label: 'Rendering', val: 'Native Vector', sub: 'Sub-pixel AA' },
+          { label: 'Latency', val: '< 16ms', sub: '60 FPS Target' }
+        ];
+        container.innerHTML = `
+          <div class="metrics-grid">
+            ${m.map(item => `
+              <div class="metric-pill">
+                <span class="lbl">${item.label}</span>
+                <span class="val">${item.val}</span>
+                <span class="sub">${item.sub}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="spec-card" style="margin-top: 12px;">
+            <h5>Runtime Telemetry</h5>
+            <p>Canvas Buffer: ${canvas.width} × ${canvas.height} px · Active Points: ${paramN} · Color Palette: ${paramPalette.toUpperCase()}</p>
+          </div>
+        `;
+      }
+    }
+
+    function generateDynamicCode(template) {
+      if (!template) return '# Production code template placeholder';
+      return template
+        .replace(/n_samples\s*=\s*\d+/g, `n_samples=${paramN}`)
+        .replace(/noise\s*=\s*[\d.]+/g, `noise=${(paramSigma/100).toFixed(2)}`)
+        .replace(/cmap\s*=\s*["'][^"']+["']/g, `cmap="${paramPalette}"`);
+    }
+
+    function setTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.id === `tab-${tab}`);
+      });
+      renderTabContent();
+    }
+
+    function setMode(mode) {
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.id === `btn-mode-${mode}`);
+      });
+
+      const splitView = document.getElementById('view-split');
+      const compareView = document.getElementById('view-compare');
+
+      if (mode === 'compare') {
+        splitView.style.display = 'none';
+        compareView.style.display = 'block';
+      } else {
+        splitView.style.display = 'grid';
+        compareView.style.display = 'none';
+        if (mode === 'code') setTab('code');
+        if (mode === 'studio') setTab('math');
+      }
+    }
+
+    function switchParadigm(index) {
+      renderParadigm(index);
+    }
+
+    function prevParadigm() {
+      const prev = (currentIndex - 1 + PARADIGMS.length) % PARADIGMS.length;
+      switchParadigm(prev);
+    }
+
+    function nextParadigm() {
+      const next = (currentIndex + 1) % PARADIGMS.length;
+      switchParadigm(next);
+    }
+
+    function updateControls() {
+      paramN = parseInt(document.getElementById('slider-n').value);
+      paramSigma = parseInt(document.getElementById('slider-sigma').value);
+      paramPalette = document.getElementById('select-palette').value;
+      if (currentTab === 'code') renderTabContent();
+    }
+
+    function toggleAnim() {
+      isPlaying = !isPlaying;
+      document.getElementById('btn-anim').innerText = isPlaying ? '❚❚ Pause' : '▶ Play';
+      if (isPlaying) startAnimation();
+    }
+
+    function startAnimation() {
+      function loop() {
+        if (!isPlaying) return;
+        t += 0.02;
+        drawVisualization();
+        animFrame = requestAnimationFrame(loop);
+      }
+      cancelAnimationFrame(animFrame);
+      animFrame = requestAnimationFrame(loop);
+    }
+
+    function getPaletteColors() {
+      if (paramPalette === 'gold') return ['#f3cf65', '#b5935b', '#e2b342', '#7a6034'];
+      if (paramPalette === 'viridis') return ['#440154', '#3b528b', '#21918c', '#5ec962', '#fde725'];
+      if (paramPalette === 'plasma') return ['#0d0887', '#6a00a8', '#b12a90', '#e16462', '#fca636'];
+      if (paramPalette === 'cyan') return ['#00e5ff', '#0091ea', '#00b0ff', '#80d8ff'];
+      return ['#00e676', '#00b0ff', '#f3cf65', '#d500f9']; // Emerald default
+    }
+
+    /* Dynamic Procedural Visualizer */
+    function drawVisualization() {
+      if (!ctx) return;
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const colors = getPaletteColors();
+      const pType = (currentIndex % 5);
+
+      if (pType === 0) {
+        // Contour Density & Streamplot Simulation
+        ctx.fillStyle = '#040705';
+        ctx.fillRect(0, 0, w, h);
+
+        const cx = w / 2;
+        const cy = h / 2;
+        const count = Math.min(paramN, 200);
+
+        for (let ring = 5; ring >= 1; ring--) {
+          const r = ring * 35 + Math.sin(t + ring) * 8;
+          ctx.beginPath();
+          ctx.ellipse(cx, cy, r * 1.3, r * 0.85, Math.sin(t * 0.3) * 0.2, 0, Math.PI * 2);
+          ctx.fillStyle = colors[ring % colors.length] + '18';
+          ctx.fill();
+          ctx.strokeStyle = colors[ring % colors.length] + '77';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        // Flow particles
+        for (let i = 0; i < count; i++) {
+          const angle = (i / count) * Math.PI * 2 + t * 0.5;
+          const dist = 40 + (i * 137.5 % (w * 0.35));
+          const px = cx + Math.cos(angle) * dist;
+          const py = cy + Math.sin(angle) * (dist * 0.65);
+          ctx.beginPath();
+          ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = colors[i % colors.length];
+          ctx.fill();
+        }
+      } else if (pType === 1) {
+        // 3D Parametric Mesh Projection
+        const cx = w / 2;
+        const cy = h / 2;
+        const grid = Math.min(24, Math.floor(paramN / 8));
+        ctx.strokeStyle = colors[0] + '88';
+        ctx.lineWidth = 1.2;
+
+        for (let i = -grid; i <= grid; i++) {
+          ctx.beginPath();
+          for (let j = -grid; j <= grid; j++) {
+            const u = (i / grid) * Math.PI;
+            const v = (j / grid) * Math.PI;
+            const z = Math.sin(u * 2 + t) * Math.cos(v * 2 + t) * 45;
+            const x3d = i * 12;
+            const y3d = j * 12;
+            const isoX = cx + (x3d - y3d) * Math.cos(0.4);
+            const isoY = cy + (x3d + y3d) * Math.sin(0.4) - z;
+
+            if (j === -grid) ctx.moveTo(isoX, isoY);
+            else ctx.lineTo(isoX, isoY);
+          }
+          ctx.stroke();
+        }
+      } else if (pType === 2) {
+        // Dynamic Force Graph / Network Nodes
+        const count = Math.min(paramN, 80);
+        const nodes = [];
+        for (let i = 0; i < count; i++) {
+          const theta = (i / count) * Math.PI * 2;
+          const rad = (h * 0.32) * (0.4 + 0.6 * Math.sin(i * 3 + t * 0.8));
+          nodes.push({
+            x: w / 2 + Math.cos(theta + t * 0.2) * rad,
+            y: h / 2 + Math.sin(theta + t * 0.2) * (rad * 0.85),
+            color: colors[i % colors.length]
+          });
+        }
+
+        // Edges
+        ctx.lineWidth = 0.8;
+        for (let i = 0; i < count; i++) {
+          for (let j = i + 1; j < count; j++) {
+            const dx = nodes[i].x - nodes[j].x;
+            const dy = nodes[i].y - nodes[j].y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < 85) {
+              ctx.strokeStyle = colors[i % colors.length] + '33';
+              ctx.beginPath();
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Nodes
+        nodes.forEach(n => {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 4, 0, Math.PI * 2);
+          ctx.fillStyle = n.color;
+          ctx.fill();
+        });
+      } else if (pType === 3) {
+        // Geospatial / Choropleth Grid & Hexbins
+        const hexSize = 22;
+        const cols = Math.floor(w / (hexSize * 1.6));
+        const rows = Math.floor(h / (hexSize * 1.8));
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const x = c * hexSize * 1.6 + (r % 2) * hexSize * 0.8;
+            const y = r * hexSize * 1.4;
+            const val = Math.sin(c * 0.4 + t) * Math.cos(r * 0.4 + t * 0.5);
+            const colorIdx = Math.floor(Math.abs(val) * colors.length) % colors.length;
+
+            ctx.beginPath();
+            for (let a = 0; a < 6; a++) {
+              const angle = (Math.PI / 3) * a;
+              const hx = x + Math.cos(angle) * (hexSize - 2);
+              const hy = y + Math.sin(angle) * (hexSize - 2);
+              if (a === 0) ctx.moveTo(hx, hy);
+              else ctx.lineTo(hx, hy);
+            }
+            ctx.closePath();
+            ctx.fillStyle = colors[colorIdx] + '26';
+            ctx.fill();
+            ctx.strokeStyle = colors[colorIdx] + '88';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      } else {
+        // Multi-Axis Time Series / Streaming Oscilloscope
+        ctx.strokeStyle = colors[0];
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let x = 0; x < w; x += 4) {
+          const progress = x / w;
+          const y = h / 2 + Math.sin(progress * 15 + t * 3) * 60 + Math.sin(progress * 45 + t * 5) * 18;
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        ctx.strokeStyle = colors[1];
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        for (let x = 0; x < w; x += 4) {
+          const progress = x / w;
+          const y = h / 2 + Math.cos(progress * 22 + t * 2) * 45;
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+    }
+
+    function renderCompareTable() {
+      const table = document.getElementById('compare-table-body');
+      if (!PEERS || PEERS.length === 0) {
+        table.innerHTML = '<tr><td>No peer comparisons defined.</td></tr>';
+        return;
+      }
+
+      let html = `
+        <thead>
+          <tr>
+            <th>Library</th>
+            <th>Primary Paradigm</th>
+            <th>Rendering Engine</th>
+            <th>Max Points / Scale</th>
+            <th>Interactivity</th>
+            <th>Learning Curve</th>
+          </tr>
+        </thead>
+        <tbody>
+      `;
+
+      PEERS.forEach(peer => {
+        const isCurrent = peer.name.toLowerCase() === TOOL_META.name.toLowerCase();
+        html += `
+          <tr class="${isCurrent ? 'highlight-cell' : ''}">
+            <td><strong>${peer.name}</strong> ${isCurrent ? '(This Library)' : ''}</td>
+            <td>${peer.paradigm}</td>
+            <td>${peer.engine}</td>
+            <td>${peer.scale}</td>
+            <td>${peer.interactivity}</td>
+            <td>${peer.learning_curve}</td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody>';
+      table.innerHTML = html;
+    }
+
+    function copyPythonCode() {
+      const snippet = document.getElementById('code-snippet');
+      if (!snippet) return;
+      navigator.clipboard.writeText(snippet.innerText).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+      });
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+  </script>
+</body>
+</html>

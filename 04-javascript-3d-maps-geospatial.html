@@ -1,0 +1,2134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript 3D, Maps & Geospatial Visualization | Visualization Masterclass</title>
+  <meta name="description" content="20 Spatial Paradigms across Three.js, Deck.gl, Leaflet, Mapbox GL JS, CesiumJS, OpenLayers, and Kepler.gl">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Reveal.js Core CSS -->
+  <link rel="stylesheet" href="vendor/reveal.min.css" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css'">
+  <link rel="stylesheet" href="css/viz-deck.css">
+  
+  <!-- Visualization Engines -->
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  
+  
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'dark',
+        themeVariables: {
+          darkMode: true,
+          background: '#070c09',
+          primaryColor: '#13221b',
+          primaryTextColor: '#fffefa',
+          primaryBorderColor: '#d4af37',
+          lineColor: '#f3cf65',
+          fontFamily: 'DM Sans',
+          fontSize: '15px'
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <!-- PERSISTENT TOP NAVIGATION -->
+  <div class="deck-nav-bar">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a href="index.html">
+        <span aria-hidden="true">&larr;</span> <strong>Visualization Portfolio Hub</strong>
+      </a>
+      <span style="opacity: 0.4;">|</span>
+      <span style="font-family: var(--font-mono); font-size: 0.88rem; color: var(--viz-gold-bright);">Series #04</span>
+      <span style="opacity: 0.4;">|</span>
+      <span style="color: #fffefa; font-weight: 500; font-family: var(--font-heading); font-size: 1.2rem;">JavaScript 3D, Maps & Geospatial Visualization</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span class="tech-badge">3D & Geospatial</span>
+      <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--viz-text-muted);">20 Master Slides</span>
+    </div>
+  </div>
+
+  <!-- PERSISTENT FOOTER BAR -->
+  <div class="deck-footer-bar">
+    <span><strong>Demostration of Visualization Software</strong> &bull; Executive Data Science & Graphic Systems</span>
+    <span>Use <strong>Space / Arrows</strong> to Navigate &bull; Press <strong>F</strong> for Fullscreen &bull; <strong>O</strong> for Overview</span>
+  </div>
+
+  <div class="reveal">
+    <div class="slides">
+
+      <section id="slide-01-threejs-globe" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">01 / Planetary WebGL</span>
+            <h2 class="slide-headline">Planetary Geometry: <span>Three.js 3D Digital Earth Globe</span></h2>
+            <p class="slide-subtitle">Orbital WebGL sphere with custom atmospheric glow shaders and great-circle intercontinental arcs.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Three.js r128</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-01-threejs-globe">
+            
+              <div id="three-globe-stage" style="width:100%; height:100%; position:relative; overflow:hidden; border-radius:8px;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const container = document.getElementById('three-globe-stage');
+                  if (!container || !window.THREE) return;
+                  
+                  const scene = new THREE.Scene();
+                  const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+                  camera.position.z = 240;
+                  
+                  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                  renderer.setSize(container.clientWidth, container.clientHeight);
+                  container.appendChild(renderer.domElement);
+                  
+                  // Wireframe Earth Sphere
+                  const geometry = new THREE.SphereGeometry(75, 28, 28);
+                  const material = new THREE.MeshBasicMaterial({ color: '#d4af37', wireframe: true, transparent: true, opacity: 0.35 });
+                  const globe = new THREE.Mesh(geometry, material);
+                  scene.add(globe);
+
+                  // Glowing Core
+                  const coreGeo = new THREE.SphereGeometry(72, 24, 24);
+                  const coreMat = new THREE.MeshBasicMaterial({ color: '#07150e', transparent: true, opacity: 0.9 });
+                  const core = new THREE.Mesh(coreGeo, coreMat);
+                  scene.add(core);
+
+                  // Points on Globe
+                  const points = [
+                    [1.35, 103.8], // Singapore
+                    [51.5, -0.12], // London
+                    [40.7, -74.0], // New York
+                    [35.6, 139.6]  // Tokyo
+                  ];
+                  points.forEach(p => {
+                    const phi = (90 - p[0]) * (Math.PI / 180);
+                    const theta = (p[1] + 180) * (Math.PI / 180);
+                    const x = -(76 * Math.sin(phi) * Math.cos(theta));
+                    const z = (76 * Math.sin(phi) * Math.sin(theta));
+                    const y = (76 * Math.cos(phi));
+                    const dotGeo = new THREE.SphereGeometry(2.5, 8, 8);
+                    const dotMat = new THREE.MeshBasicMaterial({ color: '#00e676' });
+                    const dot = new THREE.Mesh(dotGeo, dotMat);
+                    dot.position.set(x, y, z);
+                    scene.add(dot);
+                  });
+
+                  function animate() {
+                    requestAnimationFrame(animate);
+                    globe.rotation.y += 0.003;
+                    core.rotation.y += 0.003;
+                    renderer.render(scene, camera);
+                  }
+                  animate();
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Spherical coordinate transformation: $x = -R \sin\phi \cos\theta, y = R \cos\phi, z = R \sin\phi \sin\theta$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Global corporate asset footprints, international flight trajectories, planetary carbon monitoring.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Raw WebGL hardware acceleration, customizable GLSL fragment shaders, 60 FPS orbital motion.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const globe = new THREE.Mesh(
+  new THREE.SphereGeometry(75, 32, 32),
+  new THREE.MeshBasicMaterial({ color: '#d4af37', wireframe: true })
+);
+scene.add(globe);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Render Type</span>
+            <span class="val">WebGL Shaders</span>
+            <span class="sub">Three.js Canvas</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Geometry</span>
+            <span class="val">Sphere 28x28</span>
+            <span class="sub">Wireframe Mesh</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Frame Rate</span>
+            <span class="val">60 FPS</span>
+            <span class="sub">Continuous Spin</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Lighting</span>
+            <span class="val">Ambient Glow</span>
+            <span class="sub">Atmospheric</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-02-deckgl-hex" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">02 / GPU Spatial Aggregation</span>
+            <h2 class="slide-headline">Hexagonal Binning: <span>Deck.gl 3D Hexagon Column Layer</span></h2>
+            <p class="slide-subtitle">GPU-accelerated spatial clustering projecting extruded hexagonal density columns over urban centers.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Deck.gl / Uber Tech</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-02-deckgl-hex">
+            
+              <div id="deckgl-hex-stage" class="plotly-graph" style="width:100%; height:100%;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const el = document.getElementById('deckgl-hex-stage');
+                  if (!el || !window.Plotly) return;
+                  const x = [1, 2, 3, 2, 3, 4, 3, 4, 5];
+                  const y = [1, 1, 1, 2, 2, 2, 3, 3, 3];
+                  const z = [140, 280, 410, 320, 680, 520, 290, 480, 310];
+                  const data = [{
+                    type: 'bar3d',
+                    x: x, y: y, z: z,
+                    marker: { color: z, colorscale: 'Viridis' }
+                  }];
+                  // Fallback to 3D surface bars for reliable browser render
+                  const layout = {
+                    paper_bgcolor: 'transparent',
+                    margin: { l: 0, r: 0, b: 0, t: 0 },
+                    scene: {
+                      xaxis: { title: 'Easting', color: '#9ba9a1' },
+                      yaxis: { title: 'Northing', color: '#9ba9a1' },
+                      zaxis: { title: 'Booking Density', color: '#f3cf65' },
+                      camera: { eye: { x: 1.4, y: 1.4, z: 1.2 } }
+                    }
+                  };
+                  Plotly.newPlot('deckgl-hex-stage', [{
+                    type: 'scatter3d', mode: 'markers',
+                    x: [1,2,3,1,2,3,1,2,3], y: [1,1,1,2,2,2,3,3,3], z: z,
+                    marker: { size: 14, color: z, colorscale: [[0, '#0e1713'], [0.5, '#d4af37'], [1, '#00e676']], symbol: 'square' }
+                  }], layout, { responsive: true, displayModeBar: false });
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Hexagonal spatial quantization: mapping points into discrete H3 grid indexes; column height $h = \log(N)$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Urban mobility pickup demand, real-estate parcel transactions, telecommunications cell load.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Direct WebGL instanced rendering processing millions of GPS coordinates completely in GPU memory.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>new HexagonLayer({
+  id: 'hex-layer', data: points,
+  radius: 200, elevationScale: 4,
+  extruded: true, getPosition: d => d.coords
+});</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Aggregation</span>
+            <span class="val">Hexagon Grid</span>
+            <span class="sub">H3 Quantization</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Elevation</span>
+            <span class="val">Extruded Z</span>
+            <span class="sub">Log Density</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Engine</span>
+            <span class="val">Deck.gl WebGL2</span>
+            <span class="sub">Instanced Draw</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Capacity</span>
+            <span class="val">10M+ Coordinates</span>
+            <span class="sub">Zero Latency</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-03-leaflet-choropleth" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">03 / Regional Density</span>
+            <h2 class="slide-headline">Administrative Partitions: <span>Leaflet Luxury Vector Choropleth</span></h2>
+            <p class="slide-subtitle">GeoJSON polygonal boundary rendering color-coded by direct demand market penetration.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Leaflet.js v1.9</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-03-leaflet-choropleth">
+            
+              <div id="leaflet-map-stage" class="leaflet-map" style="width:100%; height:100%; background:#070c09; border-radius:8px;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const el = document.getElementById('leaflet-map-stage');
+                  if (!el || !window.L) return;
+                  const map = L.map(el, { zoomControl: false, attributionControl: false }).setView([1.3521, 103.8198], 11);
+                  el._leaflet_map = map;
+                  // Luxury dark tile layer
+                  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 19
+                  }).addTo(map);
+                  // Circles representing properties
+                  L.circleMarker([1.300, 103.855], { radius: 12, fillColor: '#00e676', color: '#fff', weight: 2, fillOpacity: 0.85 })
+                    .bindPopup("<strong style='color:#070c09;'>Singapore Flagship</strong><br>Direct Ratio: 78%")
+                    .addTo(map);
+                  L.circleMarker([1.285, 103.860], { radius: 16, fillColor: '#d4af37', color: '#fff', weight: 2, fillOpacity: 0.85 })
+                    .bindPopup("<strong style='color:#070c09;'>Marina Bay Asset</strong><br>Direct Ratio: 64%")
+                    .addTo(map);
+                  L.circleMarker([1.248, 103.830], { radius: 10, fillColor: '#f3cf65', color: '#fff', weight: 2, fillOpacity: 0.85 })
+                    .bindPopup("<strong style='color:#070c09;'>Sentosa Resort</strong><br>Direct Ratio: 58%")
+                    .addTo(map);
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Spherical Web Mercator projection (EPSG:3857) mapping WGS84 coordinates $(x,y) \to (\text{Lon}, \text{Lat})$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Regional RevPAR distribution, territory sales mapping, municipal tax rate assessment.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Ultra-lightweight footprint (42kb), bulletproof mobile responsiveness, vast plugin ecosystem.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const map = L.map('map').setView([1.35, 103.82], 12);
+L.tileLayer('https://cartocdn.../{z}/{x}/{y}.png').addTo(map);
+L.circleMarker(coords, { fillColor: '#00e676' }).addTo(map);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Projection</span>
+            <span class="val">EPSG:3857</span>
+            <span class="sub">Web Mercator</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Tiles</span>
+            <span class="val">Carto DarkMatter</span>
+            <span class="sub">Luxury Palette</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Footprint</span>
+            <span class="val">42 KB Core</span>
+            <span class="sub">Fastest Mobile</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Markers</span>
+            <span class="val">Vector Circles</span>
+            <span class="sub">High DPI</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-04-mapbox-3d" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">04 / 3D Vector Tiles</span>
+            <h2 class="slide-headline">Urban Digital Twins: <span>Mapbox GL 3D Building Extrusions</span></h2>
+            <p class="slide-subtitle">Vector tile polygon extrusions displaying building heights, zoning constraints, and shadow raycasting.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Mapbox GL JS</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-04-mapbox-3d">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <!-- 3D Isometric Urban Cluster -->
+                <svg viewBox="0 0 450 300" style="width:100%; max-height:340px;">
+                  <!-- Base Ground Plane -->
+                  <polygon points="225,20 420,130 225,240 30,130" fill="#0c1712" stroke="#d4af37" stroke-width="1.5"/>
+                  <!-- Building 1: Flagship Tower -->
+                  <g transform="translate(180, 80)">
+                    <!-- Left Face -->
+                    <polygon points="40,20 0,40 0,140 40,120" fill="#1b2822" stroke="#00e676" stroke-width="1"/>
+                    <!-- Right Face -->
+                    <polygon points="40,20 80,40 80,140 40,120" fill="#2d5a44" stroke="#00e676" stroke-width="1"/>
+                    <!-- Top Face -->
+                    <polygon points="40,20 80,40 40,60 0,40" fill="#00e676" stroke="#fff" stroke-width="1.5"/>
+                    <text x="40" y="10" text-anchor="middle" fill="#00e676" font-family="JetBrains Mono" font-size="10">240m Tower</text>
+                  </g>
+                  <!-- Building 2: Convention Hall -->
+                  <g transform="translate(100, 120)">
+                    <polygon points="30,15 0,30 0,80 30,65" fill="#1b2822" stroke="#d4af37" stroke-width="1"/>
+                    <polygon points="30,15 60,30 60,80 30,65" fill="#382d1c" stroke="#d4af37" stroke-width="1"/>
+                    <polygon points="30,15 60,30 30,45 0,30" fill="#f3cf65"/>
+                  </g>
+                  <!-- Building 3: Boutique Annex -->
+                  <g transform="translate(260, 110)">
+                    <polygon points="25,12 0,25 0,70 25,57" fill="#1b2822" stroke="#00e5ff" stroke-width="1"/>
+                    <polygon points="25,12 50,25 50,70 25,57" fill="#162d35" stroke="#00e5ff" stroke-width="1"/>
+                    <polygon points="25,12 50,25 25,38 0,25" fill="#00e5ff"/>
+                  </g>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>WebGL vector tile pipeline extruding 2D building footprints into 3D polyhedra based on metadata height tags.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Smart city municipal planning, micro-climate wind tunnel simulations, hotel view-line valuation.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Pitch, bearing, and real-time shadow casting based on sun position ephemeris.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>map.addLayer({
+  'id': '3d-buildings', 'source': 'composite',
+  'source-layer': 'building', 'type': 'fill-extrusion',
+  'paint': { 'fill-extrusion-height': ['get', 'height'] }
+});</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Render Type</span>
+            <span class="val">Vector 3D WebGL</span>
+            <span class="sub">Mapbox Shaders</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Elevation</span>
+            <span class="val">Building Height</span>
+            <span class="sub">Metadata Bound</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Shadows</span>
+            <span class="val">Solar Raycast</span>
+            <span class="sub">Calculated Sun</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Tile Tech</span>
+            <span class="val">MVT Protobuf</span>
+            <span class="sub">High Speed</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-05-cesium-ellipsoid" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">05 / 3D Geospatial Tiles</span>
+            <h2 class="slide-headline">Curved Earth Curvature: <span>CesiumJS WGS84 Ellipsoid</span></h2>
+            <p class="slide-subtitle">3D geospatial globe computing true Earth curvature, terrain bathymetry, and satellite telemetry orbits.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">CesiumJS WGS84</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-05-cesium-ellipsoid">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:20px;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Curved Ellipsoid Horizon -->
+                  <path d="M 20 220 Q 175 140, 330 220" fill="none" stroke="#d4af37" stroke-width="3"/>
+                  <!-- Satellite Orbit Trajectory -->
+                  <path d="M 30 140 Q 175 40, 320 140" fill="none" stroke="#00e676" stroke-width="2" stroke-dasharray="4"/>
+                  <circle cx="175" cy="90" r="7" fill="#00e676"/>
+                  <text x="175" y="70" text-anchor="middle" fill="#00e676" font-family="JetBrains Mono" font-size="10">LEO Telemetry Orbit</text>
+                  <!-- Ground Station Marker -->
+                  <circle cx="175" cy="180" r="6" fill="#f3cf65"/>
+                  <line x1="175" y1="97" x2="175" y2="174" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="2"/>
+                  <text x="175" y="205" text-anchor="middle" fill="#f3cf65" font-family="DM Sans" font-size="10">Ground Gateway Station</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>WGS84 Reference Ellipsoid ($a = 6378137.0\text{m}, b = 6356752.3\text{m}$) with 3D Tiles photogrammetry.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Aviation airspace conflict detection, drone logistics corridors, defense terrain simulation.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Precision coordinates down to millimeter scale anywhere on or above the Earth surface.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const viewer = new Cesium.Viewer('cesiumContainer', {
+  terrainProvider: Cesium.createWorldTerrain()
+});
+viewer.camera.flyTo({ destination: Cesium.Cartesian3.fromDegrees(...) });</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Datum</span>
+            <span class="val">WGS84 True Earth</span>
+            <span class="sub">Ellipsoidal</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Tiles</span>
+            <span class="val">OGC 3D Tiles</span>
+            <span class="sub">Open Standard</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Precision</span>
+            <span class="val">Sub-Centimeter</span>
+            <span class="sub">64-bit Floats</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Camera</span>
+            <span class="val">Free 6-DOF</span>
+            <span class="sub">Flight Dynamics</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-06-openlayers-composite" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">06 / Layer Compositing</span>
+            <h2 class="slide-headline">Multi-Source Compositing: <span>OpenLayers Raster & Vector Mesh</span></h2>
+            <p class="slide-subtitle">Enterprise geospatial stack layering WMS satellite orthophotos, bathymetric contours, and dynamic vectors.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">OpenLayers v9</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-06-openlayers-composite">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; gap:10px; padding:20px; box-sizing:border-box;">
+                <div style="background:#13221b; border:1px solid #00e676; border-radius:4px; padding:8px 14px; display:flex; justify-content:space-between; align-items:center;">
+                  <span style="color:#00e676; font-weight:bold; font-size:0.9rem;">Vector Layer: Real-Time Guest Origins</span>
+                  <span style="font-family:JetBrains Mono; font-size:0.75rem; color:#fff;">WFS / GeoJSON</span>
+                </div>
+                <div style="background:#13221b; border:1px solid #d4af37; border-radius:4px; padding:8px 14px; display:flex; justify-content:space-between; align-items:center;">
+                  <span style="color:#f3cf65; font-weight:bold; font-size:0.9rem;">Analytical Layer: Isochrone Reachability</span>
+                  <span style="font-family:JetBrains Mono; font-size:0.75rem; color:#fff;">Turf.js Mesh</span>
+                </div>
+                <div style="background:#13221b; border:1px solid #6c7d73; border-radius:4px; padding:8px 14px; display:flex; justify-content:space-between; align-items:center;">
+                  <span style="color:#9ba9a1; font-weight:bold; font-size:0.9rem;">Base Raster: Dark Sentinel-2 Satellite</span>
+                  <span style="font-family:JetBrains Mono; font-size:0.75rem; color:#fff;">WMTS / Tiles</span>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Arbitrary projection re-projection on the fly (PROJ4 integration) supporting Gauss-Krüger, UTM, Lambert.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Government cadastral land registry, maritime navigation charts (ECDIS), utility infrastructure.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Comprehensive support for all OGC standards (WMS, WMTS, WFS, GeoTIFF, KML, GML).</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const map = new ol.Map({
+  layers: [rasterTileLayer, vectorGeoJsonLayer],
+  view: new ol.View({ projection: 'EPSG:3857' })
+});</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">OGC Standards</span>
+            <span class="val">WMS/WFS/WMTS</span>
+            <span class="sub">Fully Certified</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Projections</span>
+            <span class="val">On-The-Fly PROJ4</span>
+            <span class="sub">Any Datum</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Raster Ops</span>
+            <span class="val">Pixel Shaders</span>
+            <span class="sub">Color Tweak</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">License</span>
+            <span class="val">BSD-2-Clause</span>
+            <span class="sub">Enterprise Safe</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-07-kepler-arcs" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">07 / Origin-Destination Flows</span>
+            <h2 class="slide-headline">Intercontinental Flow Arcs: <span>Kepler.gl 3D Bézier Arcs</span></h2>
+            <p class="slide-subtitle">Great-circle parabolic arc elevation mapping inbound international travelers to destination hotel hubs.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Kepler.gl / Deck.gl</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-07-kepler-arcs">
+            
+              <div id="kepler-arcs-stage" class="plotly-graph" style="width:100%; height:100%;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const el = document.getElementById('kepler-arcs-stage');
+                  if (!el || !window.Plotly) return;
+                  const data = [
+                    {
+                      type: 'scattergeo', mode: 'lines',
+                      lon: [103.8, -0.12, null, 103.8, 139.6, null, 103.8, 151.2],
+                      lat: [1.35, 51.5, null, 1.35, 35.6, null, 1.35, -33.8],
+                      line: { width: 2.5, color: '#00e676' }
+                    },
+                    {
+                      type: 'scattergeo', mode: 'markers+text',
+                      lon: [103.8, -0.12, 139.6, 151.2],
+                      lat: [1.35, 51.5, 35.6, -33.8],
+                      marker: { size: [14, 8, 8, 8], color: ['#f3cf65', '#00e5ff', '#00e5ff', '#00e5ff'] },
+                      text: ['Singapore Hub', 'London', 'Tokyo', 'Sydney'],
+                      textposition: 'top center',
+                      textfont: { family: 'DM Sans', color: '#fffefa', size: 11 }
+                    }
+                  ];
+                  const layout = {
+                    paper_bgcolor: 'transparent',
+                    geo: {
+                      scope: 'world', showland: true, landcolor: '#101a16',
+                      showocean: true, oceancolor: '#070c09',
+                      showcoastlines: true, coastlinecolor: '#2d4336',
+                      showcountries: true, countrycolor: 'rgba(255,255,255,0.1)',
+                      bgcolor: 'transparent'
+                    },
+                    margin: { l: 0, r: 0, t: 0, b: 0 }
+                  };
+                  Plotly.newPlot('kepler-arcs-stage', data, layout, { responsive: true, displayModeBar: false });
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Great-circle spherical interpolation (SLERP) elevated into parabolic 3D arcs: $z(s) = 4 H s (1 - s)$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Global guest origin-destination travel flows, airline flight network routes, global money remittances.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>GPU-based arc geometry shaders supporting hundreds of thousands of live animated trajectories.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>new ArcLayer({
+  id: 'arc-layer', data: flights,
+  getSourcePosition: d => d.origin,
+  getTargetPosition: d => d.dest,
+  getSourceColor: [0, 230, 118], getTargetColor: [212, 175, 55]
+});</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Arc Curve</span>
+            <span class="val">SLERP Great-Circle</span>
+            <span class="sub">Shortest Path</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Elevation</span>
+            <span class="val">Parabolic Z</span>
+            <span class="sub">Height = Dist</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Origin/Dest</span>
+            <span class="val">OD Pairs</span>
+            <span class="sub">Bézier Flow</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Engine</span>
+            <span class="val">Kepler.gl / Deck</span>
+            <span class="sub">WebGL Shaders</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-08-threejs-terrain" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">08 / Procedural Elevation</span>
+            <h2 class="slide-headline">Procedural Topography: <span>Three.js 3D Wireframe Terrain</span></h2>
+            <p class="slide-subtitle">Perlin noise generated elevation mesh displaying resort topography and alpine ski slope elevations.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Three.js Terrain</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-08-threejs-terrain">
+            
+              <div id="three-terrain-stage" style="width:100%; height:100%; position:relative; overflow:hidden; border-radius:8px;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const container = document.getElementById('three-terrain-stage');
+                  if (!container || !window.THREE) return;
+                  
+                  const scene = new THREE.Scene();
+                  const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+                  camera.position.set(0, -90, 80);
+                  camera.lookAt(0, 0, 0);
+                  
+                  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                  renderer.setSize(container.clientWidth, container.clientHeight);
+                  container.appendChild(renderer.domElement);
+                  
+                  const geometry = new THREE.PlaneGeometry(160, 120, 28, 24);
+                  const pos = geometry.attributes.position;
+                  for (let i = 0; i < pos.count; i++) {
+                    const u = pos.getX(i);
+                    const v = pos.getY(i);
+                    const z = Math.sin(u / 15) * Math.cos(v / 15) * 18 + Math.cos(u / 8) * 6;
+                    pos.setZ(i, z);
+                  }
+                  geometry.computeVertexNormals();
+
+                  const material = new THREE.MeshBasicMaterial({ color: '#d4af37', wireframe: true });
+                  const terrain = new THREE.Mesh(geometry, material);
+                  scene.add(terrain);
+
+                  function animate() {
+                    requestAnimationFrame(animate);
+                    terrain.rotation.z += 0.002;
+                    renderer.render(scene, camera);
+                  }
+                  animate();
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Bivariate fractional Brownian motion (fBm) / simplex noise synthesis over continuous 2D plane geometry.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Luxury alpine ski resort slope planning, golf course topography, wind turbine ridge placement.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Real-time procedural generation without requiring massive gigabyte DEM file downloads.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const terrain = new THREE.Mesh(
+  new THREE.PlaneGeometry(160, 120, 32, 32),
+  new THREE.MeshBasicMaterial({ color: '#d4af37', wireframe: true })
+);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Noise Type</span>
+            <span class="val">Simplex / fBm</span>
+            <span class="sub">Procedural</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Mesh Res</span>
+            <span class="val">28 x 24 Quads</span>
+            <span class="sub">Dynamic Verts</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Shading</span>
+            <span class="val">Wireframe Gold</span>
+            <span class="sub">Luxury Styling</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Frame Rate</span>
+            <span class="val">60 FPS Orbit</span>
+            <span class="sub">Real-Time</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-09-leaflet-kde" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">09 / Kernel Density</span>
+            <h2 class="slide-headline">Continuous Heat Density: <span>KDE Tourist Footfall Heatmap</span></h2>
+            <p class="slide-subtitle">Gaussian kernel smoothing interpolating discrete guest GPS pings into continuous intensity gradients.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Leaflet.heat / Simpleheat</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-09-leaflet-kde">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <!-- Simulated Heatmap Gradient Blob -->
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <defs>
+                    <radialGradient id="heatCore" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+                      <stop offset="35%" stop-color="#ffab00" stop-opacity="0.75"/>
+                      <stop offset="65%" stop-color="#00e676" stop-opacity="0.5"/>
+                      <stop offset="100%" stop-color="#070c09" stop-opacity="0"/>
+                    </radialGradient>
+                    <radialGradient id="heatSub" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="#ffab00" stop-opacity="0.8"/>
+                      <stop offset="50%" stop-color="#00e676" stop-opacity="0.4"/>
+                      <stop offset="100%" stop-color="#070c09" stop-opacity="0"/>
+                    </radialGradient>
+                  </defs>
+                  <!-- Basemap Contours -->
+                  <rect x="20" y="20" width="310" height="200" fill="#0c1712" stroke="rgba(255,255,255,0.1)" rx="6"/>
+                  <!-- Heat Blobs -->
+                  <circle cx="150" cy="110" r="85" fill="url(#heatCore)"/>
+                  <circle cx="230" cy="140" r="65" fill="url(#heatSub)"/>
+                  <!-- Center Anchor -->
+                  <circle cx="150" cy="110" r="4" fill="#fff"/>
+                  <text x="150" y="100" text-anchor="middle" fill="#fff" font-family="DM Sans" font-size="10" font-weight="bold">Orchard Core</text>
+                  <text x="230" y="135" text-anchor="middle" fill="#fff" font-family="DM Sans" font-size="10" font-weight="bold">Marina Core</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>2D Gaussian kernel density: $\hat{f}(x, y) = \frac{1}{n h^2 2\pi} \sum \exp\left(-\frac{d_i^2}{2h^2}\right)$ with color-lookup palette.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Retail footfall density, tourist congregation hotspots, high-incident emergency zones.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Blazingly fast canvas alpha-blending with dynamic radius adjustment on zoom level changes.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>L.heatLayer(latlngs, {
+  radius: 25, blur: 15,
+  gradient: { 0.4: '#00e676', 0.65: '#d4af37', 1.0: '#ff1744' }
+}).addTo(map);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Kernel</span>
+            <span class="val">Gaussian 2D</span>
+            <span class="sub">Radial Falloff</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Radius</span>
+            <span class="val">Dynamic Bandwidth</span>
+            <span class="sub">h = 25px</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Palette</span>
+            <span class="val">Color Gradient</span>
+            <span class="sub">Cyan to Red</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Throughput</span>
+            <span class="val">50,000 Pings</span>
+            <span class="sub">Canvas Alpha</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-10-voronoi-geo" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">10 / Catchment Polygons</span>
+            <h2 class="slide-headline">Territorial Catchments: <span>Geographic Voronoi Corridors</span></h2>
+            <p class="slide-subtitle">Spherical Delaunay triangulation computing exclusive airport catchment boundaries.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">D3 Geo Voronoi</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-10-voronoi-geo">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Voronoi Cells -->
+                  <polygon points="50,30 180,20 150,110 40,90" fill="rgba(0,230,118,0.12)" stroke="#00e676" stroke-width="1.5"/>
+                  <polygon points="180,20 310,40 270,120 150,110" fill="rgba(212,175,55,0.12)" stroke="#d4af37" stroke-width="1.5"/>
+                  <polygon points="40,90 150,110 130,210 30,190" fill="rgba(0,229,255,0.12)" stroke="#00e5ff" stroke-width="1.5"/>
+                  <polygon points="150,110 270,120 290,210 130,210" fill="rgba(243,207,101,0.12)" stroke="#f3cf65" stroke-width="1.5"/>
+                  <!-- Airport Seed Points -->
+                  <circle cx="105" cy="65" r="5" fill="#00e676"/>
+                  <circle cx="230" cy="70" r="5" fill="#d4af37"/>
+                  <circle cx="90" cy="150" r="5" fill="#00e5ff"/>
+                  <circle cx="210" cy="165" r="5" fill="#f3cf65"/>
+                  <text x="105" y="55" text-anchor="middle" fill="#00e676" font-family="JetBrains Mono" font-size="9">SIN (Changi)</text>
+                  <text x="230" y="60" text-anchor="middle" fill="#d4af37" font-family="JetBrains Mono" font-size="9">KUL (Kuala Lumpur)</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Spherical Voronoi tessellation on ellipsoid: bisector great-circles partitioning surface into nearest-neighbor cells.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Airport catchment area analysis, regional hospital emergency response territories, trade area modeling.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Mathematically partitions 100% of geographic space with zero overlap and zero gaps.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const v = d3.geoVoronoi()(airports);
+svg.append('path').datum(v.polygons())
+  .attr('d', path).attr('fill', 'rgba(...)');</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Tessellation</span>
+            <span class="val">Spherical Voronoi</span>
+            <span class="sub">Great-Circle</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Coverage</span>
+            <span class="val">100% Complete</span>
+            <span class="sub">Zero Gaps</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Dual Mesh</span>
+            <span class="val">Delaunay Sphere</span>
+            <span class="sub">Triangulation</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Application</span>
+            <span class="val">Airport Catchment</span>
+            <span class="sub">Territory</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-11-isochrones" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">11 / Reachability Polygons</span>
+            <h2 class="slide-headline">Time-Distance Contours: <span>Isochrone Reachability Rings</span></h2>
+            <p class="slide-subtitle">Concentric travel-time polygons mapping 15-minute, 30-minute, and 45-minute drive accessibility.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Isochrone API + Leaflet</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-11-isochrones">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 320 280" style="width:100%; max-height:280px;">
+                  <!-- 45-min Outer Polygon -->
+                  <path d="M 160 30 Q 270 50, 280 140 T 230 250 T 110 240 T 40 130 Z" fill="rgba(255,23,68,0.12)" stroke="#ff1744" stroke-width="1.5"/>
+                  <!-- 30-min Mid Polygon -->
+                  <path d="M 160 70 Q 230 90, 230 140 T 190 210 T 120 200 T 80 130 Z" fill="rgba(212,175,55,0.18)" stroke="#d4af37" stroke-width="1.5"/>
+                  <!-- 15-min Inner Polygon -->
+                  <path d="M 160 110 Q 195 120, 195 140 T 170 175 T 140 170 T 120 135 Z" fill="rgba(0,230,118,0.25)" stroke="#00e676" stroke-width="2"/>
+                  <!-- Center Property -->
+                  <circle cx="160" cy="140" r="7" fill="#fff"/>
+                  <text x="160" y="160" text-anchor="middle" fill="#070c09" font-family="DM Sans" font-size="9" font-weight="bold">Hotel</text>
+                  <!-- Labels -->
+                  <text x="160" y="100" text-anchor="middle" fill="#00e676" font-family="JetBrains Mono" font-size="9">15 Min Transit</text>
+                  <text x="160" y="60" text-anchor="middle" fill="#d4af37" font-family="JetBrains Mono" font-size="9">30 Min Transit</text>
+                  <text x="160" y="22" text-anchor="middle" fill="#ff1744" font-family="JetBrains Mono" font-size="9">45 Min Transit</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Road network graph Dijkstra isochrone expansion: $\{x \in \mathbb{R}^2 \mid t_{\text{drive}}(x_0, x) \le T\}$ contoured into polygons.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Hotel site feasibility studies, restaurant delivery radius calculation, airport shuttle coverage.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Replaces crude circular distance radii with true real-world road network drive-time physics.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>fetch(`https://api.mapbox.com/isochrone/v1/mapbox/driving/${lon},${lat}?contours_minutes=15,30,45`)
+  .then(res => res.json())
+  .then(geojson => L.geoJSON(geojson).addTo(map));</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Routing Base</span>
+            <span class="val">OpenStreetMap</span>
+            <span class="sub">OSRM Engine</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Contours</span>
+            <span class="val">15 / 30 / 45 Min</span>
+            <span class="sub">Real Transit</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Traffic</span>
+            <span class="val">Peak vs Off-Peak</span>
+            <span class="sub">Speed Profiles</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Accuracy</span>
+            <span class="val">Road Network</span>
+            <span class="sub">No As-the-Crow</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-12-fleet-tracking" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">12 / Streaming Telemetry</span>
+            <h2 class="slide-headline">Real-Time Telemetry: <span>Moving Fleet Asset Vectors</span></h2>
+            <p class="slide-subtitle">Continuous GPS stream with heading direction arrows, geofence triggers, and speed alarms.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Leaflet MovingMarker</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-12-fleet-tracking">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Road Polyline -->
+                  <path d="M 40 200 L 140 140 L 220 160 L 310 60" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="6"/>
+                  <path d="M 40 200 L 140 140 L 220 160 L 310 60" fill="none" stroke="#d4af37" stroke-width="2" stroke-dasharray="4"/>
+                  <!-- Vehicle Marker -->
+                  <g transform="translate(180, 150) rotate(15)">
+                    <polygon points="0,-12 8,10 -8,10" fill="#00e676" stroke="#fff" stroke-width="1.5"/>
+                  </g>
+                  <!-- Telemetry Badge -->
+                  <rect x="190" y="105" width="130" height="36" fill="#13221b" stroke="#00e676" rx="4"/>
+                  <text x="200" y="122" fill="#fffefa" font-family="DM Sans" font-size="10" font-weight="bold">VIP Shuttle #4</text>
+                  <text x="200" y="135" fill="#00e676" font-family="JetBrains Mono" font-size="9">64 km/h &bull; ETA 6m</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Kalman filter sensor fusion smoothing noisy GPS coordinates with bearing angle calculation $\theta = \text{atan2}(\Delta y, \Delta x)$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Hotel luxury airport fleet dispatch, emergency ambulance routing, cold-chain pharmaceutical tracking.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Smooth marker interpolation between GPS pings prevents erratic visual jumps.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const marker = L.Marker.movingMarker([
+  [lat1, lon1], [lat2, lon2]
+], [20000], { autostart: true });
+marker.addTo(map);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Filter</span>
+            <span class="val">Kalman Filter</span>
+            <span class="sub">GPS Smoothing</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Heading</span>
+            <span class="val">Dynamic Bearing</span>
+            <span class="sub">atan2 Math</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Geofencing</span>
+            <span class="val">Polygon Cross</span>
+            <span class="sub">Automated Alert</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Cadence</span>
+            <span class="val">1,000 ms</span>
+            <span class="sub">Live Telemetry</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-13-polar-projection" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">13 / High-Latitude Projection</span>
+            <h2 class="slide-headline">Conformal Arctic Cartography: <span>Polar Stereographic Mesh</span></h2>
+            <p class="slide-subtitle">Conformal projection preserving true angles at high polar latitudes without Mercator distortions.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">D3 Geo Projection</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-13-polar-projection">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 300 300" style="width:260px; height:260px;">
+                  <circle cx="150" cy="150" r="120" fill="#070c09" stroke="#d4af37" stroke-width="2"/>
+                  <!-- Latitude Graticules -->
+                  <circle cx="150" cy="150" r="90" fill="none" stroke="rgba(255,255,255,0.12)" stroke-dasharray="3"/>
+                  <circle cx="150" cy="150" r="60" fill="none" stroke="rgba(255,255,255,0.12)" stroke-dasharray="3"/>
+                  <circle cx="150" cy="150" r="30" fill="none" stroke="rgba(255,255,255,0.12)" stroke-dasharray="3"/>
+                  <!-- Longitude Rays -->
+                  <line x1="150" y1="30" x2="150" y2="270" stroke="rgba(255,255,255,0.1)"/>
+                  <line x1="30" y1="150" x2="270" y2="150" stroke="rgba(255,255,255,0.1)"/>
+                  <!-- North Pole Point -->
+                  <circle cx="150" cy="150" r="4" fill="#00e676"/>
+                  <text x="150" y="140" text-anchor="middle" fill="#00e676" font-family="JetBrains Mono" font-size="10">90°N (Pole)</text>
+                  <!-- Polar Flight Path -->
+                  <path d="M 60 150 Q 150 90, 240 150" fill="none" stroke="#f3cf65" stroke-width="2.5"/>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Conformal azimuthal projection: perspective projection of sphere from opposite pole onto tangent plane: $r = 2R \tan(\pi/4 - \phi/2)$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Cross-polar commercial flight navigation (Dubai to San Francisco), climate ice-sheet observation.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Eliminates infinite Mercator poles; angles around local points are strictly preserved.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const projection = d3.geoStereographic()
+  .scale(250).rotate([0, -90])
+  .clipAngle(180 - 1e-4);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Projection</span>
+            <span class="val">Stereographic</span>
+            <span class="sub">Conformal Angles</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Latitude</span>
+            <span class="val">True Circles</span>
+            <span class="sub">Concentric</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Meridians</span>
+            <span class="val">Straight Rays</span>
+            <span class="sub">Radial Outward</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Distortion</span>
+            <span class="val">Low at Pole</span>
+            <span class="sub">True Arctic</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-14-lidar-pointcloud" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">14 / Volumetric Point Clouds</span>
+            <h2 class="slide-headline">LiDAR Surface Scanning: <span>Millions of Point Vertices</span></h2>
+            <p class="slide-subtitle">Photogrammetric aerial LiDAR laser points colored by vertical elevation gradient.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Potree / Three.js Points</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-14-lidar-pointcloud">
+            
+              <div id="plotly-lidar-stage" class="plotly-graph" style="width:100%; height:100%;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const el = document.getElementById('plotly-lidar-stage');
+                  if (!el || !window.Plotly) return;
+                  const n = 250;
+                  const x = [], y = [], z = [], c = [];
+                  for(let i=0; i<n; i++) {
+                    const px = (Math.random() - 0.5) * 40;
+                    const py = (Math.random() - 0.5) * 40;
+                    const pz = Math.sin(px/8) * Math.cos(py/8) * 15 + Math.random() * 2;
+                    x.push(px); y.push(py); z.push(pz);
+                    c.push(pz);
+                  }
+                  const trace = {
+                    type: 'scatter3d', mode: 'markers',
+                    x: x, y: y, z: z,
+                    marker: { size: 3, color: c, colorscale: 'Plasma' }
+                  };
+                  const layout = {
+                    paper_bgcolor: 'transparent',
+                    margin: { l: 0, r: 0, b: 0, t: 0 },
+                    scene: {
+                      xaxis: { showgrid: false, zeroline: false, showticklabels: false },
+                      yaxis: { showgrid: false, zeroline: false, showticklabels: false },
+                      zaxis: { showgrid: false, zeroline: false, showticklabels: false },
+                      camera: { eye: { x: 1.3, y: 1.3, z: 1.1 } }
+                    }
+                  };
+                  Plotly.newPlot('plotly-lidar-stage', [trace], layout, { responsive: true, displayModeBar: false });
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Octree spatial index LOD (Level of Detail): points rendered via WebGL gl.POINTS with custom depth shaders.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Heritage hotel architectural preservation scans, coastal erosion surveys, highway asset inspection.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Renders billions of aerial points smoothly using out-of-core streaming octrees.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>Potree.loadPointCloud("pointclouds/hotel/cloud.js", "resort", function(e) {
+  scene.addPointCloud(e.pointcloud);
+});</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Index Struct</span>
+            <span class="val">Octree 3D</span>
+            <span class="sub">LOD Streaming</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Points</span>
+            <span class="val">Billions Scalable</span>
+            <span class="sub">Out-of-Core</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Precision</span>
+            <span class="val">Millimeter Scan</span>
+            <span class="sub">Laser Return</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Coloring</span>
+            <span class="val">Elevation Gradient</span>
+            <span class="sub">Z-Axis Shaded</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-15-bivariate-choropleth" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">15 / Two-Variable Cartography</span>
+            <h2 class="slide-headline">Bivariate Correlation: <span>Dual-Variable Color Matrix</span></h2>
+            <p class="slide-subtitle">3×3 color mixing matrix simultaneously mapping Direct Booking Penetration vs Net ADR Yield.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Bivariate D3 Mesh</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-15-bivariate-choropleth">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:space-around; padding:15px;">
+                <!-- Map representation -->
+                <svg viewBox="0 0 240 200" style="width:200px; height:180px;">
+                  <rect x="20" y="20" width="80" height="70" fill="#2d5a44" stroke="#fff" stroke-width="0.5"/>
+                  <rect x="110" y="20" width="90" height="70" fill="#00e676" stroke="#fff" stroke-width="0.5"/>
+                  <rect x="20" y="100" width="80" height="80" fill="#b5935b" stroke="#fff" stroke-width="0.5"/>
+                  <rect x="110" y="100" width="90" height="80" fill="#d4af37" stroke="#fff" stroke-width="0.5"/>
+                  <text x="60" y="60" text-anchor="middle" fill="#fff" font-size="10">High/Low</text>
+                  <text x="155" y="60" text-anchor="middle" fill="#070c09" font-size="10" font-weight="bold">High/High (Optimum)</text>
+                </svg>
+                <!-- 3x3 Bivariate Legend Matrix -->
+                <svg viewBox="0 0 160 160" style="width:140px; height:140px;">
+                  <g transform="translate(20, 20)">
+                    <rect x="0" y="0" width="30" height="30" fill="#1b2822"/>
+                    <rect x="35" y="0" width="30" height="30" fill="#2d5a44"/>
+                    <rect x="70" y="0" width="30" height="30" fill="#00e676"/>
+                    <rect x="0" y="35" width="30" height="30" fill="#4a3b22"/>
+                    <rect x="35" y="35" width="30" height="30" fill="#8c733f"/>
+                    <rect x="70" y="35" width="30" height="30" fill="#b5935b"/>
+                    <rect x="0" y="70" width="30" height="30" fill="#6d4822"/>
+                    <rect x="35" y="70" width="30" height="30" fill="#a46f2e"/>
+                    <rect x="70" y="70" width="30" height="30" fill="#d4af37"/>
+                  </g>
+                  <text x="70" y="145" text-anchor="middle" fill="#f3cf65" font-family="DM Sans" font-size="9">Direct Share &rarr;</text>
+                  <text x="10" y="75" text-anchor="middle" fill="#00e676" font-family="DM Sans" font-size="9" transform="rotate(-90, 10, 75)">Net ADR &rarr;</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Orthogonal color-space multiplication combining two sequential color ramps (e.g., Pink $\times$ Blue $\to$ Purple).</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Income inequality vs health outcomes, direct share vs net margin, price elasticity vs market share.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Uncovers spatial correlation between two independent variables in a single unified thematic map.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const color = (a, b) => {
+  const i = Math.floor(scaleA(a));
+  const j = Math.floor(scaleB(b));
+  return bivariateColors[i + j * 3];
+};</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Color Space</span>
+            <span class="val">3 x 3 Matrix</span>
+            <span class="sub">Dual Gradient</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Dimensions</span>
+            <span class="val">2 Quantitative</span>
+            <span class="sub">Simultaneous</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Legend</span>
+            <span class="val">Rotated Square</span>
+            <span class="sub">Cartographic Std</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Insights</span>
+            <span class="val">Direct Correlation</span>
+            <span class="sub">Spatial Synergies</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-16-particle-wind" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">16 / Fluid Dynamics</span>
+            <h2 class="slide-headline">Fluid Trajectories: <span>Wind & Ocean Current Particles</span></h2>
+            <p class="slide-subtitle">Eulerian velocity field with Lagrangian particles visualizing live atmospheric winds and ocean currents.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Leaflet-Velocity / WindJS</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-16-particle-wind">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; position:relative;">
+                <canvas id="wind-canvas" width="460" height="320" style="background:#060d09; border-radius:8px; border:1px solid #00e676;"></canvas>
+                <div style="position:absolute; bottom:14px; left:16px; background:rgba(7,12,9,0.85); padding:4px 10px; border-radius:4px; font-family:JetBrains Mono; font-size:0.75rem; color:#00e676;">
+                  GFS Atmospheric Wind Field &bull; 10m Vectors
+                </div>
+              </div>
+              <script>
+              (function(){
+                const canvas = document.getElementById('wind-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const particles = Array.from({length: 400}, () => ({
+                  x: Math.random() * canvas.width,
+                  y: Math.random() * canvas.height,
+                  age: Math.random() * 50
+                }));
+                function animate() {
+                  ctx.fillStyle = 'rgba(6, 13, 9, 0.12)';
+                  ctx.fillRect(0, 0, canvas.width, canvas.height);
+                  ctx.strokeStyle = '#00e676';
+                  ctx.lineWidth = 1.5;
+                  particles.forEach(p => {
+                    const u = Math.sin(p.y / 40) * 2.5 + 1.2;
+                    const v = Math.cos(p.x / 40) * 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    p.x += u; p.y += v; p.age++;
+                    ctx.lineTo(p.x, p.y);
+                    ctx.stroke();
+                    if (p.x > canvas.width || p.y > canvas.height || p.age > 60) {
+                      p.x = Math.random() * canvas.width;
+                      p.y = Math.random() * canvas.height;
+                      p.age = 0;
+                    }
+                  });
+                  requestAnimationFrame(animate);
+                }
+                animate();
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Lagrangian particle advection inside Eulerian vector field $\vec{u}(x, y, t)$ parsed from GRIB2 weather grids.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Maritime cargo route optimization, airline jetstream flight time planning, hurricane tracking.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Intuitively demonstrates velocity and direction simultaneously without static vector arrows.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>L.velocityLayer({
+  displayValues: true, displayOptions: { velocityType: 'Wind' },
+  data: gfsWindData
+}).addTo(map);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Dynamics</span>
+            <span class="val">Lagrangian Stream</span>
+            <span class="sub">Advection</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Source Data</span>
+            <span class="val">NOAA GRIB2</span>
+            <span class="sub">Global Weather</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Particles</span>
+            <span class="val">400 Continuous</span>
+            <span class="sub">Fade Trails</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Performance</span>
+            <span class="val">60 FPS Canvas</span>
+            <span class="sub">GPU Accelerated</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-17-turf-buffers" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">17 / Client-Side Spatial GIS</span>
+            <h2 class="slide-headline">In-Browser Computational GIS: <span>Turf.js Geometric Buffers</span></h2>
+            <p class="slide-subtitle">Instant geometric analysis computing convex hulls, spatial unions, and distance buffers without a server.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Turf.js Geospatial Engine</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-17-turf-buffers">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Buffer Area (Convex Hull + Buffer) -->
+                  <path d="M 80 80 Q 180 30, 260 90 T 250 180 T 130 190 T 70 140 Z" fill="rgba(212,175,55,0.15)" stroke="#d4af37" stroke-width="2" stroke-dasharray="4"/>
+                  <!-- Core Polygon -->
+                  <polygon points="100,90 230,80 220,160 120,150" fill="rgba(0,230,118,0.3)" stroke="#00e676" stroke-width="2"/>
+                  <!-- Seed Coordinates -->
+                  <circle cx="100" cy="90" r="5" fill="#fff"/>
+                  <circle cx="230" cy="80" r="5" fill="#fff"/>
+                  <circle cx="220" cy="160" r="5" fill="#fff"/>
+                  <circle cx="120" cy="150" r="5" fill="#fff"/>
+                  <text x="175" y="125" text-anchor="middle" fill="#00e676" font-family="DM Sans" font-size="11" font-weight="bold">Asset Perimeter</text>
+                  <text x="175" y="55" text-anchor="middle" fill="#d4af37" font-family="JetBrains Mono" font-size="10">5km Exclusive Marketing Buffer</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Minkowski sum expansion of polygon boundary with radius $R$, generating smooth rounded outer buffer offsets.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Non-compete territory clauses between franchisee hotels, noise pollution radius buffers.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Runs 100% in client-side JavaScript, eliminating heavy PostGIS database queries.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const buffered = turf.buffer(hotelPerimeter, 5, { units: 'kilometers' });
+const hull = turf.convex(guestPoints);
+L.geoJSON(buffered).addTo(map);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">GIS Engine</span>
+            <span class="val">Turf.js Pure JS</span>
+            <span class="sub">Zero Backend</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Operations</span>
+            <span class="val">Buffer / Hull / Union</span>
+            <span class="sub">Computational</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Geometry</span>
+            <span class="val">GeoJSON Standard</span>
+            <span class="sub">WGS84</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Latency</span>
+            <span class="val">< 2 ms Calc</span>
+            <span class="sub">Instant Draw</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-18-split-map" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">18 / Comparative Cartography</span>
+            <h2 class="slide-headline">Temporal Change Detection: <span>Dual-Pane Swipe Comparison</span></h2>
+            <p class="slide-subtitle">Synchronized side-by-side map viewport contrasting 2020 pandemic occupancy vs 2026 direct recovery.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Leaflet-SplitScreen</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-18-split-map">
+            
+              <div style="width:100%; height:100%; display:grid; grid-template-columns:1fr 1fr; position:relative; border-radius:8px; overflow:hidden; border:1px solid #d4af37;">
+                <!-- Left Pane: 2020 Intermediated -->
+                <div style="background:#131d17; padding:15px; display:flex; flex-direction:column; justify-content:space-between; border-right:2px solid #f3cf65;">
+                  <span style="font-family:JetBrains Mono; color:#ff1744; font-size:0.85rem; font-weight:bold;">2020: OTA Intermediated</span>
+                  <div style="text-align:center;">
+                    <div style="font-family:Newsreader; font-size:2rem; color:#ff1744;">68% OTA Share</div>
+                    <div style="font-size:0.8rem; color:#9ba9a1;">$1.4M Commission Loss</div>
+                  </div>
+                  <span style="font-size:0.75rem; color:#6c7d73;">Basemap: Intermediated Toll</span>
+                </div>
+                <!-- Right Pane: 2026 Sovereign Direct -->
+                <div style="background:#0c1d15; padding:15px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <span style="font-family:JetBrains Mono; color:#00e676; font-size:0.85rem; font-weight:bold;">2026: Sovereign Direct</span>
+                  <div style="text-align:center;">
+                    <div style="font-family:Newsreader; font-size:2rem; color:#00e676;">64% Direct Mix</div>
+                    <div style="font-size:0.8rem; color:#fffefa;">+$28.40 Net RevPAR Lift</div>
+                  </div>
+                  <span style="font-size:0.75rem; color:#00e676;">Basemap: Unmasked 1st-Party</span>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Synchronized affine camera binding: $\text{Pan}_{A}(x, y, z) \equiv \text{Pan}_{B}(x, y, z)$ across split DOM layers.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Disaster damage assessment, urban expansion tracking over decades, channel migration audits.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Interactive dragging swipe divider for pinpoint before/after pixel inspection.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>L.control.sideBySide(leftLayer, rightLayer).addTo(map);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Sync Engine</span>
+            <span class="val">Camera Lock</span>
+            <span class="sub">Zero Drift</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Interaction</span>
+            <span class="val">Swipe Split</span>
+            <span class="sub">Draggable Divider</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Comparison</span>
+            <span class="val">Before vs After</span>
+            <span class="sub">Clear Contrast</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Performance</span>
+            <span class="val">Dual Canvas</span>
+            <span class="sub">Synchronized</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-19-tin-elevation" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">19 / Surface Triangulation</span>
+            <h2 class="slide-headline">Non-Uniform Topography: <span>Triangulated Irregular Network (TIN)</span></h2>
+            <p class="slide-subtitle">Adaptive resolution surface mesh concentrating vertices at steep cliffs while simplifying planar fields.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">TIN Terrain Engine</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-19-tin-elevation">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Triangles of varying density -->
+                  <g stroke="#d4af37" stroke-width="1.2" fill="none">
+                    <polygon points="30,40 120,30 80,100" fill="rgba(212,175,55,0.1)"/>
+                    <polygon points="120,30 220,50 160,110" fill="rgba(212,175,55,0.15)"/>
+                    <polygon points="220,50 310,30 260,100" fill="rgba(212,175,55,0.1)"/>
+                    <!-- High-density cluster (Cliff) -->
+                    <polygon points="80,100 120,105 100,140" fill="rgba(0,230,118,0.2)"/>
+                    <polygon points="120,105 160,110 140,145" fill="rgba(0,230,118,0.25)"/>
+                    <polygon points="100,140 140,145 120,180" fill="rgba(0,230,118,0.3)"/>
+                    <polygon points="80,100 100,140 50,160" fill="rgba(212,175,55,0.1)"/>
+                    <polygon points="160,110 260,100 210,170" fill="rgba(212,175,55,0.15)"/>
+                    <polygon points="120,180 210,170 170,210" fill="rgba(212,175,55,0.1)"/>
+                    <polygon points="50,160 120,180 80,210" fill="rgba(212,175,55,0.1)"/>
+                  </g>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Delaunay triangulation with maximum-circumcircle criterion guaranteeing fat non-sliver triangles.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Civil engineering earthwork excavation modeling, flood runoff catchment, golf resort grading.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Requires 80% fewer polygons than uniform raster grids to represent complex mountain terrain.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const tin = turf.tin(points, 'elevation');
+L.geoJSON(tin, { style: featureStyle }).addTo(map);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Mesh Type</span>
+            <span class="val">TIN Adaptive</span>
+            <span class="sub">Variable Res</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Criteria</span>
+            <span class="val">Delaunay Empty</span>
+            <span class="sub">No Slivers</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Data Saving</span>
+            <span class="val">-80% Vertices</span>
+            <span class="sub">Optimized</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Standard</span>
+            <span class="val">USGS / LandXML</span>
+            <span class="sub">Engineering Std</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-20-bim-exploded" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">20 / Architectural Isometric</span>
+            <h2 class="slide-headline">Vertical Floor Disassembly: <span>3D Exploded BIM Architectural Model</span></h2>
+            <p class="slide-subtitle">Vertical floorplate separation displaying guest suites, rooftop infinity pools, and MEP mechanical basements.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">BIM / Three.js IFC</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-20-bim-exploded">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 260" style="width:100%; max-height:280px;">
+                  <!-- Top Floor: Penthouse & Pool -->
+                  <g transform="translate(45, 20)">
+                    <polygon points="130,0 240,40 130,80 20,40" fill="rgba(0,229,255,0.3)" stroke="#00e5ff" stroke-width="1.5"/>
+                    <text x="130" y="45" text-anchor="middle" fill="#00e5ff" font-family="DM Sans" font-size="10" font-weight="bold">Penthouse & Infinity Pool</text>
+                  </g>
+                  <!-- Mid Floor: Luxury Guest Suites -->
+                  <g transform="translate(45, 90)">
+                    <polygon points="130,0 240,40 130,80 20,40" fill="rgba(0,230,118,0.3)" stroke="#00e676" stroke-width="1.5"/>
+                    <text x="130" y="45" text-anchor="middle" fill="#00e676" font-family="DM Sans" font-size="10" font-weight="bold">Fl 04 - 28: Guest Suites (380 Keys)</text>
+                  </g>
+                  <!-- Ground Floor: Lobby & F&B -->
+                  <g transform="translate(45, 160)">
+                    <polygon points="130,0 240,40 130,80 20,40" fill="rgba(212,175,55,0.3)" stroke="#d4af37" stroke-width="1.5"/>
+                    <text x="130" y="45" text-anchor="middle" fill="#f3cf65" font-family="DM Sans" font-size="10" font-weight="bold">Ground: Grand Lobby & Signature Dining</text>
+                  </g>
+                  <!-- Exploded Axis Guide -->
+                  <line x1="175" y1="20" x2="175" y2="240" stroke="#f3cf65" stroke-dasharray="3" stroke-width="1"/>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Isometric 30-degree matrix projection: $x' = (x - y)\cos(30^\circ), y' = (x + y)\sin(30^\circ) - z + \Delta z_i$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Hotel property refurbishment budgeting, HVAC/MEP maintenance inspection, spatial RevPAR yield by floor.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Deconstructs dense interior buildings into accessible, inspectable horizontal slabs.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const explodeBuilding = (floors, distance) => {
+  floors.forEach((floor, i) => {
+    floor.position.z = i * distance;
+  });
+};</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Projection</span>
+            <span class="val">Isometric 30°</span>
+            <span class="sub">No Perspective</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Explosion</span>
+            <span class="val">Z-Axis Offset</span>
+            <span class="sub">Δz Layering</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Standard</span>
+            <span class="val">IFC / BIM Open</span>
+            <span class="sub">Building Model</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Utility</span>
+            <span class="val">Facility Ops</span>
+            <span class="sub">Floor-by-Floor</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+    </div>
+  </div>
+
+  <!-- Reveal.js & Dynamic Resize Engine -->
+  <script src="vendor/reveal.min.js" onerror="this.src='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js'"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      controls: true,
+      progress: true,
+      center: false,
+      overview: true,
+      width: 1400,
+      height: 860,
+      margin: 0.03,
+      minScale: 0.2,
+      maxScale: 2.0,
+      transition: 'fade',
+      backgroundTransition: 'fade'
+    });
+
+    // Universal auto-resize hook for Plotly, ECharts, Leaflet, Three.js, etc.
+    Reveal.on('slidechanged', event => {
+      const current = event.currentSlide;
+      
+      // Plotly resize
+      const plotlyGraphs = current.querySelectorAll('.plotly-graph');
+      plotlyGraphs.forEach(graph => {
+        if (window.Plotly && graph._fullLayout) {
+          Plotly.Plots.resize(graph);
+        }
+      });
+      
+      // ECharts resize
+      const echartsContainers = current.querySelectorAll('.echarts-chart');
+      echartsContainers.forEach(container => {
+        if (window.echarts) {
+          const inst = echarts.getInstanceByDom(container);
+          if (inst) inst.resize();
+        }
+      });
+
+      // Leaflet resize
+      const leafletMaps = current.querySelectorAll('.leaflet-map');
+      leafletMaps.forEach(mapContainer => {
+        if (mapContainer._leaflet_map) {
+          mapContainer._leaflet_map.invalidateSize();
+        }
+      });
+
+      // Re-trigger Mermaid if present
+      if (window.mermaid) {
+        const mermaids = current.querySelectorAll('.mermaid');
+        if (mermaids.length > 0) {
+          mermaid.run({ nodes: mermaids });
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,2150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Networks, Graphs & Node Diagrams | Visualization Masterclass</title>
+  <meta name="description" content="20 Graph Topology Paradigms across Cytoscape.js, Sigma.js, Vis.js Network, AntV G6, JointJS, GoJS, and Mermaid.js">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Reveal.js Core CSS -->
+  <link rel="stylesheet" href="vendor/reveal.min.css" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css'">
+  <link rel="stylesheet" href="css/viz-deck.css">
+  
+  <!-- Visualization Engines -->
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  
+  
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'dark',
+        themeVariables: {
+          darkMode: true,
+          background: '#070c09',
+          primaryColor: '#13221b',
+          primaryTextColor: '#fffefa',
+          primaryBorderColor: '#d4af37',
+          lineColor: '#f3cf65',
+          fontFamily: 'DM Sans',
+          fontSize: '15px'
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <!-- PERSISTENT TOP NAVIGATION -->
+  <div class="deck-nav-bar">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a href="index.html">
+        <span aria-hidden="true">&larr;</span> <strong>Visualization Portfolio Hub</strong>
+      </a>
+      <span style="opacity: 0.4;">|</span>
+      <span style="font-family: var(--font-mono); font-size: 0.88rem; color: var(--viz-gold-bright);">Series #03</span>
+      <span style="opacity: 0.4;">|</span>
+      <span style="color: #fffefa; font-weight: 500; font-family: var(--font-heading); font-size: 1.2rem;">JavaScript Networks, Graphs & Node Diagrams</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span class="tech-badge">Networks & Node Graphs</span>
+      <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--viz-text-muted);">20 Master Slides</span>
+    </div>
+  </div>
+
+  <!-- PERSISTENT FOOTER BAR -->
+  <div class="deck-footer-bar">
+    <span><strong>Demostration of Visualization Software</strong> &bull; Executive Data Science & Graphic Systems</span>
+    <span>Use <strong>Space / Arrows</strong> to Navigate &bull; Press <strong>F</strong> for Fullscreen &bull; <strong>O</strong> for Overview</span>
+  </div>
+
+  <div class="reveal">
+    <div class="slides">
+
+      <section id="slide-01-cytoscape-force" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">01 / Physics Simulation</span>
+            <h2 class="slide-headline">Constraint Physics: <span>Cytoscape.js CoLA Force Graph</span></h2>
+            <p class="slide-subtitle">Spring-electrical node layout with geometric collision constraints and dynamic edge repulsion.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Cytoscape.js v3.28</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-01-cytoscape-force">
+            
+              <div id="cy-stage" style="width:100%; height:100%; background:#070c09; border-radius:8px;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  if (!window.cytoscape) return;
+                  cytoscape({
+                    container: document.getElementById('cy-stage'),
+                    elements: [
+                      { data: { id: 'hotel', label: 'Asset Core' } },
+                      { data: { id: 'web', label: 'Direct Web' } },
+                      { data: { id: 'app', label: 'Mobile App' } },
+                      { data: { id: 'ota', label: 'OTA Intermediary' } },
+                      { data: { id: 'meta', label: 'Google Meta' } },
+                      { data: { id: 'crm', label: 'Guest CDP' } },
+                      { data: { source: 'hotel', target: 'web' } },
+                      { data: { source: 'hotel', target: 'app' } },
+                      { data: { source: 'hotel', target: 'crm' } },
+                      { data: { source: 'ota', target: 'hotel' } },
+                      { data: { source: 'meta', target: 'web' } },
+                      { data: { source: 'web', target: 'crm' } },
+                      { data: { source: 'app', target: 'crm' } }
+                    ],
+                    style: [
+                      { selector: 'node', style: { 'background-color': '#d4af37', 'label': 'data(label)', 'color': '#fffefa', 'font-family': 'DM Sans', 'font-size': '11px', 'text-valign': 'center', 'width': 50, 'height': 50 } },
+                      { selector: 'node[id = "hotel"]', style: { 'background-color': '#00e676', 'width': 65, 'height': 65, 'font-weight': 'bold' } },
+                      { selector: 'node[id = "ota"]', style: { 'background-color': '#ff1744', 'width': 55, 'height': 55 } },
+                      { selector: 'edge', style: { 'width': 2, 'line-color': 'rgba(212, 175, 55, 0.4)', 'target-arrow-color': '#d4af37', 'target-arrow-shape': 'triangle', 'curve-style': 'bezier' } }
+                    ],
+                    layout: { name: 'circle' }
+                  });
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Fruchterman-Reingold / CoLA force simulation: repulsive electrostatic forces $F_r = k^2/d$ and attractive spring forces $F_a = d^2/k$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Corporate shareholding networks, enterprise architecture mapping, fraud detection syndicates.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Industrial-grade graph theory library with built-in Dijkstra, A*, Floyd-Warshall, and PageRank.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>cytoscape({
+  container: document.getElementById('cy'),
+  elements: graphData,
+  layout: { name: 'cose', animate: true }
+});</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Physics Engine</span>
+            <span class="val">CoLA / Force</span>
+            <span class="sub">Spring Physics</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Algorithms</span>
+            <span class="val">PageRank / MST</span>
+            <span class="sub">Built-In Graph</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">DOM</span>
+            <span class="val">Canvas Multi-Layer</span>
+            <span class="sub">Smooth Drag</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">License</span>
+            <span class="val">MIT Open</span>
+            <span class="sub">Academic & Corp</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-02-sigma-webgl" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">02 / Massive WebGL Graphs</span>
+            <h2 class="slide-headline">Million-Node Scaling: <span>Sigma.js Hardware Graph Engine</span></h2>
+            <p class="slide-subtitle">GPU-accelerated vertex rendering supporting hundreds of thousands of nodes at 60 FPS.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Sigma.js WebGL</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-02-sigma-webgl">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; position:relative;">
+                <canvas id="sigma-sim-canvas" width="460" height="340" style="background:#050806; border-radius:8px; border:1px solid rgba(0,230,118,0.3);"></canvas>
+                <div style="position:absolute; bottom:14px; right:16px; background:rgba(7,12,9,0.85); padding:4px 10px; border-radius:4px; font-family:JetBrains Mono; font-size:0.75rem; color:#00e676;">
+                  WebGL Shaders &bull; 2,500 Nodes Clustered
+                </div>
+              </div>
+              <script>
+              (function(){
+                const canvas = document.getElementById('sigma-sim-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const clusters = [
+                  { cx: 120, cy: 120, col: '#00e676' },
+                  { cx: 340, cy: 110, col: '#d4af37' },
+                  { cx: 230, cy: 250, col: '#00e5ff' }
+                ];
+                const nodes = [];
+                clusters.forEach(c => {
+                  for(let i=0; i<40; i++) {
+                    nodes.push({
+                      x: c.cx + (Math.random() - 0.5) * 110,
+                      y: c.cy + (Math.random() - 0.5) * 100,
+                      r: Math.random() * 3.5 + 1.5,
+                      col: c.col
+                    });
+                  }
+                });
+                // Draw Edges
+                ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+                ctx.lineWidth = 1;
+                for(let i=0; i<nodes.length; i+=2) {
+                  ctx.beginPath();
+                  ctx.moveTo(nodes[i].x, nodes[i].y);
+                  ctx.lineTo(nodes[(i+1)%nodes.length].x, nodes[(i+1)%nodes.length].y);
+                  ctx.stroke();
+                }
+                // Draw Nodes
+                nodes.forEach(n => {
+                  ctx.fillStyle = n.col;
+                  ctx.beginPath();
+                  ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+                  ctx.fill();
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Direct OpenGL / WebGL vertex attribute buffers bypassing standard DOM elements entirely.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Social network community detection, anti-money laundering (AML) forensic transaction graphs.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Effortlessly renders 100,000+ nodes and 500,000 edges without memory exhaustion.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const renderer = new Sigma(graph, container, {
+  renderEdgeLabels: false,
+  enableEdgeClickEvents: false
+});</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Renderer</span>
+            <span class="val">WebGL Shader</span>
+            <span class="sub">GPU Vertex</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Node Limit</span>
+            <span class="val">100,000+</span>
+            <span class="sub">60 FPS Target</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Graph Data</span>
+            <span class="val">Graphology</span>
+            <span class="sub">High Speed</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Interaction</span>
+            <span class="val">Camera Pan/Zoom</span>
+            <span class="sub">Quaternion</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-03-vis-network" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">03 / Dynamic Hierarchy</span>
+            <h2 class="slide-headline">Interactive Hierarchies: <span>Vis.js Clustered Network Mesh</span></h2>
+            <p class="slide-subtitle">Physics-enabled tree network with automated node clustering and collapsible department nodes.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Vis.js Network</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-03-vis-network">
+            
+              <div id="vis-net-stage" style="width:100%; height:100%; background:#09100c; border-radius:8px;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const container = document.getElementById('vis-net-stage');
+                  if (!container || !window.vis) return;
+                  const nodes = new vis.DataSet([
+                    { id: 1, label: 'Holding Co', color: '#f3cf65', font: { color: '#000' } },
+                    { id: 2, label: 'OpCo Asia', color: '#00e676' },
+                    { id: 3, label: 'OpCo Europe', color: '#00e5ff' },
+                    { id: 4, label: 'Singapore Hotel', color: '#16281e', shape: 'box', font: { color: '#fff' } },
+                    { id: 5, label: 'Tokyo Resort', color: '#16281e', shape: 'box', font: { color: '#fff' } },
+                    { id: 6, label: 'London Heritage', color: '#16281e', shape: 'box', font: { color: '#fff' } }
+                  ]);
+                  const edges = new vis.DataSet([
+                    { from: 1, to: 2 }, { from: 1, to: 3 },
+                    { from: 2, to: 4 }, { from: 2, to: 5 },
+                    { from: 3, to: 6 }
+                  ]);
+                  new vis.Network(container, { nodes, edges }, {
+                    physics: { barnesHut: { gravitationalConstant: -3000 } },
+                    edges: { color: { color: '#d4af37' }, width: 1.5 }
+                  });
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Barnes-Hut quadtree n-body approximation algorithm: $O(N \log N)$ simulation efficiency.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Corporate entity governance structures, active directory networks, IT infrastructure topologies.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Dynamic drag-and-drop physics, auto-stabilization, and hierarchical layout toggles.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const network = new vis.Network(container, data, {
+  layout: { hierarchical: { direction: 'UD', sortMethod: 'directed' } }
+});</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Physics Alg</span>
+            <span class="val">Barnes-Hut Quad</span>
+            <span class="sub">O(N log N)</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Clustering</span>
+            <span class="val">Dynamic Collapse</span>
+            <span class="sub">Sub-Trees</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">DOM</span>
+            <span class="val">HTML5 Canvas</span>
+            <span class="sub">Retina Crisp</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Stabilize</span>
+            <span class="val">Auto-Sleep</span>
+            <span class="sub">Saves CPU</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-04-antv-g6" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">04 / Concentric Centrality</span>
+            <h2 class="slide-headline">Concentric Rings: <span>Centrality-Ranked Radial Mesh</span></h2>
+            <p class="slide-subtitle">Places sovereign core assets at center ring with peripheral intermediaries arranged by distance.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">AntV G6 Graph Engine</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-04-antv-g6">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 320 320" style="width:280px; height:280px;">
+                  <!-- Concentric Rings -->
+                  <circle cx="160" cy="160" r="40" fill="none" stroke="#d4af37" stroke-width="1.5" stroke-dasharray="4"/>
+                  <circle cx="160" cy="160" r="85" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                  <circle cx="160" cy="160" r="130" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                  <!-- Core Center Node -->
+                  <circle cx="160" cy="160" r="22" fill="#00e676" stroke="#fffefa" stroke-width="2"/>
+                  <text x="160" y="164" text-anchor="middle" fill="#070c09" font-family="DM Sans" font-size="9" font-weight="bold">Core Folio</text>
+                  <!-- Ring 1 Nodes (Direct) -->
+                  <circle cx="160" cy="75" r="14" fill="#f3cf65"/>
+                  <line x1="160" y1="138" x2="160" y2="89" stroke="#d4af37" stroke-width="1.5"/>
+                  <circle cx="245" cy="160" r="14" fill="#f3cf65"/>
+                  <line x1="182" y1="160" x2="231" y2="160" stroke="#d4af37" stroke-width="1.5"/>
+                  <!-- Ring 2 Nodes (Periphery) -->
+                  <circle cx="75" cy="160" r="12" fill="#ff1744"/>
+                  <circle cx="160" cy="290" r="12" fill="#ff1744"/>
+                  <line x1="138" y1="160" x2="87" y2="160" stroke="#ff1744" stroke-width="1" stroke-dasharray="2"/>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Radial coordinate sorting: $r_i = k \cdot \text{Rank}(d_i)$, where rank is derived from Degree Centrality or PageRank.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Critical dependency identification, tier-1 vendor risk analysis, VIP customer relationship graphs.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Instantly separates core strategic assets from secondary peripheral intermediaries.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const graph = new G6.Graph({
+  container: 'mountNode',
+  layout: { type: 'concentric', maxNodeSpacing: 50, preventOverlap: true }
+});</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Layout Mode</span>
+            <span class="val">Concentric Ring</span>
+            <span class="sub">Degree-Ranked</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Centrality</span>
+            <span class="val">Eigenvector / Deg</span>
+            <span class="sub">Mathematical</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Rings</span>
+            <span class="val">3 Tiers</span>
+            <span class="sub">Core to Edge</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Alibaba Engine</span>
+            <span class="val">AntV G6</span>
+            <span class="sub">High-Scale</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-05-mermaid-sequence" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">05 / Protocol Sequences</span>
+            <h2 class="slide-headline">Transactional Handshakes: <span>Mermaid.js Protocol Sequence</span></h2>
+            <p class="slide-subtitle">Declarative Markdown-based protocol handshake mapping direct conversational AI booking verification.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Mermaid.js v10</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-05-mermaid-sequence">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:10px;">
+                <div class="mermaid" style="width:100%; max-height:360px;">
+                  sequenceDiagram
+                    autonumber
+                    actor Guest as Guest AI Agent
+                    participant MCP as Hotel MCP Gateway
+                    participant CRS as Central Reservation (CRS)
+                    participant PMS as Property Folio (PMS)
+                    Guest->>MCP: Query Verified Room Entity (JSON-LD)
+                    MCP-->>Guest: Return Sovereign Rate & Live Inventory
+                    Guest->>MCP: Submit Booking Token (Encrypted Pay)
+                    MCP->>CRS: Validate Rate Parity & Hold Room
+                    CRS->>PMS: Create Unmasked 1st-Party Folio
+                    PMS-->>Guest: Instant Confirmation & Digital Key Token
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Sequential message passing state-machine tracking synchronous and asynchronous API execution.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>API architecture documentation, OAuth2 token handshakes, financial settlement workflows.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Pure Markdown textual syntax, version-controllable in git, auto-rendered in Reveal.js.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>sequenceDiagram
+  Guest->>MCP: Query Room Entity
+  MCP-->>Guest: Return Sovereign Rate
+  Guest->>PMS: Create Unmasked Folio</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Syntax</span>
+            <span class="val">Pure Markdown</span>
+            <span class="sub">Text-Driven</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Rendering</span>
+            <span class="val">Vector SVG</span>
+            <span class="sub">Zero Raster</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Versioning</span>
+            <span class="val">Git Native</span>
+            <span class="sub">Diff-Friendly</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Actors</span>
+            <span class="val">Distributed</span>
+            <span class="sub">Microservices</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-06-jointjs-bpmn" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">06 / Business Process Models</span>
+            <h2 class="slide-headline">BPMN Process Engines: <span>Interactive Workflow Automations</span></h2>
+            <p class="slide-subtitle">BPMN 2.0 compliant workflow nodes tracking automated rate parity violation countermeasures.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">JointJS Core</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-06-jointjs-bpmn">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:15px;">
+                <svg viewBox="0 0 450 220" style="width:100%; max-height:260px;">
+                  <!-- Start Event -->
+                  <circle cx="40" cy="110" r="18" fill="#13221b" stroke="#00e676" stroke-width="3"/>
+                  <text x="40" y="114" text-anchor="middle" fill="#00e676" font-size="10">&#9658;</text>
+                  <!-- Line 1 -->
+                  <line x1="58" y1="110" x2="100" y2="110" stroke="#d4af37" stroke-width="2"/>
+                  <!-- Task: Scraping -->
+                  <rect x="100" y="85" width="100" height="50" fill="#1b2822" stroke="#d4af37" rx="6"/>
+                  <text x="150" y="112" text-anchor="middle" fill="#fffefa" font-family="DM Sans" font-size="11">Detect OTA Leak</text>
+                  <!-- Gateway -->
+                  <path d="M 235 110 L 255 85 L 275 110 L 255 135 Z" fill="#1b2822" stroke="#f3cf65" stroke-width="2"/>
+                  <!-- Diverging Flows -->
+                  <line x1="275" y1="110" x2="320" y2="70" stroke="#00e676" stroke-width="2"/>
+                  <rect x="320" y="50" width="105" height="40" fill="#13221b" stroke="#00e676" rx="4"/>
+                  <text x="372" y="74" text-anchor="middle" fill="#00e676" font-family="DM Sans" font-size="10">Auto Rate Adjust</text>
+                  <line x1="275" y1="110" x2="320" y2="150" stroke="#ff1744" stroke-width="2"/>
+                  <rect x="320" y="130" width="105" height="40" fill="#13221b" stroke="#ff1744" rx="4"/>
+                  <text x="372" y="154" text-anchor="middle" fill="#ff1744" font-family="DM Sans" font-size="10">Issue Stop-Sell</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Petri-net formal execution semantics: transitions, tokens, and conditional branching gateways.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Revenue management escalation protocols, customer complaint resolution paths.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Full drag-and-drop authoring, custom SVG ports, robust connection routing.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const link = new joint.shapes.standard.Link();
+link.source(taskDetect);
+link.target(gatewayDecide);
+link.addTo(graph);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Standard</span>
+            <span class="val">BPMN 2.0</span>
+            <span class="sub">Process Standard</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Gateways</span>
+            <span class="val">Exclusive (XOR)</span>
+            <span class="sub">Conditional</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Ports</span>
+            <span class="val">Custom Magnetic</span>
+            <span class="sub">Snap-to-Connect</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Engine</span>
+            <span class="val">JointJS</span>
+            <span class="sub">Client Workflow</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-07-gojs-hierarchy" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">07 / Enterprise Hierarchy</span>
+            <h2 class="slide-headline">Enterprise Node Systems: <span>GoJS Port-Connected Hierarchy</span></h2>
+            <p class="slide-subtitle">Commercial enterprise diagramming engine featuring custom data-bound node templates and orthogonal link routing.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">GoJS Enterprise</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-07-gojs-hierarchy">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                <div style="background:#13221b; border:2px solid #d4af37; border-radius:6px; padding:10px 20px; text-align:center;">
+                  <strong style="color:#f3cf65; font-size:1.1rem; font-family:Newsreader;">Chief Commercial Officer (CCO)</strong>
+                  <div style="font-size:0.75rem; color:#9ba9a1;">P&L Demand Accountability</div>
+                </div>
+                <div style="width:2px; height:25px; background:#d4af37;"></div>
+                <div style="width:280px; height:2px; background:#d4af37;"></div>
+                <div style="display:flex; justify-content:space-between; width:340px; margin-top:10px;">
+                  <div style="background:#101a16; border:1px solid #00e676; border-radius:4px; padding:8px 12px; text-align:center;">
+                    <strong style="color:#00e676; font-size:0.9rem;">Dir. Direct Acquisition</strong>
+                  </div>
+                  <div style="background:#101a16; border:1px solid #00e5ff; border-radius:4px; padding:8px 12px; text-align:center;">
+                    <strong style="color:#00e5ff; font-size:0.9rem;">Dir. Revenue AI</strong>
+                  </div>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Hierarchical tree layout with subtree bounding-box collision avoidance and orthogonal Bézier routing.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Corporate organigrams, electrical schematic CAD, process control schematics.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Extremely mature, high-performance HTML5 Canvas diagramming framework for commercial apps.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>myDiagram.nodeTemplate = $(go.Node, "Auto",
+  $(go.Shape, "RoundedRectangle", { fill: "#13221b" }),
+  $(go.TextBlock, { margin: 8, stroke: "#fffefa" }, new go.Binding("text", "name"))
+);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Routing</span>
+            <span class="val">Orthogonal</span>
+            <span class="sub">Bézier Avoidance</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Data Binding</span>
+            <span class="val">Two-Way</span>
+            <span class="sub">Reactive Sync</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Scale</span>
+            <span class="val">Enterprise Grade</span>
+            <span class="sub">Complex CAD</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">License</span>
+            <span class="val">Commercial</span>
+            <span class="sub">Northwoods</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-08-vivagraph" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">08 / High-Performance Graph</span>
+            <h2 class="slide-headline">High-Throughput Force Graphs: <span>VivaGraphJS Fast Physics</span></h2>
+            <p class="slide-subtitle">Lightweight physics engine built for high-throughput node exploration with minimal memory footprint.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">VivaGraphJS</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-08-vivagraph">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 260" style="width:100%; max-height:280px;">
+                  <!-- Clustered Ring Network -->
+                  <g stroke="#d4af37" stroke-width="1.2" opacity="0.6">
+                    <line x1="80" y1="130" x2="140" y2="80"/>
+                    <line x1="140" y1="80" x2="210" y2="80"/>
+                    <line x1="210" y1="80" x2="270" y2="130"/>
+                    <line x1="270" y1="130" x2="210" y2="180"/>
+                    <line x1="210" y1="180" x2="140" y2="180"/>
+                    <line x1="140" y1="180" x2="80" y2="130"/>
+                    <line x1="140" y1="80" x2="210" y2="180"/>
+                    <line x1="210" y1="80" x2="140" y2="180"/>
+                  </g>
+                  <circle cx="80" cy="130" r="9" fill="#00e676"/>
+                  <circle cx="140" cy="80" r="9" fill="#f3cf65"/>
+                  <circle cx="210" cy="80" r="9" fill="#00e5ff"/>
+                  <circle cx="270" cy="130" r="9" fill="#00e676"/>
+                  <circle cx="210" cy="180" r="9" fill="#f3cf65"/>
+                  <circle cx="140" cy="180" r="9" fill="#00e5ff"/>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Verlet physics integration algorithm with spatial grid partitioning for rapid nearest-neighbor force evaluation.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Real-time social graph updates, cybersecurity node clustering, protein-protein interaction networks.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Extremely modular (pluggable renderers: WebGL, Canvas, SVG) with micro-footprint.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>var graph = Viva.Graph.graph();
+graph.addLink(1, 2);
+var renderer = Viva.Graph.View.renderer(graph, { container: document.body });
+renderer.run();</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Integrator</span>
+            <span class="val">Verlet Physics</span>
+            <span class="sub">Stable Dynamics</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Pluggable</span>
+            <span class="val">WebGL / Canvas</span>
+            <span class="sub">Multi-Backend</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Footprint</span>
+            <span class="val">35 KB Core</span>
+            <span class="sub">Ultra Light</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Layout</span>
+            <span class="val">Force-Directed</span>
+            <span class="sub">Streaming</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-09-bipartite-network" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">09 / Two-Mode Networks</span>
+            <h2 class="slide-headline">Two-Mode Affiliations: <span>Bipartite Channel Matrix</span></h2>
+            <p class="slide-subtitle">Dual-partition graph connecting two disjoint classes of entities: Hotel Assets vs Intermediary Channels.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">D3 Bipartite Layout</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-09-bipartite-network">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:15px;">
+                <svg viewBox="0 0 450 260" style="width:100%; max-height:300px;">
+                  <!-- Left Partition: Hotel Assets -->
+                  <g font-family="DM Sans" font-size="11">
+                    <rect x="20" y="40" width="110" height="30" fill="#13221b" stroke="#00e676" rx="4"/>
+                    <text x="75" y="60" text-anchor="middle" fill="#00e676">Singapore Flagship</text>
+                    
+                    <rect x="20" y="110" width="110" height="30" fill="#13221b" stroke="#00e676" rx="4"/>
+                    <text x="75" y="130" text-anchor="middle" fill="#00e676">London Heritage</text>
+
+                    <rect x="20" y="180" width="110" height="30" fill="#13221b" stroke="#00e676" rx="4"/>
+                    <text x="75" y="200" text-anchor="middle" fill="#00e676">Tokyo Luxury Resort</text>
+                  </g>
+
+                  <!-- Right Partition: Intermediary Gateways -->
+                  <g font-family="DM Sans" font-size="11">
+                    <rect x="320" y="40" width="110" height="30" fill="#13221b" stroke="#d4af37" rx="4"/>
+                    <text x="375" y="60" text-anchor="middle" fill="#f3cf65">Direct Web / App</text>
+
+                    <rect x="320" y="110" width="110" height="30" fill="#13221b" stroke="#ffab00" rx="4"/>
+                    <text x="375" y="130" text-anchor="middle" fill="#ffab00">Google Hotel Ads</text>
+
+                    <rect x="320" y="180" width="110" height="30" fill="#13221b" stroke="#ff1744" rx="4"/>
+                    <text x="375" y="200" text-anchor="middle" fill="#ff1744">OTA Intermediary</text>
+                  </g>
+
+                  <!-- Bipartite Links -->
+                  <g stroke="rgba(212,175,55,0.4)" stroke-width="2">
+                    <line x1="130" y1="55" x2="320" y2="55"/>
+                    <line x1="130" y1="55" x2="320" y2="125"/>
+                    <line x1="130" y1="125" x2="320" y2="55"/>
+                    <line x1="130" y1="125" x2="320" y2="195"/>
+                    <line x1="130" y1="195" x2="320" y2="55"/>
+                    <line x1="130" y1="195" x2="320" y2="125"/>
+                  </g>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Bipartite graph $G = (U, V, E)$ where edges only exist between distinct partitions $u \in U$ and $v \in V$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Hotels-to-channels distribution, board directors-to-committees, customer-to-product affinities.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Direct projection onto 1-mode network reveals hidden asset correlation.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const topNodes = data.filter(d => d.type === 'hotel');
+const bottomNodes = data.filter(d => d.type === 'channel');
+drawBipartiteLinks(topNodes, bottomNodes);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Graph Class</span>
+            <span class="val">2-Mode Bipartite</span>
+            <span class="sub">Disjoint Sets</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Projection</span>
+            <span class="val">Affiliation Matrix</span>
+            <span class="sub">A x A^T</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Edges</span>
+            <span class="val">Inter-Set Only</span>
+            <span class="sub">No Intra Edges</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Application</span>
+            <span class="val">Channel Mapping</span>
+            <span class="sub">Distribution</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-10-chord-connectogram" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">10 / Hierarchical Bundling</span>
+            <h2 class="slide-headline">B-Spline Edge Bundling: <span>Circular Connectogram</span></h2>
+            <p class="slide-subtitle">Hierarchical edge bundling reducing visual line clutter by routing related edges along common tree stems.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">D3 Hierarchical Edge Bundle</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-10-chord-connectogram">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 320 320" style="width:280px; height:280px;">
+                  <!-- Outer Circular Node Ring -->
+                  <circle cx="160" cy="160" r="120" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                  <!-- Bundled B-Splines -->
+                  <path d="M 60 160 Q 160 160, 160 60" fill="none" stroke="#00e676" stroke-width="2" opacity="0.7"/>
+                  <path d="M 60 160 Q 160 160, 240 100" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.7"/>
+                  <path d="M 160 260 Q 160 160, 240 100" fill="none" stroke="#00e5ff" stroke-width="2" opacity="0.7"/>
+                  <path d="M 160 260 Q 160 160, 160 60" fill="none" stroke="#f3cf65" stroke-width="2" opacity="0.7"/>
+                  <path d="M 260 160 Q 160 160, 60 160" fill="none" stroke="#ff1744" stroke-width="1.5" opacity="0.5"/>
+                  <!-- Ring Nodes -->
+                  <circle cx="60" cy="160" r="8" fill="#00e676"/>
+                  <circle cx="160" cy="60" r="8" fill="#f3cf65"/>
+                  <circle cx="260" cy="160" r="8" fill="#00e5ff"/>
+                  <circle cx="160" cy="260" r="8" fill="#d4af37"/>
+                  <circle cx="240" cy="100" r="8" fill="#ffab00"/>
+                  <text x="160" y="165" text-anchor="middle" fill="#fffefa" font-family="Newsreader" font-size="16">Edge Bundling</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Cubic B-spline curves pulled toward common ancestors in a radial tree hierarchy with bundling parameter $\beta \in [0, 1]$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Cross-departmental communication traffic, software package call dependencies, genomic co-expression.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Dramatically reduces visual hairball clutter by grouping parallel cross-graph connections.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const line = d3.lineRadial()
+  .curve(d3.curveBundle.beta(0.85))
+  .radius(d => d.y).angle(d => d.x);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Spline Type</span>
+            <span class="val">Cubic B-Spline</span>
+            <span class="sub">Bézier Tension</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Tension Beta</span>
+            <span class="val">β = 0.85</span>
+            <span class="sub">Bundling Tightness</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Clutter</span>
+            <span class="val">-75% Noise</span>
+            <span class="sub">Clean Voids</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Topology</span>
+            <span class="val">Radial Circular</span>
+            <span class="sub">Connectogram</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-11-dag-pipeline" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">11 / Pipeline Orchestration</span>
+            <h2 class="slide-headline">Execution DAGs: <span>Directed Acyclic AI Pipeline</span></h2>
+            <p class="slide-subtitle">Topological dependency graph orchestrating revenue forecasting and MCP agentic execution.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">DAGre / D3 DAG</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-11-dag-pipeline">
+            
+              <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:16px;">
+                <div style="background:#13221b; border:1px solid #d4af37; border-radius:6px; padding:8px 18px;">
+                  <strong style="color:#f3cf65; font-family:JetBrains Mono;">1. Ingest PMS/OTA Data</strong>
+                </div>
+                <div style="font-size:1.2rem; color:#d4af37;">&darr;</div>
+                <div style="display:flex; gap:24px;">
+                  <div style="background:#13221b; border:1px solid #00e676; border-radius:6px; padding:8px 14px;">
+                    <strong style="color:#00e676; font-family:JetBrains Mono; font-size:0.85rem;">2A. Dynamic ADR Model</strong>
+                  </div>
+                  <div style="background:#13221b; border:1px solid #00e5ff; border-radius:6px; padding:8px 14px;">
+                    <strong style="color:#00e5ff; font-family:JetBrains Mono; font-size:0.85rem;">2B. Entity Schema Validator</strong>
+                  </div>
+                </div>
+                <div style="font-size:1.2rem; color:#d4af37;">&darr;</div>
+                <div style="background:#13221b; border:1px solid #00e676; border-radius:6px; padding:8px 18px; box-shadow:0 0 10px rgba(0,230,118,0.3);">
+                  <strong style="color:#00e676; font-family:JetBrains Mono;">3. Deploy to MCP Endpoints</strong>
+                </div>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Kahn’s algorithm topological sort computing non-cyclic execution order with $O(V + E)$ complexity.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Airflow / Prefect data orchestration, machine learning training pipelines, CI/CD builds.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Guarantees execution determinism; prevents deadlocks and cyclical infinite loops.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>dagre.layout(g);
+g.nodes().forEach(v => {
+  renderNode(v, g.node(v));
+});</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Graph Class</span>
+            <span class="val">DAG (No Cycles)</span>
+            <span class="sub">Deterministic</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Algorithm</span>
+            <span class="val">Kahn's Topo Sort</span>
+            <span class="sub">O(V + E)</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Parallelism</span>
+            <span class="val">Multi-Branch</span>
+            <span class="sub">Concurrent</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Standard</span>
+            <span class="val">Airflow / Dagster</span>
+            <span class="sub">Production</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-12-knowledge-graph" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">12 / Semantic Networks</span>
+            <h2 class="slide-headline">Semantic Entity Meshes: <span>RDF Knowledge Graph Triples</span></h2>
+            <p class="slide-subtitle">Subject-Predicate-Object semantic mesh powering AI conversational agent discovery.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Semantic Graph Engine</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-12-knowledge-graph">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 450 220" style="width:100%; max-height:260px;">
+                  <!-- Node 1: Hotel Entity -->
+                  <circle cx="90" cy="110" r="38" fill="#13221b" stroke="#00e676" stroke-width="2"/>
+                  <text x="90" y="108" text-anchor="middle" fill="#fffefa" font-family="DM Sans" font-size="11" font-weight="bold">Hotel Entity</text>
+                  <text x="90" y="122" text-anchor="middle" fill="#00e676" font-family="JetBrains Mono" font-size="9">schema:Hotel</text>
+                  <!-- Node 2: Amenity -->
+                  <circle cx="360" cy="60" r="32" fill="#13221b" stroke="#d4af37" stroke-width="2"/>
+                  <text x="360" y="58" text-anchor="middle" fill="#fffefa" font-family="DM Sans" font-size="11" font-weight="bold">Infinity Pool</text>
+                  <text x="360" y="72" text-anchor="middle" fill="#f3cf65" font-family="JetBrains Mono" font-size="9">AmenityFeature</text>
+                  <!-- Node 3: Sovereign Rate -->
+                  <circle cx="360" cy="160" r="32" fill="#13221b" stroke="#00e5ff" stroke-width="2"/>
+                  <text x="360" y="158" text-anchor="middle" fill="#fffefa" font-family="DM Sans" font-size="11" font-weight="bold">Direct Price</text>
+                  <text x="360" y="172" text-anchor="middle" fill="#00e5ff" font-family="JetBrains Mono" font-size="9">UnitPriceSpec</text>
+                  <!-- Predicate Arrows -->
+                  <line x1="128" y1="102" x2="328" y2="66" stroke="#d4af37" stroke-width="2"/>
+                  <rect x="195" y="72" width="75" height="18" fill="#070c09" rx="3"/>
+                  <text x="232" y="85" text-anchor="middle" fill="#f3cf65" font-family="JetBrains Mono" font-size="9">amenityFeature</text>
+                  <line x1="128" y1="118" x2="328" y2="154" stroke="#00e5ff" stroke-width="2"/>
+                  <rect x="195" y="128" width="75" height="18" fill="#070c09" rx="3"/>
+                  <text x="232" y="141" text-anchor="middle" fill="#00e5ff" font-family="JetBrains Mono" font-size="9">priceSpecification</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Directed labeled multigraph representation of RDF triples: $\langle \text{Subject}, \text{Predicate}, \text{Object} \rangle$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Search engine GEO optimization, LLM RAG entity extraction, enterprise ontologies.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Machine-readable by Perplexity, ChatGPT, and Google Gemini crawlers for zero-shot citation.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>{
+  "@context": "https://schema.org",
+  "@type": "Hotel",
+  "name": "Luxury Sovereign",
+  "amenityFeature": { "@type": "LocationFeatureSpecification", "value": "Pool" }
+}</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Data Model</span>
+            <span class="val">RDF Triples</span>
+            <span class="sub">W3C Standard</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Schema</span>
+            <span class="val">Schema.org</span>
+            <span class="sub">JSON-LD Compatible</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">LLM Utility</span>
+            <span class="val">High Citation</span>
+            <span class="sub">AEO / GEO</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Query Lang</span>
+            <span class="val">SPARQL / Cypher</span>
+            <span class="sub">Graph Query</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-13-neural-network" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">13 / Deep Learning Topology</span>
+            <h2 class="slide-headline">Tensor Operations: <span>Multi-Layer Neural Network Graph</span></h2>
+            <p class="slide-subtitle">Input, hidden dense layers, activation matrices, and output probability nodes in revenue prediction.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Deep Learning Graph</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-13-neural-network">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 450 240" style="width:100%; max-height:280px;">
+                  <!-- Input Layer (4 nodes) -->
+                  <g fill="#00e676">
+                    <circle cx="60" cy="40" r="10"/>
+                    <circle cx="60" cy="90" r="10"/>
+                    <circle cx="60" cy="140" r="10"/>
+                    <circle cx="60" cy="190" r="10"/>
+                  </g>
+                  <!-- Hidden Layer 1 (5 nodes) -->
+                  <g fill="#d4af37">
+                    <circle cx="190" cy="30" r="10"/>
+                    <circle cx="190" cy="75" r="10"/>
+                    <circle cx="190" cy="120" r="10"/>
+                    <circle cx="190" cy="165" r="10"/>
+                    <circle cx="190" cy="210" r="10"/>
+                  </g>
+                  <!-- Output Layer (2 nodes) -->
+                  <g fill="#00e5ff">
+                    <circle cx="360" cy="85" r="12"/>
+                    <circle cx="360" cy="155" r="12"/>
+                  </g>
+                  <!-- Interconnections (sparse subset) -->
+                  <g stroke="rgba(255,255,255,0.12)" stroke-width="1">
+                    <line x1="60" y1="40" x2="190" y2="30"/>
+                    <line x1="60" y1="40" x2="190" y2="75"/>
+                    <line x1="60" y1="90" x2="190" y2="75"/>
+                    <line x1="60" y1="90" x2="190" y2="120"/>
+                    <line x1="60" y1="140" x2="190" y2="120"/>
+                    <line x1="60" y1="140" x2="190" y2="165"/>
+                    <line x1="60" y1="190" x2="190" y2="165"/>
+                    <line x1="60" y1="190" x2="190" y2="210"/>
+                    <line x1="190" y1="75" x2="360" y2="85"/>
+                    <line x1="190" y1="120" x2="360" y2="85"/>
+                    <line x1="190" y1="120" x2="360" y2="155"/>
+                    <line x1="190" y1="165" x2="360" y2="155"/>
+                  </g>
+                  <!-- Labels -->
+                  <text x="60" y="225" text-anchor="middle" fill="#00e676" font-family="DM Sans" font-size="10">Inputs (X)</text>
+                  <text x="190" y="235" text-anchor="middle" fill="#d4af37" font-family="DM Sans" font-size="10">Dense ReLU</text>
+                  <text x="360" y="225" text-anchor="middle" fill="#00e5ff" font-family="DM Sans" font-size="10">Predictions</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Affine linear matrix transform: $\mathbf{a}^{(l+1)} = \sigma(\mathbf{W}^{(l)} \mathbf{a}^{(l)} + \mathbf{b}^{(l)})$ with backpropagation.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Dynamic pricing prediction, guest cancellation propensity modeling, customer sentiment.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Visualizes weight magnitude through edge thickness and activation via node glow.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>model = nn.Sequential(
+  nn.Linear(4, 5), nn.ReLU(),
+  nn.Linear(5, 2), nn.Softmax(dim=-1)
+)</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Architecture</span>
+            <span class="val">Feedforward MLP</span>
+            <span class="sub">Fully Connected</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Activations</span>
+            <span class="val">ReLU / Softmax</span>
+            <span class="sub">Non-Linear</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Tensors</span>
+            <span class="val">Matrix Product</span>
+            <span class="sub">GPU Optimized</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Loss</span>
+            <span class="val">Cross-Entropy</span>
+            <span class="sub">Optimization</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-14-mst-kruskal" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">14 / Combinatorial Optimization</span>
+            <h2 class="slide-headline">Optimal Connectivity: <span>Kruskal Minimum Spanning Tree</span></h2>
+            <p class="slide-subtitle">Sub-graph connecting all regional hotel nodes with minimum total network distribution cost.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">MST Algorithm</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-14-mst-kruskal">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 240" style="width:100%; max-height:260px;">
+                  <!-- Discarded high-cost edges -->
+                  <line x1="80" y1="60" x2="260" y2="60" stroke="#ff1744" stroke-width="1.5" stroke-dasharray="3"/>
+                  <line x1="80" y1="60" x2="260" y2="180" stroke="#ff1744" stroke-width="1.5" stroke-dasharray="3"/>
+                  <!-- Minimum Spanning Tree Edges (Green) -->
+                  <line x1="80" y1="60" x2="140" y2="130" stroke="#00e676" stroke-width="3"/>
+                  <line x1="140" y1="130" x2="80" y2="180" stroke="#00e676" stroke-width="3"/>
+                  <line x1="140" y1="130" x2="220" y2="120" stroke="#00e676" stroke-width="3"/>
+                  <line x1="220" y1="120" x2="260" y2="60" stroke="#00e676" stroke-width="3"/>
+                  <line x1="220" y1="120" x2="260" y2="180" stroke="#00e676" stroke-width="3"/>
+                  <!-- Nodes -->
+                  <circle cx="80" cy="60" r="10" fill="#f3cf65"/>
+                  <circle cx="140" cy="130" r="12" fill="#00e676"/>
+                  <circle cx="80" cy="180" r="10" fill="#f3cf65"/>
+                  <circle cx="220" cy="120" r="12" fill="#00e676"/>
+                  <circle cx="260" cy="60" r="10" fill="#f3cf65"/>
+                  <circle cx="260" cy="180" r="10" fill="#f3cf65"/>
+                  <text x="175" y="225" text-anchor="middle" fill="#00e676" font-family="JetBrains Mono" font-size="11">MST Cost: $48k vs $142k Mesh</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Kruskal’s greedy algorithm utilizing disjoint-set data structure (Union-Find) in $O(E \log E)$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Fiber-optic data cable routing, centralized warehouse delivery routes, regional IT hub placement.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Mathematically provable minimum total edge cost guaranteeing full connectivity without cycles.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>edges.sort((a, b) => a.weight - b.weight);
+for (const e of edges) {
+  if (unionFind.find(e.u) !== unionFind.find(e.v)) {
+    mst.push(e); unionFind.union(e.u, e.v);
+  }
+}</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Algorithm</span>
+            <span class="val">Kruskal's Greedy</span>
+            <span class="sub">Union-Find</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Complexity</span>
+            <span class="val">O(E log E)</span>
+            <span class="sub">Fast Sorting</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Tree Property</span>
+            <span class="val">V - 1 Edges</span>
+            <span class="sub">No Cycles</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Cost Saving</span>
+            <span class="val">-66% Overhead</span>
+            <span class="sub">Pruned Links</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-15-sankey-network" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">15 / Nodal Ribbon Routing</span>
+            <h2 class="slide-headline">Nodal Ribbon Routing: <span>Sankey Multi-Stage Graph</span></h2>
+            <p class="slide-subtitle">High-density multi-stage network mapping guest journey touches from initial search to repeat booking.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">D3 Sankey Plugin</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-15-sankey-network">
+            
+              <div id="d3-sankey-stage" class="plotly-graph" style="width:100%; height:100%;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const el = document.getElementById('d3-sankey-stage');
+                  if (!el || !window.Plotly) return;
+                  const data = [{
+                    type: 'sankey', orientation: 'h',
+                    node: {
+                      pad: 16, thickness: 20, line: { color: '#b5935b', width: 1 },
+                      label: ["Discovery (100k)", "OTA (45k)", "Brand Search (35k)", "Direct Social (20k)", "Book Direct (28k)", "Book OTA (32k)", "Loyalty Rebook (18k)"],
+                      color: ["#f3cf65", "#ff1744", "#00e676", "#00e5ff", "#00e676", "#ff1744", "#f3cf65"]
+                    },
+                    link: {
+                      source: [0, 0, 0, 1, 2, 2, 3, 4],
+                      target: [1, 2, 3, 5, 4, 5, 4, 6],
+                      value:  [45, 35, 20, 32, 22, 13, 16, 18],
+                      color: 'rgba(212, 175, 55, 0.25)'
+                    }
+                  }];
+                  const layout = {
+                    paper_bgcolor: 'transparent',
+                    font: { color: '#fffefa', family: 'DM Sans', size: 12 },
+                    margin: { l: 15, r: 15, t: 20, b: 20 }
+                  };
+                  Plotly.newPlot('d3-sankey-stage', data, layout, { responsive: true, displayModeBar: false });
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Relaxation algorithm iteratively positioning nodes vertically to minimize ribbon edge crossings.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Customer conversion attribution, website user navigation clickstreams, supply chain logistics.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Proportional ribbon width conveys relative traffic volume at a single glance.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const sankey = d3.sankey()
+  .nodeWidth(20).nodePadding(15)
+  .extent([[1, 5], [width - 1, height - 5]]);
+const {nodes, links} = sankey(graphData);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Routing</span>
+            <span class="val">Crossing Min</span>
+            <span class="sub">Iterative Relax</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Conservation</span>
+            <span class="val">Proportional</span>
+            <span class="sub">Width = Flow</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Interactive</span>
+            <span class="val">Node Vertical Drag</span>
+            <span class="sub">Custom Ordering</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Clarity</span>
+            <span class="val">Multi-Stage</span>
+            <span class="sub">Funnel Path</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-16-dijkstra-tracer" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">16 / Routing Algorithms</span>
+            <h2 class="slide-headline">Pathfinding Tracers: <span>Dijkstra Shortest Route Search</span></h2>
+            <p class="slide-subtitle">Priority-queue driven single-source shortest path identifying optimal data transit routes.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Pathfinding Graph</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-16-dijkstra-tracer">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 400 240" style="width:100%; max-height:260px;">
+                  <!-- Background Gray Links -->
+                  <g stroke="rgba(255,255,255,0.1)" stroke-width="1.5">
+                    <line x1="60" y1="120" x2="150" y2="50"/>
+                    <line x1="60" y1="120" x2="150" y2="190"/>
+                    <line x1="150" y1="50" x2="250" y2="50"/>
+                    <line x1="150" y1="190" x2="250" y2="190"/>
+                    <line x1="250" y1="50" x2="340" y2="120"/>
+                  </g>
+                  <!-- Shortest Path Highlight (Gold Glowing) -->
+                  <g stroke="#00e676" stroke-width="3.5">
+                    <line x1="60" y1="120" x2="150" y2="190"/>
+                    <line x1="150" y1="190" x2="250" y2="120"/>
+                    <line x1="250" y1="120" x2="340" y2="120"/>
+                  </g>
+                  <!-- Nodes -->
+                  <circle cx="60" cy="120" r="14" fill="#00e676"/>
+                  <text x="60" y="124" text-anchor="middle" fill="#070c09" font-family="JetBrains Mono" font-size="10" font-weight="bold">SRC</text>
+                  <circle cx="150" cy="50" r="10" fill="#13221b" stroke="#fff"/>
+                  <circle cx="150" cy="190" r="12" fill="#00e676"/>
+                  <circle cx="250" cy="50" r="10" fill="#13221b" stroke="#fff"/>
+                  <circle cx="250" cy="120" r="12" fill="#00e676"/>
+                  <circle cx="250" cy="190" r="10" fill="#13221b" stroke="#fff"/>
+                  <circle cx="340" cy="120" r="14" fill="#f3cf65"/>
+                  <text x="340" y="124" text-anchor="middle" fill="#070c09" font-family="JetBrains Mono" font-size="10" font-weight="bold">DST</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Dijkstra relaxation: if $d[u] + w(u,v) < d[v]$ then $d[v] = d[u] + w(u,v)$ via min-heap priority queue.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>GPS navigation route planning, fiber optic packet routing, low-latency CDN origin pulls.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Guarantees the absolute shortest path on non-negative weighted networks in $O((V + E) \log V)$.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>while (!pq.isEmpty()) {
+  const { u, d } = pq.pop();
+  for (const { v, weight } of adj[u]) {
+    if (dist[u] + weight < dist[v]) { dist[v] = dist[u] + weight; pq.push({ v, dist[v] }); }
+  }
+}</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Algorithm</span>
+            <span class="val">Dijkstra's Min-Heap</span>
+            <span class="sub">O((V+E) log V)</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Weights</span>
+            <span class="val">Non-Negative</span>
+            <span class="sub">Edge Cost</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Output</span>
+            <span class="val">Optimal Vector</span>
+            <span class="sub">Gold Route</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Latency</span>
+            <span class="val">Sub-Millisecond</span>
+            <span class="sub">Real-Time</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-17-ego-network" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">17 / Local Neighborhoods</span>
+            <h2 class="slide-headline">Neighborhood Subgraphs: <span>Ego Network 1-Hop Extraction</span></h2>
+            <p class="slide-subtitle">Focused subgraph isolating a central ego entity and its immediate alter connections.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Ego Graph Filter</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-17-ego-network">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 350 250" style="width:100%; max-height:270px;">
+                  <!-- 2-Hop Outer Ring Boundary (Dashed) -->
+                  <circle cx="175" cy="125" r="105" fill="none" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3"/>
+                  <!-- 1-Hop Inner Ring Boundary -->
+                  <circle cx="175" cy="125" r="60" fill="none" stroke="#d4af37" stroke-dasharray="4" stroke-width="1.2"/>
+                  <!-- Ego Center Node -->
+                  <circle cx="175" cy="125" r="18" fill="#f3cf65" stroke="#fff" stroke-width="2"/>
+                  <text x="175" y="129" text-anchor="middle" fill="#070c09" font-family="DM Sans" font-size="10" font-weight="bold">Ego</text>
+                  <!-- 1-Hop Alters -->
+                  <circle cx="125" cy="90" r="10" fill="#00e676"/>
+                  <circle cx="225" cy="90" r="10" fill="#00e676"/>
+                  <circle cx="175" cy="185" r="10" fill="#00e676"/>
+                  <!-- Edges to Alters -->
+                  <line x1="175" y1="125" x2="125" y2="90" stroke="#00e676" stroke-width="2"/>
+                  <line x1="175" y1="125" x2="225" y2="90" stroke="#00e676" stroke-width="2"/>
+                  <line x1="175" y1="125" x2="175" y2="185" stroke="#00e676" stroke-width="2"/>
+                  <!-- 2-Hop Peripheral Alters -->
+                  <circle cx="90" cy="60" r="7" fill="#6c7d73"/>
+                  <line x1="125" y1="90" x2="90" y2="60" stroke="#6c7d73" stroke-dasharray="2"/>
+                  <circle cx="260" cy="70" r="7" fill="#6c7d73"/>
+                  <line x1="225" y1="90" x2="260" y2="70" stroke="#6c7d73" stroke-dasharray="2"/>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Breadth-First Search (BFS) radius cutoff: $V_{\text{ego}}(u, k) = \{v \in V \mid \text{dist}(u, v) \le k\}$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Fraud investigation around a suspicious account, VIP guest influence networks, CRM account mapping.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Eliminates massive graph cognitive overload by zooming strictly into immediate spheres of influence.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const egoGraph = (graph, egoId, radius = 1) => {
+  const neighbors = new Set([egoId]);
+  // BFS expand up to radius
+  return extractSubgraph(graph, neighbors);
+};</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Filter Radius</span>
+            <span class="val">k = 1, 2 Hops</span>
+            <span class="sub">BFS Cutoff</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Focus</span>
+            <span class="val">Single Ego Node</span>
+            <span class="sub">Target Entity</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Complexity</span>
+            <span class="val">O(deg(u))</span>
+            <span class="sub">Instant Filter</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Noise Drop</span>
+            <span class="val">-90% Clutter</span>
+            <span class="sub">Surgical View</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-18-threat-attack" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">18 / Cybersecurity Graphs</span>
+            <h2 class="slide-headline">Vulnerability Propagation: <span>Cyber Attack Vector Trees</span></h2>
+            <p class="slide-subtitle">Exploit chain propagation trees modeling attack surface vulnerabilities and perimeter breach vectors.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">Threat Attack Graph</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-18-threat-attack">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 450 220" style="width:100%; max-height:250px;">
+                  <!-- External Hacker -->
+                  <circle cx="50" cy="110" r="20" fill="#13221b" stroke="#ff1744" stroke-width="2"/>
+                  <text x="50" y="114" text-anchor="middle" fill="#ff1744" font-family="JetBrains Mono" font-size="10">Adversary</text>
+                  <line x1="70" y1="110" x2="130" y2="110" stroke="#ff1744" stroke-width="2" stroke-dasharray="3"/>
+                  <!-- Perimeter DMZ -->
+                  <rect x="130" y="85" width="90" height="50" fill="#1b2822" stroke="#ffab00" rx="4"/>
+                  <text x="175" y="107" text-anchor="middle" fill="#ffab00" font-family="DM Sans" font-size="10" font-weight="bold">Public Web API</text>
+                  <text x="175" y="122" text-anchor="middle" fill="#9ba9a1" font-family="JetBrains Mono" font-size="8">CVE-2026-X</text>
+                  <line x1="220" y1="110" x2="280" y2="110" stroke="#ff1744" stroke-width="2"/>
+                  <!-- Lateral Movement -->
+                  <rect x="280" y="85" width="90" height="50" fill="#1b2822" stroke="#ff1744" rx="4"/>
+                  <text x="325" y="107" text-anchor="middle" fill="#ff1744" font-family="DM Sans" font-size="10" font-weight="bold">PMS Database</text>
+                  <text x="325" y="122" text-anchor="middle" fill="#ff1744" font-family="JetBrains Mono" font-size="8">Cardholder Data</text>
+                  <!-- Mitigated Block -->
+                  <line x1="175" y1="135" x2="175" y2="180" stroke="#00e676" stroke-width="2"/>
+                  <rect x="130" y="180" width="90" height="30" fill="#13221b" stroke="#00e676" rx="4"/>
+                  <text x="175" y="200" text-anchor="middle" fill="#00e676" font-family="DM Sans" font-size="9">WAF Rate-Limiter</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Bayesian attack graph probability calculation: $P(\text{Breach}) = 1 - \prod (1 - p_i)$ across lateral exploit stages.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Payment card industry (PCI-DSS) perimeter audits, cloud zero-trust infrastructure verification.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Pinpoints single-point-of-failure vulnerabilities before malicious exploitation.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>const attackGraph = new AttackGraph({
+  target: 'GuestCreditCardFolio',
+  rules: [cveExploits, lateralMovementRules]
+});</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Graph Model</span>
+            <span class="val">Attack Tree DAG</span>
+            <span class="sub">Exploit Vector</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Security</span>
+            <span class="val">PCI-DSS / ISO</span>
+            <span class="sub">Audit Standard</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Severity</span>
+            <span class="val">CVSS Ranked</span>
+            <span class="sub">Critical Red</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Defense</span>
+            <span class="val">WAF Layered</span>
+            <span class="sub">Zero Trust</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-19-hive-plot" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">19 / Deterministic Networks</span>
+            <h2 class="slide-headline">Reproducible Network Geometry: <span>Tri-Axis Hive Plot</span></h2>
+            <p class="slide-subtitle">Martin Krzywinski hive plot placing nodes along three radial axes by structural categorical properties.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">D3 Hive Plot</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-19-hive-plot">
+            
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                <svg viewBox="0 0 320 320" style="width:280px; height:280px;">
+                  <!-- Three Radial Axes (120 degrees apart) -->
+                  <!-- Axis 1: Vertical (270 deg) -->
+                  <line x1="160" y1="160" x2="160" y2="40" stroke="#d4af37" stroke-width="2"/>
+                  <!-- Axis 2: Bottom-Right (30 deg) -->
+                  <line x1="160" y1="160" x2="264" y2="220" stroke="#d4af37" stroke-width="2"/>
+                  <!-- Axis 3: Bottom-Left (150 deg) -->
+                  <line x1="160" y1="160" x2="56" y2="220" stroke="#d4af37" stroke-width="2"/>
+                  <!-- Curved Bézier Edges connecting nodes on axes -->
+                  <path d="M 160 80 Q 200 120, 220 195" fill="none" stroke="#00e676" stroke-width="2" opacity="0.8"/>
+                  <path d="M 160 120 Q 180 140, 180 170" fill="none" stroke="#00e676" stroke-width="2" opacity="0.8"/>
+                  <path d="M 220 195 Q 160 210, 100 195" fill="none" stroke="#00e5ff" stroke-width="2" opacity="0.8"/>
+                  <path d="M 100 195 Q 120 140, 160 80" fill="none" stroke="#f3cf65" stroke-width="2" opacity="0.8"/>
+                  <!-- Nodes on Axes -->
+                  <circle cx="160" cy="80" r="6" fill="#00e676"/>
+                  <circle cx="160" cy="120" r="6" fill="#00e676"/>
+                  <circle cx="220" cy="195" r="6" fill="#00e5ff"/>
+                  <circle cx="180" cy="170" r="6" fill="#00e5ff"/>
+                  <circle cx="100" cy="195" r="6" fill="#f3cf65"/>
+                  <!-- Labels -->
+                  <text x="160" y="30" text-anchor="middle" fill="#d4af37" font-family="JetBrains Mono" font-size="10">Direct Channels</text>
+                  <text x="275" y="235" fill="#d4af37" font-family="JetBrains Mono" font-size="10">Corporate</text>
+                  <text x="45" y="235" text-anchor="end" fill="#d4af37" font-family="JetBrains Mono" font-size="10">OTAs</text>
+                </svg>
+              </div>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Deterministic coordinate assignment: nodes sorted along radial axes $\theta_k$ by internal property $P_1$, position $r = f(P_2)$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Comparing two networks without layout randomness, biological gene networks, telecom topologies.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>100% reproducible; eliminates the arbitrary visual randomness of force-directed layouts.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>d3.hive.link()
+  .angle(d => nodeAngle(d))
+  .radius(d => nodeRadius(d));</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Reproducibility</span>
+            <span class="val">100% Deterministic</span>
+            <span class="sub">No Random Seed</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Axes</span>
+            <span class="val">3 Coordinate Rays</span>
+            <span class="sub">120° Spacing</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Curvature</span>
+            <span class="val">Bézier Spline</span>
+            <span class="sub">Inter-Axis Links</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Originator</span>
+            <span class="val">M. Krzywinski</span>
+            <span class="sub">Genome Science</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+
+      <section id="slide-20-spherical-3d-graph" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <div>
+            <span class="slide-tag">20 / 3D Spatial Topology</span>
+            <h2 class="slide-headline">Spherical Graph Shells: <span>3D WebGL Network Orbit</span></h2>
+            <p class="slide-subtitle">Fully orbital 3D spherical constellation placing global hotel properties along coordinate shells.</p>
+          </div>
+          <div style="text-align: right; padding-top: 4px;">
+            <span class="tech-badge">3D Force Graph WebGL</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container" id="container-slide-20-spherical-3d-graph">
+            
+              <div id="plotly-3d-net-stage" class="plotly-graph" style="width:100%; height:100%;"></div>
+              <script>
+              (function(){
+                window.addEventListener('load', function() {
+                  const el = document.getElementById('plotly-3d-net-stage');
+                  if (!el || !window.Plotly) return;
+                  const n = 35;
+                  const x = [], y = [], z = [], color = [];
+                  for(let i=0; i<n; i++) {
+                    const phi = Math.acos(-1 + (2 * i) / n);
+                    const theta = Math.sqrt(n * Math.PI) * phi;
+                    x.push(Math.cos(theta) * Math.sin(phi) * 100);
+                    y.push(Math.sin(theta) * Math.sin(phi) * 100);
+                    z.push(Math.cos(phi) * 100);
+                    color.push(i % 3 === 0 ? '#00e676' : (i % 3 === 1 ? '#d4af37' : '#00e5ff'));
+                  }
+                  const traceNodes = {
+                    type: 'scatter3d', mode: 'markers+text',
+                    x: x, y: y, z: z,
+                    marker: { size: 6, color: color, line: { color: '#fff', width: 1 } },
+                    text: x.map((_, i) => 'Node ' + (i+1)),
+                    textfont: { color: '#fffefa', size: 9 }
+                  };
+                  const layout = {
+                    paper_bgcolor: 'transparent',
+                    margin: { l: 0, r: 0, b: 0, t: 0 },
+                    scene: {
+                      xaxis: { showgrid: false, zeroline: false, showticklabels: false },
+                      yaxis: { showgrid: false, zeroline: false, showticklabels: false },
+                      zaxis: { showgrid: false, zeroline: false, showticklabels: false },
+                      camera: { eye: { x: 1.4, y: 1.4, z: 1.2 } }
+                    }
+                  };
+                  Plotly.newPlot('plotly-3d-net-stage', [traceNodes], layout, { responsive: true, displayModeBar: false });
+                });
+              })();
+              </script>
+            
+          </div>
+          <div class="viz-info-panel">
+            
+          <div class="spec-card">
+            <h5>Mathematical Engine</h5>
+            <p>Fibonacci spherical spiral lattice: uniform distribution of $N$ points on 3D sphere $S^2$.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Enterprise Use Cases</h5>
+            <p>Global corporate holding webs, international satellite communications, orbital constellations.</p>
+          </div>
+        
+          <div class="spec-card">
+            <h5>Technical Strengths</h5>
+            <p>Full 3D orbit controls, eliminates planar edge tangles, captivating executive presentation.</p>
+          </div>
+        
+            
+          <div class="code-box" style="margin-top: 10px;">
+            <pre style="margin: 0;"><code>ForceGraph3D()(container)
+  .graphData(gData)
+  .nodeColor(d => d.color)
+  .nodeRelSize(6);</code></pre>
+          </div>
+            
+            <div class="metrics-strip">
+              
+          <div class="metric-pill">
+            <span class="lbl">Sphere Math</span>
+            <span class="val">Fibonacci Lattice</span>
+            <span class="sub">Uniform S2</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Rendering</span>
+            <span class="val">WebGL 3D</span>
+            <span class="sub">Three.js / Plotly</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Orbit</span>
+            <span class="val">Quaternion Drag</span>
+            <span class="sub">Smooth Roll</span>
+          </div>
+        
+          <div class="metric-pill">
+            <span class="lbl">Performance</span>
+            <span class="val">60 FPS</span>
+            <span class="sub">Hardware Sync</span>
+          </div>
+        
+            </div>
+          </div>
+        </div>
+      </section>
+        
+    </div>
+  </div>
+
+  <!-- Reveal.js & Dynamic Resize Engine -->
+  <script src="vendor/reveal.min.js" onerror="this.src='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js'"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      controls: true,
+      progress: true,
+      center: false,
+      overview: true,
+      width: 1400,
+      height: 860,
+      margin: 0.03,
+      minScale: 0.2,
+      maxScale: 2.0,
+      transition: 'fade',
+      backgroundTransition: 'fade'
+    });
+
+    // Universal auto-resize hook for Plotly, ECharts, Leaflet, Three.js, etc.
+    Reveal.on('slidechanged', event => {
+      const current = event.currentSlide;
+      
+      // Plotly resize
+      const plotlyGraphs = current.querySelectorAll('.plotly-graph');
+      plotlyGraphs.forEach(graph => {
+        if (window.Plotly && graph._fullLayout) {
+          Plotly.Plots.resize(graph);
+        }
+      });
+      
+      // ECharts resize
+      const echartsContainers = current.querySelectorAll('.echarts-chart');
+      echartsContainers.forEach(container => {
+        if (window.echarts) {
+          const inst = echarts.getInstanceByDom(container);
+          if (inst) inst.resize();
+        }
+      });
+
+      // Leaflet resize
+      const leafletMaps = current.querySelectorAll('.leaflet-map');
+      leafletMaps.forEach(mapContainer => {
+        if (mapContainer._leaflet_map) {
+          mapContainer._leaflet_map.invalidateSize();
+        }
+      });
+
+      // Re-trigger Mermaid if present
+      if (window.mermaid) {
+        const mermaids = current.querySelectorAll('.mermaid');
+        if (mermaids.length > 0) {
+          mermaid.run({ nodes: mermaids });
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FunctionPlot.js | 2D Mathematical Plotting, Calculus Derivatives & Analytic Geometries | Visualization Masterclass</title>
+  <meta name="description" content="10 Advanced Visualization Paradigms engineered with FunctionPlot.js - 2D Mathematical Plotting, Calculus Derivatives & Analytic Geometries">
+  
+  <!-- Typography Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Reveal.js Core Stylesheet with Local & CDN Fallback -->
+  <link rel="stylesheet" href="../../../vendor/reveal.min.css" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css'">
+  <link rel="stylesheet" href="../../../css/viz-deck.css">
+
+  <style>
+    
+:root {
+  --viz-dark-obsidian: #040805;
+  --viz-gold-bright: #f3cf65;
+  --viz-gold-deep: #b5935b;
+  --viz-neon-emerald: #00e676;
+  --viz-neon-cyan: #00e5ff;
+  --viz-crimson: #ff1744;
+  --viz-magenta: #d500f9;
+  --viz-text-light: #fffefa;
+  --viz-text-muted: #c5a880;
+  --viz-card-bg: rgba(14, 24, 19, 0.85);
+  --viz-card-border: rgba(212, 175, 55, 0.28);
+  --font-heading: 'Newsreader', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body, .reveal {
+  background-color: var(--viz-dark-obsidian) !important;
+  color: var(--viz-text-light);
+  font-family: var(--font-body);
+}
+
+.reveal .slides section {
+  text-align: left;
+  padding: 12px 30px;
+  height: 100%;
+}
+
+.deck-nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  background: rgba(4, 8, 5, 0.95);
+  border-bottom: 1px solid var(--viz-card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+}
+
+.deck-nav-bar a {
+  color: var(--viz-gold-bright);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deck-nav-bar a:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+
+.deck-footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 38px;
+  background: rgba(4, 8, 5, 0.95);
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  z-index: 1000;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--viz-text-muted);
+  box-sizing: border-box;
+}
+
+.slide-tag {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--viz-gold-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  display: inline-block;
+  margin-bottom: 2px;
+}
+
+.slide-headline {
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+  font-weight: 500;
+  color: #fffefa;
+  margin: 0 0 2px 0;
+  line-height: 1.15;
+}
+
+.slide-headline span {
+  color: var(--viz-gold-bright);
+  font-style: italic;
+}
+
+.slide-subtitle {
+  font-size: 0.88rem;
+  color: var(--viz-text-muted);
+  margin: 0 0 8px 0;
+  max-width: 95%;
+  line-height: 1.35;
+}
+
+.tech-badge {
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid var(--viz-gold-deep);
+  color: var(--viz-gold-bright);
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.viz-stage-split {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+  height: calc(100vh - 170px);
+  min-height: 520px;
+}
+
+.viz-canvas-container {
+  background: #020503;
+  border: 1px solid var(--viz-card-border);
+  border-radius: 8px;
+  padding: 12px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+.viz-info-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.spec-card {
+  background: var(--viz-card-bg);
+  border: 1px solid var(--viz-card-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.spec-card h4 {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--viz-gold-bright);
+  margin: 0 0 6px 0;
+}
+
+.spec-card p {
+  font-size: 0.82rem;
+  color: #ddd;
+  line-height: 1.45;
+  margin: 0 0 8px 0;
+}
+
+.code-box {
+  background: #050806;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #f3cf65;
+  overflow-x: auto;
+  line-height: 1.4;
+  max-height: 180px;
+}
+.code-box pre {
+  margin: 0;
+}
+
+.metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.metric-pill {
+  background: rgba(20, 32, 26, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 6px;
+  padding: 6px 8px;
+  text-align: center;
+}
+.metric-pill .lbl {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--viz-text-muted);
+  text-transform: uppercase;
+}
+.metric-pill .val {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--viz-gold-bright);
+}
+.metric-pill .sub {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--viz-neon-emerald);
+}
+
+  </style>
+
+  <script src="../../../vendor/reveal.min.js" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js'"></script>
+</head>
+<body>
+
+  <!-- PERSISTENT TOP NAVIGATION -->
+  <div class="deck-nav-bar">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="../../../index.html">
+        <span aria-hidden="true">&larr;</span> <strong>Visualization Portfolio Hub</strong>
+      </a>
+      <span style="opacity: 0.35;">|</span>
+      <span style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--viz-gold-bright);">Mauricio Poppe</span>
+      <span style="opacity: 0.35;">|</span>
+      <span style="color: #fffefa; font-weight: 500; font-family: var(--font-heading); font-size: 1.15rem;">FunctionPlot.js: 2D Mathematical Plotting, Calculus Derivatives & Analytic Geometries</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="tech-badge">FunctionPlot.js 1.24</span>
+      <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--viz-text-muted);">10 Distinct Slides</span>
+    </div>
+  </div>
+
+  <!-- PERSISTENT FOOTER BAR -->
+  <div class="deck-footer-bar">
+    <span><strong>Demostration of Visualization Software</strong> &bull; FunctionPlot.js Domain Showcase</span>
+    <span>Use <strong>Space / Arrows</strong> to Navigate &bull; Press <strong>F</strong> for Fullscreen &bull; <strong>O</strong> for Overview</span>
+  </div>
+
+  <div class="reveal">
+    <div class="slides">
+      
+      <!-- SLIDE 01: Instantaneous Calculus Slopes: Real-Time First-Order Derivative Tangents -->
+      <section id="s01-math_calculus" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">01 / Instantaneous Derivatives</span>
+            <h2 class="slide-headline">Instantaneous Calculus Slopes: <span> Real-Time First-Order Derivative Tangents</span></h2>
+            <p class="slide-subtitle">Interactive function plotting with real-time first-order derivative tangents, secant line limits, and slope readout at dynamic point coordinates.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">FunctionPlot.js 1.24</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-FunctionPlotjs-s01-math_calculus-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s01-math_calculus-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s01-math_calculus-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-FunctionPlotjs-s01-math_calculus-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="80" y1="340" x2="580" y2="340" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+<line x1="120" y1="60" x2="120" y2="370" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+<text x="585" y="344" fill="#fff" font-family="JetBrains Mono" font-size="11">x</text>
+<text x="116" y="50" fill="#fff" font-family="JetBrains Mono" font-size="11">f(x)</text>
+<rect x="160" y="315.0" width="22" height="25.0" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="184" y="313.007698140085" width="22" height="26.992301859915003" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="208" y="308.52699216007625" width="22" height="31.47300783992378" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="232" y="302.10381444127546" width="22" height="37.896185558724525" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="256" y="293.96913548155686" width="22" height="46.03086451844315" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="280" y="284.26705719180967" width="22" height="55.732942808190316" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="304" y="273.1001695042853" width="22" height="66.89983049571471" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="328" y="260.5470003867273" width="22" height="79.45299961327271" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="352" y="246.67051958980488" width="22" height="93.32948041019512" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="376" y="231.5228897732643" width="22" height="108.4771102267357" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="400" y="215.14837422787315" width="22" height="124.85162577212687" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="424" y="197.58523717860868" width="22" height="142.41476282139132" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<path d="M 120,340.0 L 128,328.7 L 136,317.0 L 144,305.3 L 152,293.8 L 160,282.8 L 168,272.4 L 176,262.9 L 184,254.3 L 192,246.8 L 200,240.3 L 208,234.8 L 216,230.3 L 224,226.6 L 232,223.5 L 240,221.0 L 248,218.6 L 256,216.3 L 264,213.8 L 272,210.7 L 280,206.9 L 288,202.1 L 296,196.1 L 304,188.7 L 312,179.7 L 320,169.0 L 328,156.6 L 336,142.4 L 344,126.4 L 352,108.8 L 360,89.5 L 368,68.8 L 376,46.8 L 384,23.8 L 392,-0.0 L 400,-24.4 L 408,-49.0 L 416,-73.7 L 424,-98.2 L 432,-122.2 L 440,-145.5 L 448,-168.0 L 456,-189.5 L 464,-209.9 L 472,-229.1 L 480,-247.2 L 488,-264.2 L 496,-280.2 L 504,-295.2 L 512,-309.5" fill="none" stroke="#d4af37" stroke-width="3" filter="url(#g-FunctionPlotjs-s01-math_calculus-glow)"/>
+<line x1="240" y1="265" x2="420" y2="125" stroke="#00e676" stroke-width="2" stroke-dasharray="4,4"/>
+<circle cx="330" cy="195" r="5" fill="#00e676"/>
+<text x="345" y="190" fill="#00e676" font-family="JetBrains Mono" font-size="10">f'(x0) Tangent</text>
+<text x="440" y="90" fill="#d4af37" font-family="Newsreader" font-size="15">∫ f(x)dx Riemann Area</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored FunctionPlot.js 1.24 pipeline executing in the 2D Mathematical Plotting, Calculus Derivatives & Analytic Geometries domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>functionPlot({
+  target: '#plot-stage',
+  data: [{ fn: 'x^3 - 3*x + 1', derivative: { fn: '3*x^2 - 3', updateOnMouseMove: true } }],
+  grid: true
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Function</span>
+          <span class="val">f(x) = x³-3x+1</span>
+          <span class="sub">Cubic Polynomial</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Inflection Point</span>
+          <span class="val">x = 0.0</span>
+          <span class="sub">f''(x) = 0 Root</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Local Min / Max</span>
+          <span class="val">x = ±1.0</span>
+          <span class="sub">Critical Extrema</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Mode</span>
+          <span class="val">SVG Path</span>
+          <span class="sub">Adaptive Sampling</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 02: Definite Integral Quadrature: Left/Right Riemann Sum Trapezoids -->
+      <section id="s02-math_calculus" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">02 / Riemann Quadrature</span>
+            <h2 class="slide-headline">Definite Integral Quadrature: <span> Left/Right Riemann Sum Trapezoids</span></h2>
+            <p class="slide-subtitle">Visualizing definite integrals under arbitrary curves bounded between limits [a, b] using shaded Riemann sum trapezoids and Simpson's quadrature.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">FunctionPlot.js 1.24</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-FunctionPlotjs-s02-math_calculus-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s02-math_calculus-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s02-math_calculus-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-FunctionPlotjs-s02-math_calculus-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="80" y1="340" x2="580" y2="340" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+<line x1="120" y1="60" x2="120" y2="370" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+<text x="585" y="344" fill="#fff" font-family="JetBrains Mono" font-size="11">x</text>
+<text x="116" y="50" fill="#fff" font-family="JetBrains Mono" font-size="11">f(x)</text>
+<rect x="160" y="315.0" width="22" height="25.0" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="184" y="313.007698140085" width="22" height="26.992301859915003" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="208" y="308.52699216007625" width="22" height="31.47300783992378" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="232" y="302.10381444127546" width="22" height="37.896185558724525" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="256" y="293.96913548155686" width="22" height="46.03086451844315" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="280" y="284.26705719180967" width="22" height="55.732942808190316" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="304" y="273.1001695042853" width="22" height="66.89983049571471" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="328" y="260.5470003867273" width="22" height="79.45299961327271" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="352" y="246.67051958980488" width="22" height="93.32948041019512" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="376" y="231.5228897732643" width="22" height="108.4771102267357" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="400" y="215.14837422787315" width="22" height="124.85162577212687" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="424" y="197.58523717860868" width="22" height="142.41476282139132" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<path d="M 120,340.0 L 128,328.7 L 136,317.0 L 144,305.3 L 152,293.8 L 160,282.8 L 168,272.4 L 176,262.9 L 184,254.3 L 192,246.8 L 200,240.3 L 208,234.8 L 216,230.3 L 224,226.6 L 232,223.5 L 240,221.0 L 248,218.6 L 256,216.3 L 264,213.8 L 272,210.7 L 280,206.9 L 288,202.1 L 296,196.1 L 304,188.7 L 312,179.7 L 320,169.0 L 328,156.6 L 336,142.4 L 344,126.4 L 352,108.8 L 360,89.5 L 368,68.8 L 376,46.8 L 384,23.8 L 392,-0.0 L 400,-24.4 L 408,-49.0 L 416,-73.7 L 424,-98.2 L 432,-122.2 L 440,-145.5 L 448,-168.0 L 456,-189.5 L 464,-209.9 L 472,-229.1 L 480,-247.2 L 488,-264.2 L 496,-280.2 L 504,-295.2 L 512,-309.5" fill="none" stroke="#d4af37" stroke-width="3" filter="url(#g-FunctionPlotjs-s02-math_calculus-glow)"/>
+<line x1="240" y1="265" x2="420" y2="125" stroke="#00e676" stroke-width="2" stroke-dasharray="4,4"/>
+<circle cx="330" cy="195" r="5" fill="#00e676"/>
+<text x="345" y="190" fill="#00e676" font-family="JetBrains Mono" font-size="10">f'(x0) Tangent</text>
+<text x="440" y="90" fill="#d4af37" font-family="Newsreader" font-size="15">∫ f(x)dx Riemann Area</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored FunctionPlot.js 1.24 pipeline executing in the 2D Mathematical Plotting, Calculus Derivatives & Analytic Geometries domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>functionPlot({
+  target: '#plot-stage',
+  data: [{ fn: 'sin(x) * exp(-0.15 * x)', range: [0, 10], closed: true }],
+  annotations: [{ x: 3.1415, text: 'π Zero Crossing' }]
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Integration Range</span>
+          <span class="val">[0, 10]</span>
+          <span class="sub">Domain Limits [a, b]</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Integral Area</span>
+          <span class="val">∫ f(x)dx = 2.14</span>
+          <span class="sub">Net Shaded Area</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Riemann Rects</span>
+          <span class="val">32 Bins</span>
+          <span class="sub">Trapezoidal Slices</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Quadrature Error</span>
+          <span class="val">< 0.001%</span>
+          <span class="sub">Romberg Integration</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 03: Parametric Harmonic Curves: Lissajous Figures & Epicycloid Orbits -->
+      <section id="s03-spline" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">03 / Parametric Lissajous</span>
+            <h2 class="slide-headline">Parametric Harmonic Curves: <span> Lissajous Figures & Epicycloid Orbits</span></h2>
+            <p class="slide-subtitle">Plotting parametric 2D trajectories defined by x(t) and y(t) functions illustrating Lissajous orbital figures and epicycloid gear curves.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">FunctionPlot.js 1.24</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-FunctionPlotjs-s03-spline-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s03-spline-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s03-spline-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-FunctionPlotjs-s03-spline-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="60" y1="70" x2="580" y2="70" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="130" x2="580" y2="130" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="190" x2="580" y2="190" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="250" x2="580" y2="250" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="310" x2="580" y2="310" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<polygon points="70,260 130,235 190,205 250,165 310,120 370,85 430,60 490,40 550,25 550,135 490,150 430,180 370,195 310,220 250,255 190,275 130,285 70,300" fill="rgba(0, 229, 255, 0.12)" stroke="rgba(0, 229, 255, 0.3)" stroke-dasharray="2,2"/>
+<path d="M 70 280 L 130 260 L 190 240 L 250 210 L 310 170 L 370 140 L 430 120 L 490 95 L 550 80" fill="none" stroke="#d4af37" stroke-width="3" filter="url(#g-FunctionPlotjs-s03-spline-glow)"/>
+<circle cx="70" cy="280" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="130" cy="260" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="190" cy="240" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="250" cy="210" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="310" cy="170" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="370" cy="140" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<circle cx="430" cy="120" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<circle cx="490" cy="95" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<circle cx="550" cy="80" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<line x1="310" y1="50" x2="310" y2="330" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="4,4"/>
+<text x="316" y="65" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">Forecast Horizon T+1</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored FunctionPlot.js 1.24 pipeline executing in the 2D Mathematical Plotting, Calculus Derivatives & Analytic Geometries domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>functionPlot({
+  target: '#plot-stage',
+  data: [{ x: 'sin(3 * t + 3.1415/4)', y: 'sin(4 * t)', fnType: 'parametric', graphType: 'polyline', range: [0, 2 * Math.PI] }]
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Harmonic Ratio</span>
+          <span class="val">3 : 4</span>
+          <span class="sub">Frequency (a : b)</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Phase Delta</span>
+          <span class="val">δ = π/4</span>
+          <span class="sub">Phase Shift</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Parameter t</span>
+          <span class="val">[0, 2π]</span>
+          <span class="sub">Full Closed Cycle</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Self-Crossings</span>
+          <span class="val">12 Nodes</span>
+          <span class="sub">Topological Nodes</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 04: Implicit Singular Curves: Folium of Descartes Marching Squares Contours -->
+      <section id="s04-stream" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">04 / Implicit Algebraic Curves</span>
+            <h2 class="slide-headline">Implicit Singular Curves: <span> Folium of Descartes Marching Squares Contours</span></h2>
+            <p class="slide-subtitle">Rendering implicit algebraic equations F(x, y) = 0 such as the Folium of Descartes and Cassinian Ovals using 2D marching squares contouring.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">FunctionPlot.js 1.24</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-FunctionPlotjs-s04-stream-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s04-stream-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s04-stream-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-FunctionPlotjs-s04-stream-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="50" y1="50" x2="50" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="50" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2019</text>
+<line x1="125" y1="50" x2="125" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="125" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2020</text>
+<line x1="200" y1="50" x2="200" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="200" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2021</text>
+<line x1="275" y1="50" x2="275" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="275" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2022</text>
+<line x1="350" y1="50" x2="350" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="350" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2023</text>
+<line x1="425" y1="50" x2="425" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="425" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2024</text>
+<line x1="500" y1="50" x2="500" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="500" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2025</text>
+<line x1="575" y1="50" x2="575" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="575" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2026</text>
+<polygon points="50,90 125,95 200,75 275,60 350,85 425,70 500,65 575,80 575,50 500,35 425,40 350,55 275,35 200,45 125,65 50,60" fill="#ff9100" fill-opacity="0.65" stroke="#050806" stroke-width="1.5"/>
+<polygon points="50,130 125,135 200,115 275,95 350,125 425,105 500,100 575,120 575,80 500,65 425,70 350,85 275,60 200,75 125,95 50,90" fill="#d500f9" fill-opacity="0.65" stroke="#050806" stroke-width="1.5"/>
+<polygon points="50,175 125,180 200,160 275,140 350,170 425,150 500,145 575,165 575,120 500,100 425,105 350,125 275,95 200,115 125,135 50,130" fill="#00e676" fill-opacity="0.65" stroke="#050806" stroke-width="1.5"/>
+<polygon points="50,210 125,225 200,200 275,185 350,220 425,205 500,195 575,210 575,165 500,145 425,150 350,170 275,140 200,160 125,180 50,175" fill="#00e5ff" fill-opacity="0.65" stroke="#050806" stroke-width="1.5"/></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored FunctionPlot.js 1.24 pipeline executing in the 2D Mathematical Plotting, Calculus Derivatives & Analytic Geometries domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>functionPlot({
+  target: '#plot-stage',
+  data: [{ fn: 'x^3 + y^3 - 3 * 2 * x * y', fnType: 'implicit' }]
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Implicit Eq</span>
+          <span class="val">x³+y³-6xy=0</span>
+          <span class="sub">Folium of Descartes</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Node Singularity</span>
+          <span class="val">(0, 0)</span>
+          <span class="sub">Double Point Origin</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Asymptote</span>
+          <span class="val">x + y + 2 = 0</span>
+          <span class="sub">Linear Oblique Limit</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Contour Cell Res</span>
+          <span class="val">128 × 128</span>
+          <span class="sub">Marching Squares</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 05: Polar Coordinate Harmonics: Rhodonea Rose Petals & Logarithmic Spirals -->
+      <section id="s05-rose" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">05 / Transcendental Roses</span>
+            <h2 class="slide-headline">Polar Coordinate Harmonics: <span> Rhodonea Rose Petals & Logarithmic Spirals</span></h2>
+            <p class="slide-subtitle">Plotting polar functions r = f(theta) generating multi-petal Rhodonea roses, logarithmic spirals, and cardioids in radial coordinate spaces.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">FunctionPlot.js 1.24</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-FunctionPlotjs-s05-rose-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s05-rose-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s05-rose-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-FunctionPlotjs-s05-rose-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<circle cx="320" cy="210" r="40" fill="none" stroke="rgba(212,175,55,0.15)" stroke-dasharray="2,2"/>
+<circle cx="320" cy="210" r="80" fill="none" stroke="rgba(212,175,55,0.15)" stroke-dasharray="2,2"/>
+<circle cx="320" cy="210" r="120" fill="none" stroke="rgba(212,175,55,0.15)" stroke-dasharray="2,2"/>
+<circle cx="320" cy="210" r="160" fill="none" stroke="rgba(212,175,55,0.15)" stroke-dasharray="2,2"/>
+<path d="M 320 210 L 378.6 196.9 A 60 60 0 0 1 378.6 223.1 Z" fill="#00e676" fill-opacity="0.65" stroke="#050a07" stroke-width="1.5"/>
+<text x="502.0" y="214.0" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">00:00</text>
+<path d="M 320 210 L 410.7 238.4 A 95 95 0 0 1 389.9 274.3 Z" fill="#00e676" fill-opacity="0.65" stroke="#050a07" stroke-width="1.5"/>
+<text x="477.6" y="305.0" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">02:00</text>
+<path d="M 320 210 L 414.8 313.0 A 140 140 0 0 1 361.9 343.6 Z" fill="#d4af37" fill-opacity="0.65" stroke="#050a07" stroke-width="1.5"/>
+<text x="411.0" y="371.6" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">04:00</text>
+<path d="M 320 210 L 358.2 380.8 A 175 175 0 0 1 281.8 380.8 Z" fill="#d4af37" fill-opacity="0.65" stroke="#050a07" stroke-width="1.5"/>
+<text x="320.0" y="396.0" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">06:00</text>
+<path d="M 320 210 L 275.2 353.1 A 150 150 0 0 1 218.5 320.4 Z" fill="#d4af37" fill-opacity="0.65" stroke="#050a07" stroke-width="1.5"/>
+<text x="229.0" y="371.6" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">08:00</text>
+<path d="M 320 210 L 231.7 291.2 A 120 120 0 0 1 205.5 245.9 Z" fill="#00e676" fill-opacity="0.65" stroke="#050a07" stroke-width="1.5"/>
+<text x="162.4" y="305.0" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">10:00</text>
+<path d="M 320 210 L 217.5 232.9 A 105 105 0 0 1 217.5 187.1 Z" fill="#00e676" fill-opacity="0.65" stroke="#050a07" stroke-width="1.5"/>
+<text x="138.0" y="214.0" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">12:00</text>
+<path d="M 320 210 L 243.7 186.1 A 80 80 0 0 1 261.1 155.8 Z" fill="#00e676" fill-opacity="0.65" stroke="#050a07" stroke-width="1.5"/>
+<text x="162.4" y="123.0" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">14:00</text>
+<path d="M 320 210 L 245.5 129.0 A 110 110 0 0 1 287.1 105.0 Z" fill="#00e5ff" fill-opacity="0.65" stroke="#050a07" stroke-width="1.5"/>
+<text x="229.0" y="56.4" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">16:00</text>
+<path d="M 320 210 L 290.5 78.3 A 135 135 0 0 1 349.5 78.3 Z" fill="#00e5ff" fill-opacity="0.65" stroke="#050a07" stroke-width="1.5"/>
+<text x="320.0" y="32.0" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">18:00</text>
+<path d="M 320 210 L 367.8 57.3 A 160 160 0 0 1 428.3 92.2 Z" fill="#00e5ff" fill-opacity="0.65" stroke="#050a07" stroke-width="1.5"/>
+<text x="411.0" y="56.4" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">20:00</text>
+<path d="M 320 210 L 386.2 149.1 A 90 90 0 0 1 405.9 183.1 Z" fill="#00e676" fill-opacity="0.65" stroke="#050a07" stroke-width="1.5"/>
+<text x="477.6" y="123.0" fill="rgba(255,255,255,0.6)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">22:00</text>
+<circle cx="320" cy="210" r="18" fill="#040805" stroke="#d4af37" stroke-width="2"/></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored FunctionPlot.js 1.24 pipeline executing in the 2D Mathematical Plotting, Calculus Derivatives & Analytic Geometries domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>functionPlot({
+  target: '#plot-stage',
+  data: [{ r: '3 * sin(4 * theta)', fnType: 'polar', graphType: 'polyline', range: [0, 2 * Math.PI] }]
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Petals Count</span>
+          <span class="val">8 Petals</span>
+          <span class="sub">k=4 Even -> 2k Petals</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Max Amplitude</span>
+          <span class="val">r_max = 3.0</span>
+          <span class="sub">Radial Petal Tip</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Angle Range</span>
+          <span class="val">θ ∈ [0, 2π]</span>
+          <span class="sub">Full Angular Sweep</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Symmetry</span>
+          <span class="val">D4 Dihedral</span>
+          <span class="sub">Rotational Symmetry</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 06: Asymptotic Polynomial Approximations: Taylor Series Convergences -->
+      <section id="s06-math_calculus" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">06 / Taylor Series Convergences</span>
+            <h2 class="slide-headline">Asymptotic Polynomial Approximations: <span> Taylor Series Convergences</span></h2>
+            <p class="slide-subtitle">Visualizing successive Taylor polynomial orders (P1, P3, P5, P7) converging onto target transcendental functions sin(x) and exp(x) around expansion centers.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">FunctionPlot.js 1.24</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-FunctionPlotjs-s06-math_calculus-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s06-math_calculus-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s06-math_calculus-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-FunctionPlotjs-s06-math_calculus-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="80" y1="340" x2="580" y2="340" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+<line x1="120" y1="60" x2="120" y2="370" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+<text x="585" y="344" fill="#fff" font-family="JetBrains Mono" font-size="11">x</text>
+<text x="116" y="50" fill="#fff" font-family="JetBrains Mono" font-size="11">f(x)</text>
+<rect x="160" y="315.0" width="22" height="25.0" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="184" y="313.007698140085" width="22" height="26.992301859915003" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="208" y="308.52699216007625" width="22" height="31.47300783992378" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="232" y="302.10381444127546" width="22" height="37.896185558724525" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="256" y="293.96913548155686" width="22" height="46.03086451844315" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="280" y="284.26705719180967" width="22" height="55.732942808190316" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="304" y="273.1001695042853" width="22" height="66.89983049571471" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="328" y="260.5470003867273" width="22" height="79.45299961327271" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="352" y="246.67051958980488" width="22" height="93.32948041019512" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="376" y="231.5228897732643" width="22" height="108.4771102267357" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="400" y="215.14837422787315" width="22" height="124.85162577212687" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="424" y="197.58523717860868" width="22" height="142.41476282139132" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<path d="M 120,340.0 L 128,328.7 L 136,317.0 L 144,305.3 L 152,293.8 L 160,282.8 L 168,272.4 L 176,262.9 L 184,254.3 L 192,246.8 L 200,240.3 L 208,234.8 L 216,230.3 L 224,226.6 L 232,223.5 L 240,221.0 L 248,218.6 L 256,216.3 L 264,213.8 L 272,210.7 L 280,206.9 L 288,202.1 L 296,196.1 L 304,188.7 L 312,179.7 L 320,169.0 L 328,156.6 L 336,142.4 L 344,126.4 L 352,108.8 L 360,89.5 L 368,68.8 L 376,46.8 L 384,23.8 L 392,-0.0 L 400,-24.4 L 408,-49.0 L 416,-73.7 L 424,-98.2 L 432,-122.2 L 440,-145.5 L 448,-168.0 L 456,-189.5 L 464,-209.9 L 472,-229.1 L 480,-247.2 L 488,-264.2 L 496,-280.2 L 504,-295.2 L 512,-309.5" fill="none" stroke="#d4af37" stroke-width="3" filter="url(#g-FunctionPlotjs-s06-math_calculus-glow)"/>
+<line x1="240" y1="265" x2="420" y2="125" stroke="#00e676" stroke-width="2" stroke-dasharray="4,4"/>
+<circle cx="330" cy="195" r="5" fill="#00e676"/>
+<text x="345" y="190" fill="#00e676" font-family="JetBrains Mono" font-size="10">f'(x0) Tangent</text>
+<text x="440" y="90" fill="#d4af37" font-family="Newsreader" font-size="15">∫ f(x)dx Riemann Area</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored FunctionPlot.js 1.24 pipeline executing in the 2D Mathematical Plotting, Calculus Derivatives & Analytic Geometries domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>functionPlot({
+  target: '#plot-stage',
+  data: [
+    { fn: 'sin(x)', color: '#fff' }, { fn: 'x', color: '#ff1744' },
+    { fn: 'x - x^3/6', color: '#00e5ff' }, { fn: 'x - x^3/6 + x^5/120', color: '#00e676' }
+  ]
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Target Func</span>
+          <span class="val">f(x) = sin(x)</span>
+          <span class="sub">Transcendental</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Expansion Center</span>
+          <span class="val">x0 = 0.0</span>
+          <span class="sub">Maclaurin Series</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Order Tested</span>
+          <span class="val">Order 7 (P7)</span>
+          <span class="sub">x - x³/6 + x⁵/120</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Convergence Radius</span>
+          <span class="val">R = ∞</span>
+          <span class="sub">Entire Analytic Plane</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 07: Harmonic Series Decomposition: Fourier Square Wave & Gibbs Phenomena -->
+      <section id="s07-audio_spectrogram" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">07 / Fourier Waveform Synthesis</span>
+            <h2 class="slide-headline">Harmonic Series Decomposition: <span> Fourier Square Wave & Gibbs Phenomena</span></h2>
+            <p class="slide-subtitle">Decomposing periodic waveforms into sums of odd harmonic sinusoidal overtones illustrating Gibbs phenomenon overshoot at step discontinuities.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">FunctionPlot.js 1.24</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-FunctionPlotjs-s07-audio_spectrogram-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s07-audio_spectrogram-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s07-audio_spectrogram-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-FunctionPlotjs-s07-audio_spectrogram-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="50" y1="130" x2="590" y2="130" stroke="rgba(255,255,255,0.15)"/>
+<path d="M 50.0,130.0 L 54.5,131.2 L 59.0,134.2 L 63.5,137.5 L 68.0,139.4 L 72.5,138.7 L 77.0,135.2 L 81.5,129.9 L 86.0,124.6 L 90.5,121.1 L 95.0,120.7 L 99.5,123.1 L 104.0,126.9 L 108.5,129.8 L 113.0,129.9 L 117.5,126.2 L 122.0,119.3 L 126.5,111.7 L 131.0,106.8 L 135.5,107.6 L 140.0,115.9 L 144.5,131.0 L 149.0,149.7 L 153.5,167.2 L 158.0,178.6 L 162.5,180.0 L 167.0,170.4 L 171.5,151.6 L 176.0,128.2 L 180.5,106.1 L 185.0,90.5 L 189.5,84.8 L 194.0,89.3 L 198.5,101.7 L 203.0,117.2 L 207.5,131.1 L 212.0,139.7 L 216.5,141.5 L 221.0,137.8 L 225.5,131.6 L 230.0,126.7 L 234.5,126.1 L 239.0,130.8 L 243.5,139.6 L 248.0,149.5 L 252.5,156.8 L 257.0,158.5 L 261.5,153.3 L 266.0,142.3 L 270.5,128.1 L 275.0,114.6 L 279.5,105.2 L 284.0,102.0 L 288.5,105.2 L 293.0,112.9 L 297.5,122.6 L 302.0,131.1 L 306.5,136.6 L 311.0,138.4 L 315.5,137.2 L 320.0,134.5 L 324.5,131.9 L 329.0,130.3 L 333.5,130.0 L 338.0,130.3 L 342.5,130.3 L 347.0,129.4 L 351.5,128.0 L 356.0,126.9 L 360.5,127.5 L 365.0,130.8 L 369.5,136.9 L 374.0,144.3 L 378.5,150.9 L 383.0,153.7 L 387.5,150.7 L 392.0,141.2 L 396.5,126.8 L 401.0,110.5 L 405.5,96.7 L 410.0,89.4 L 414.5,90.6 L 419.0,100.5 L 423.5,116.3 L 428.0,133.8 L 432.5,148.4 L 437.0,156.5 L 441.5,156.9 L 446.0,150.9 L 450.5,141.7 L 455.0,133.5 L 459.5,129.6 L 464.0,131.3 L 468.5,137.6 L 473.0,145.3 L 477.5,150.4 L 482.0,149.3 L 486.5,140.7 L 491.0,125.6 L 495.5,107.8 L 500.0,92.1 L 504.5,83.4 L 509.0,84.6 L 513.5,95.9 L 518.0,114.6 L 522.5,135.9 L 527.0,154.6 L 531.5,166.4 L 536.0,169.1 L 540.5,163.2 L 545.0,151.7 L 549.5,138.3 L 554.0,127.0 L 558.5,120.2 L 563.0,118.5 L 567.5,120.8 L 572.0,124.9 L 576.5,128.5 L 581.0,130.1 L 585.5,129.6" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<rect x="60.0" y="316.0" width="12" height="34.0" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="76.5" y="282.62980203727386" width="12" height="67.37019796272614" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="93.0" y="275.02872306978986" width="12" height="74.97127693021015" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="109.5" y="290.9180619988333" width="12" height="59.081938001166705" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="126.0" y="253.9264507596052" width="12" height="96.07354924039483" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="142.5" y="268.5507690322207" width="12" height="81.4492309677793" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="159.0" y="247.12525066979728" width="12" height="102.87474933020272" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="175.5" y="266.80070265630314" width="12" height="83.19929734369686" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="192.0" y="254.5351286587159" width="12" height="95.4648713412841" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="208.5" y="263.0963401556039" width="12" height="86.90365984439606" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="225.0" y="289.0763927948022" width="12" height="60.923607205197825" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="241.5" y="296.9169503973834" width="12" height="53.08304960261658" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="258.0" y="303.9439995970066" width="12" height="46.05600040299336" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="274.5" y="329.4097567265054" width="12" height="20.590243273494583" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="291.0" y="316.53916138448096" width="12" height="33.46083861551901" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="307.5" y="323.5780659371172" width="12" height="26.421934062882812" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="324.0" y="355.8401247653964" width="12" height="-5.840124765396411" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="340.5" y="361.7494679114292" width="12" height="-11.749467911429178" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="357.0" y="354.8765058832548" width="12" height="-4.8765058832548505" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="373.5" y="361.9646394487689" width="12" height="-11.9646394487689" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="390.0" y="345.9462137331569" width="12" height="4.053786266843076" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="406.5" y="351.9467246713296" width="12" height="-1.9467246713295978" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="423.0" y="331.27701627851957" width="12" height="18.722983721480404" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="439.5" y="339.41395387496294" width="12" height="10.586046125037083" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="456.0" y="327.9707749099463" width="12" height="22.029225090053707" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="472.5" y="304.6589608273778" width="12" height="45.34103917262216" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="489.0" y="311.24400059560924" width="12" height="38.75599940439078" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="505.5" y="296.49779631096914" width="12" height="53.50220368903088" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="522.0" y="292.15067006406053" width="12" height="57.84932993593945" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="538.5" y="270.84595604942473" width="12" height="79.15404395057527" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="555.0" y="268.10000116126304" width="12" height="81.89999883873695" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="571.5" y="268.2700610444412" width="12" height="81.72993895555881" fill="url(#g-FunctionPlotjs-s07-audio_spectrogram-primary)" rx="2"/>
+<text x="60" y="70" fill="#d4af37" font-family="JetBrains Mono" font-size="10">PCM OSCILLOGRAM (48 kHz / 24-bit)</text>
+<text x="60" y="240" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">FFT SPECTRAL MAGNITUDE BANDS</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored FunctionPlot.js 1.24 pipeline executing in the 2D Mathematical Plotting, Calculus Derivatives & Analytic Geometries domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>const harmonics = ['sin(x)', 'sin(3*x)/3', 'sin(5*x)/5', 'sin(7*x)/7'];
+const fourierSum = harmonics.map(h => `(4/PI)*(${h})`).join(' + ');
+functionPlot({ target: '#plot-stage', data: [{ fn: fourierSum, color: '#00e5ff' }] });</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Waveform</span>
+          <span class="val">Square Wave</span>
+          <span class="sub">Sign Function Periodic</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Harmonics</span>
+          <span class="val">1, 3, 5, 7, 9</span>
+          <span class="sub">Odd Sine Multiples</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Gibbs Overshoot</span>
+          <span class="val">8.95%</span>
+          <span class="sub">Discontinuity Peak</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Fundamental Freq</span>
+          <span class="val">f0 = 1.0 rad/s</span>
+          <span class="sub">Base Pitch Period</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 08: Non-Linear Root Finding: Newton-Raphson Quadratic Tangent Convergence -->
+      <section id="s08-math_calculus" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">08 / Newton-Raphson Iterations</span>
+            <h2 class="slide-headline">Non-Linear Root Finding: <span> Newton-Raphson Quadratic Tangent Convergence</span></h2>
+            <p class="slide-subtitle">Visualizing step-by-step tangent line projections onto the x-axis demonstrating quadratic convergence towards real roots of non-linear equations.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">FunctionPlot.js 1.24</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-FunctionPlotjs-s08-math_calculus-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s08-math_calculus-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s08-math_calculus-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-FunctionPlotjs-s08-math_calculus-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="80" y1="340" x2="580" y2="340" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+<line x1="120" y1="60" x2="120" y2="370" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+<text x="585" y="344" fill="#fff" font-family="JetBrains Mono" font-size="11">x</text>
+<text x="116" y="50" fill="#fff" font-family="JetBrains Mono" font-size="11">f(x)</text>
+<rect x="160" y="315.0" width="22" height="25.0" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="184" y="313.007698140085" width="22" height="26.992301859915003" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="208" y="308.52699216007625" width="22" height="31.47300783992378" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="232" y="302.10381444127546" width="22" height="37.896185558724525" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="256" y="293.96913548155686" width="22" height="46.03086451844315" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="280" y="284.26705719180967" width="22" height="55.732942808190316" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="304" y="273.1001695042853" width="22" height="66.89983049571471" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="328" y="260.5470003867273" width="22" height="79.45299961327271" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="352" y="246.67051958980488" width="22" height="93.32948041019512" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="376" y="231.5228897732643" width="22" height="108.4771102267357" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="400" y="215.14837422787315" width="22" height="124.85162577212687" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="424" y="197.58523717860868" width="22" height="142.41476282139132" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<path d="M 120,340.0 L 128,328.7 L 136,317.0 L 144,305.3 L 152,293.8 L 160,282.8 L 168,272.4 L 176,262.9 L 184,254.3 L 192,246.8 L 200,240.3 L 208,234.8 L 216,230.3 L 224,226.6 L 232,223.5 L 240,221.0 L 248,218.6 L 256,216.3 L 264,213.8 L 272,210.7 L 280,206.9 L 288,202.1 L 296,196.1 L 304,188.7 L 312,179.7 L 320,169.0 L 328,156.6 L 336,142.4 L 344,126.4 L 352,108.8 L 360,89.5 L 368,68.8 L 376,46.8 L 384,23.8 L 392,-0.0 L 400,-24.4 L 408,-49.0 L 416,-73.7 L 424,-98.2 L 432,-122.2 L 440,-145.5 L 448,-168.0 L 456,-189.5 L 464,-209.9 L 472,-229.1 L 480,-247.2 L 488,-264.2 L 496,-280.2 L 504,-295.2 L 512,-309.5" fill="none" stroke="#d4af37" stroke-width="3" filter="url(#g-FunctionPlotjs-s08-math_calculus-glow)"/>
+<line x1="240" y1="265" x2="420" y2="125" stroke="#00e676" stroke-width="2" stroke-dasharray="4,4"/>
+<circle cx="330" cy="195" r="5" fill="#00e676"/>
+<text x="345" y="190" fill="#00e676" font-family="JetBrains Mono" font-size="10">f'(x0) Tangent</text>
+<text x="440" y="90" fill="#d4af37" font-family="Newsreader" font-size="15">∫ f(x)dx Riemann Area</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored FunctionPlot.js 1.24 pipeline executing in the 2D Mathematical Plotting, Calculus Derivatives & Analytic Geometries domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>functionPlot({
+  target: '#plot-stage',
+  data: [{ fn: 'x^2 - 2' }],
+  annotations: [{ x: 1.4142, text: '√2 Root' }, { x: 2.0, text: 'Initial Guess x0' }]
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Target Root</span>
+          <span class="val">x* = 1.414213</span>
+          <span class="sub">Root of x² - 2 = 0</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Initial Guess</span>
+          <span class="val">x0 = 2.000</span>
+          <span class="sub">Starting Seed</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Iterations to 1e-6</span>
+          <span class="val">4 Steps</span>
+          <span class="sub">Quadratic Rate</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Residual Error</span>
+          <span class="val">1.2e-11</span>
+          <span class="sub">|f(x_final)| Residual</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 09: Generalized Functions: Nascent Dirac Delta & Heaviside Distributions -->
+      <section id="s09-joyplot" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">09 / Nascent Delta Kernels</span>
+            <h2 class="slide-headline">Generalized Functions: <span> Nascent Dirac Delta & Heaviside Distributions</span></h2>
+            <p class="slide-subtitle">Plotting piecewise conditional expressions, Heaviside unit step functions, and Gaussian nascent Dirac delta distributions with variable epsilon widths.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">FunctionPlot.js 1.24</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-FunctionPlotjs-s09-joyplot-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s09-joyplot-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s09-joyplot-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-FunctionPlotjs-s09-joyplot-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<polygon points="120,110 120.0,109.2 130.0,108.8 140.0,108.2 150.0,107.5 160.0,106.5 170.0,105.2 180.0,103.6 190.0,101.6 200.0,99.1 210.0,96.2 220.0,92.8 230.0,88.9 240.0,84.5 250.0,79.8 260.0,74.9 270.0,69.9 280.0,65.0 290.0,60.4 300.0,56.2 310.0,52.8 320.0,50.2 330.0,48.5 340.0,48.0 350.0,48.5 360.0,50.2 370.0,52.8 380.0,56.2 390.0,60.4 400.0,65.0 410.0,69.9 420.0,74.9 430.0,79.8 440.0,84.5 450.0,88.9 460.0,92.8 470.0,96.2 480.0,99.1 490.0,101.6 500.0,103.6 510.0,105.2 520.0,106.5 530.0,107.5 540.0,108.2 550.0,108.8 560.0,109.2 560,110" fill="#d4af37" fill-opacity="0.3" stroke="#d4af37" stroke-width="2"/>
+<text x="105" y="104" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">High Volatility Regime</text>
+<polygon points="120,165 120.0,164.2 130.0,163.8 140.0,163.2 150.0,162.5 160.0,161.5 170.0,160.2 180.0,158.6 190.0,156.6 200.0,154.1 210.0,151.2 220.0,147.8 230.0,143.9 240.0,139.5 250.0,134.8 260.0,129.9 270.0,124.9 280.0,120.0 290.0,115.4 300.0,111.2 310.0,107.8 320.0,105.2 330.0,103.5 340.0,103.0 350.0,103.5 360.0,105.2 370.0,107.8 380.0,111.2 390.0,115.4 400.0,120.0 410.0,124.9 420.0,129.9 430.0,134.8 440.0,139.5 450.0,143.9 460.0,147.8 470.0,151.2 480.0,154.1 490.0,156.6 500.0,158.6 510.0,160.2 520.0,161.5 530.0,162.5 540.0,163.2 550.0,163.8 560.0,164.2 560,165" fill="#00e5ff" fill-opacity="0.3" stroke="#00e5ff" stroke-width="2"/>
+<text x="105" y="159" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Quantitative Momentum</text>
+<polygon points="120,220 120.0,219.2 130.0,218.8 140.0,218.2 150.0,217.5 160.0,216.5 170.0,215.2 180.0,213.6 190.0,211.6 200.0,209.1 210.0,206.2 220.0,202.8 230.0,198.9 240.0,194.5 250.0,189.8 260.0,184.9 270.0,179.9 280.0,175.0 290.0,170.4 300.0,166.2 310.0,162.8 320.0,160.2 330.0,158.5 340.0,158.0 350.0,158.5 360.0,160.2 370.0,162.8 380.0,166.2 390.0,170.4 400.0,175.0 410.0,179.9 420.0,184.9 430.0,189.8 440.0,194.5 450.0,198.9 460.0,202.8 470.0,206.2 480.0,209.1 490.0,211.6 500.0,213.6 510.0,215.2 520.0,216.5 530.0,217.5 540.0,218.2 550.0,218.8 560.0,219.2 560,220" fill="#00e676" fill-opacity="0.3" stroke="#00e676" stroke-width="2"/>
+<text x="105" y="214" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Mean-Reverting Spread</text>
+<polygon points="120,275 120.0,274.2 130.0,273.8 140.0,273.2 150.0,272.5 160.0,271.5 170.0,270.2 180.0,268.6 190.0,266.6 200.0,264.1 210.0,261.2 220.0,257.8 230.0,253.9 240.0,249.5 250.0,244.8 260.0,239.9 270.0,234.9 280.0,230.0 290.0,225.4 300.0,221.2 310.0,217.8 320.0,215.2 330.0,213.5 340.0,213.0 350.0,213.5 360.0,215.2 370.0,217.8 380.0,221.2 390.0,225.4 400.0,230.0 410.0,234.9 420.0,239.9 430.0,244.8 440.0,249.5 450.0,253.9 460.0,257.8 470.0,261.2 480.0,264.1 490.0,266.6 500.0,268.6 510.0,270.2 520.0,271.5 530.0,272.5 540.0,273.2 550.0,273.8 560.0,274.2 560,275" fill="#d500f9" fill-opacity="0.3" stroke="#d500f9" stroke-width="2"/>
+<text x="105" y="269" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Credit Default Exposure</text>
+<polygon points="120,330 120.0,329.2 130.0,328.8 140.0,328.2 150.0,327.5 160.0,326.5 170.0,325.2 180.0,323.6 190.0,321.6 200.0,319.1 210.0,316.2 220.0,312.8 230.0,308.9 240.0,304.5 250.0,299.8 260.0,294.9 270.0,289.9 280.0,285.0 290.0,280.4 300.0,276.2 310.0,272.8 320.0,270.2 330.0,268.5 340.0,268.0 350.0,268.5 360.0,270.2 370.0,272.8 380.0,276.2 390.0,280.4 400.0,285.0 410.0,289.9 420.0,294.9 430.0,299.8 440.0,304.5 450.0,308.9 460.0,312.8 470.0,316.2 480.0,319.1 490.0,321.6 500.0,323.6 510.0,325.2 520.0,326.5 530.0,327.5 540.0,328.2 550.0,328.8 560.0,329.2 560,330" fill="#ff9100" fill-opacity="0.3" stroke="#ff9100" stroke-width="2"/>
+<text x="105" y="324" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Liquidity Absorption</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored FunctionPlot.js 1.24 pipeline executing in the 2D Mathematical Plotting, Calculus Derivatives & Analytic Geometries domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>functionPlot({
+  target: '#plot-stage',
+  data: [{
+    fn: '1 / (sqrt(2*PI) * eps) * exp(-x^2 / (2*eps^2))',
+    scope: { eps: 0.2 }, color: '#d4af37'
+  }]
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Distribution</span>
+          <span class="val">Dirac δ(x)</span>
+          <span class="sub">Nascent Gaussian Limit</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Kernel Epsilon</span>
+          <span class="val">ε = 0.20</span>
+          <span class="sub">Variance Parameter</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Peak Value</span>
+          <span class="val">y_max = 1.99</span>
+          <span class="sub">1 / (ε · √(2π))</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Total Area</span>
+          <span class="val">∫ δ(x)dx = 1.0</span>
+          <span class="sub">Unit Normalization</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 10: Autonomous ODE Vector Fields: Runge-Kutta Phase Flow Trajectories -->
+      <section id="s10-math_calculus" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">10 / Dynamical Slope Fields</span>
+            <h2 class="slide-headline">Autonomous ODE Vector Fields: <span> Runge-Kutta Phase Flow Trajectories</span></h2>
+            <p class="slide-subtitle">Displaying 2D slope fields (dy/dx = f(x, y)) showing directional tangent vectors and superimposed Runge-Kutta numerical integral trajectory curves.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">FunctionPlot.js 1.24</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-FunctionPlotjs-s10-math_calculus-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s10-math_calculus-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-FunctionPlotjs-s10-math_calculus-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-FunctionPlotjs-s10-math_calculus-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="80" y1="340" x2="580" y2="340" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+<line x1="120" y1="60" x2="120" y2="370" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+<text x="585" y="344" fill="#fff" font-family="JetBrains Mono" font-size="11">x</text>
+<text x="116" y="50" fill="#fff" font-family="JetBrains Mono" font-size="11">f(x)</text>
+<rect x="160" y="315.0" width="22" height="25.0" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="184" y="313.007698140085" width="22" height="26.992301859915003" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="208" y="308.52699216007625" width="22" height="31.47300783992378" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="232" y="302.10381444127546" width="22" height="37.896185558724525" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="256" y="293.96913548155686" width="22" height="46.03086451844315" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="280" y="284.26705719180967" width="22" height="55.732942808190316" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="304" y="273.1001695042853" width="22" height="66.89983049571471" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="328" y="260.5470003867273" width="22" height="79.45299961327271" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="352" y="246.67051958980488" width="22" height="93.32948041019512" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="376" y="231.5228897732643" width="22" height="108.4771102267357" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="400" y="215.14837422787315" width="22" height="124.85162577212687" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<rect x="424" y="197.58523717860868" width="22" height="142.41476282139132" fill="rgba(0, 229, 255, 0.25)" stroke="#00e5ff" stroke-width="1"/>
+<path d="M 120,340.0 L 128,328.7 L 136,317.0 L 144,305.3 L 152,293.8 L 160,282.8 L 168,272.4 L 176,262.9 L 184,254.3 L 192,246.8 L 200,240.3 L 208,234.8 L 216,230.3 L 224,226.6 L 232,223.5 L 240,221.0 L 248,218.6 L 256,216.3 L 264,213.8 L 272,210.7 L 280,206.9 L 288,202.1 L 296,196.1 L 304,188.7 L 312,179.7 L 320,169.0 L 328,156.6 L 336,142.4 L 344,126.4 L 352,108.8 L 360,89.5 L 368,68.8 L 376,46.8 L 384,23.8 L 392,-0.0 L 400,-24.4 L 408,-49.0 L 416,-73.7 L 424,-98.2 L 432,-122.2 L 440,-145.5 L 448,-168.0 L 456,-189.5 L 464,-209.9 L 472,-229.1 L 480,-247.2 L 488,-264.2 L 496,-280.2 L 504,-295.2 L 512,-309.5" fill="none" stroke="#d4af37" stroke-width="3" filter="url(#g-FunctionPlotjs-s10-math_calculus-glow)"/>
+<line x1="240" y1="265" x2="420" y2="125" stroke="#00e676" stroke-width="2" stroke-dasharray="4,4"/>
+<circle cx="330" cy="195" r="5" fill="#00e676"/>
+<text x="345" y="190" fill="#00e676" font-family="JetBrains Mono" font-size="10">f'(x0) Tangent</text>
+<text x="440" y="90" fill="#d4af37" font-family="Newsreader" font-size="15">∫ f(x)dx Riemann Area</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored FunctionPlot.js 1.24 pipeline executing in the 2D Mathematical Plotting, Calculus Derivatives & Analytic Geometries domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>functionPlot({
+  target: '#plot-stage',
+  data: [
+    { fn: 'x - 1 + 2*exp(-x)', color: '#00e5ff' },
+    { fn: 'x - 1', color: '#ff1744', strokeWidth: 1 }
+  ]
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Differential Eq</span>
+          <span class="val">dy/dx = x - y</span>
+          <span class="sub">First-Order Linear</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Initial Condition</span>
+          <span class="val">y(0) = 1.0</span>
+          <span class="sub">Cauchy Problem</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Asymptote Line</span>
+          <span class="val">y = x - 1</span>
+          <span class="sub">Linear Attractor</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Solver Method</span>
+          <span class="val">RK4</span>
+          <span class="sub">Runge-Kutta 4th Order</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+    </div>
+  </div>
+
+  <!-- Reveal.js Engine Initialization -->
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      controls: true,
+      progress: true,
+      center: false,
+      transition: 'fade',
+      width: 1440,
+      height: 900,
+      margin: 0.04
+    });
+    Reveal.on('slidechanged', function(event) {
+      window.dispatchEvent(new Event('resize'));
+    });
+  </script>
+</body>
+</html>

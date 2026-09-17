@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoPandas | Geospatial & Mapping | PyVisWorkbench Interactive Studio</title>
+  <meta name="description" content="Interactive visual masterclass and production workbench for GeoPandas in Python.">
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+
+  
+
+  <style>
+    :root {
+      --bg-dark: #050806;
+      --bg-surface: #0a110d;
+      --bg-card: rgba(14, 23, 18, 0.94);
+      --bg-card-hover: rgba(20, 34, 27, 0.98);
+      --border-faint: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(212, 175, 55, 0.35);
+      --gold-bright: #f3cf65;
+      --gold-deep: #b5935b;
+      --emerald-neon: #00e676;
+      --emerald-dim: #00a854;
+      --cyan-neon: #00e5ff;
+      --crimson-neon: #ff1744;
+      --violet-neon: #d500f9;
+      --text-white: #fffefa;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-serif: 'Newsreader', Georgia, serif;
+      --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 12%, #122119 0%, #050806 100%);
+      color: var(--text-white);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header.workbench-nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(5, 8, 6, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-faint);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .nav-breadcrumb a {
+      color: var(--gold-bright);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-breadcrumb a:hover { color: #fff; }
+    .nav-breadcrumb .sep { color: var(--text-dim); }
+    .nav-breadcrumb .active-tool { color: var(--text-white); font-weight: 600; }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pip-pill {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      background: rgba(0, 230, 118, 0.1);
+      border: 1px solid var(--emerald-dim);
+      color: var(--emerald-neon);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .btn-action {
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid var(--border-accent);
+      color: var(--gold-bright);
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-action:hover {
+      background: rgba(212, 175, 55, 0.22);
+      color: #fff;
+    }
+
+    main.studio-stage {
+      flex: 1;
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 1800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .stage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid var(--border-faint);
+      padding-bottom: 12px;
+    }
+
+    .paradigm-tagline {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tag-pill {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--gold-bright);
+    }
+
+    .paradigm-title {
+      font-family: var(--font-serif);
+      font-size: 1.85rem;
+      font-weight: 500;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .paradigm-title span { color: var(--gold-bright); font-style: italic; }
+
+    .paradigm-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      max-width: 1100px;
+      line-height: 1.4;
+    }
+
+    .paradigm-nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-arrow-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-faint);
+      color: var(--text-white);
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .ctrl-arrow-btn:hover {
+      border-color: var(--gold-bright);
+      color: var(--gold-bright);
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 18px;
+      height: calc(100vh - 245px);
+      min-height: 580px;
+    }
+
+    .visualizer-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-faint);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .canvas-toolbar {
+      background: rgba(10, 17, 13, 0.9);
+      border-bottom: 1px solid var(--border-faint);
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+
+    .canvas-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: #040705;
+      overflow: hidden;
+    }
+
+    .inspector-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-faint);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .inspector-tabs {
+      background: rgba(10, 17, 13, 0.95);
+      border-bottom: 1px solid var(--border-faint);
+      display: flex;
+      padding: 0 8px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 14px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { color: #fff; }
+    .tab-btn.active {
+      color: var(--gold-bright);
+      border-bottom-color: var(--gold-bright);
+      font-weight: 600;
+    }
+
+    .inspector-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .code-container {
+      background: #030504;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .code-header-bar {
+      background: rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .btn-copy {
+      background: transparent;
+      border: 1px solid var(--border-accent);
+      color: var(--gold-bright);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      cursor: pointer;
+      font-family: var(--font-mono);
+    }
+    .btn-copy:hover { background: rgba(212, 175, 55, 0.2); color: #fff; }
+
+    .code-body {
+      flex: 1;
+      padding: 12px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+      white-space: pre;
+    }
+
+    .spec-card {
+      background: rgba(10, 18, 14, 0.85);
+      border: 1px solid var(--border-faint);
+      border-left: 3px solid var(--emerald-neon);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+    .spec-card.gold-border { border-left-color: var(--gold-bright); }
+    .spec-card.cyan-border { border-left-color: var(--cyan-neon); }
+
+    .spec-card h5 {
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--gold-bright);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .spec-card p { font-size: 0.84rem; color: #cbd5e1; line-height: 1.45; }
+
+    .math-formula {
+      background: #020403;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      padding: 8px 12px;
+      margin-top: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--cyan-neon);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .metric-pill {
+      background: rgba(10, 18, 14, 0.9);
+      border: 1px solid var(--border-faint);
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
+    }
+    .metric-pill .lbl { display: block; font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; }
+    .metric-pill .val { display: block; font-family: var(--font-sans); font-size: 0.92rem; font-weight: 700; color: var(--gold-bright); margin: 2px 0; }
+    .metric-pill .sub { display: block; font-size: 0.68rem; color: var(--text-muted); }
+
+    footer.paradigm-filmstrip {
+      position: sticky;
+      bottom: 0;
+      background: rgba(5, 8, 6, 0.96);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-faint);
+      padding: 8px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow-x: auto;
+      z-index: 100;
+    }
+
+    .thumb-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-faint);
+      border-radius: 5px;
+      padding: 6px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .thumb-card:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--border-accent); }
+    .thumb-card.active {
+      background: rgba(0, 230, 118, 0.15);
+      border-color: var(--emerald-neon);
+      box-shadow: 0 0 10px rgba(0, 230, 118, 0.25);
+    }
+    .thumb-num { font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold-bright); font-weight: 600; }
+    .thumb-title { font-size: 0.78rem; color: var(--text-white); }
+
+    #toast {
+      position: fixed;
+      bottom: 75px;
+      right: 24px;
+      background: rgba(0, 230, 118, 0.95);
+      color: #040805;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 4px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+      z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <header class="workbench-nav">
+    <div class="nav-breadcrumb">
+      <a href="../../../README.md">Python Visualization Ecosystem</a>
+      <span class="sep">/</span>
+      <a href="../README.md">Geospatial & Mapping</a>
+      <span class="sep">/</span>
+      <span class="active-tool">GeoPandas</span>
+    </div>
+
+    <div class="nav-actions">
+      <span class="pip-pill">pip install geopandas shapely pyproj</span>
+      <a href="https://geopandas.org" target="_blank" class="btn-action">Docs ↗</a>
+      <button class="btn-action" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+    </div>
+  </header>
+
+  <main class="studio-stage">
+    <div class="stage-header">
+      <div class="paradigm-tagline">
+        <span class="tag-pill" id="p-tag">01 / SPATIAL JOINS & BUFFERING</span>
+        <h1 class="paradigm-title" id="p-headline">Vector Spatial Joins & Multi-Ring Buffer Intersections</h1>
+        <p class="paradigm-desc" id="p-desc">GEOS-accelerated point-in-polygon queries, Voronoi tessellations, and CRS reprojection.</p>
+      </div>
+
+      <div class="paradigm-nav-controls">
+        <button class="ctrl-arrow-btn" onclick="prevParadigm()" title="Previous Paradigm">◀</button>
+        <button class="ctrl-arrow-btn" onclick="nextParadigm()" title="Next Paradigm">▶</button>
+      </div>
+    </div>
+
+    <div class="split-grid">
+      <!-- Bespoke Tool Visualizer Panel -->
+      <div class="visualizer-panel">
+        
+    <div class="canvas-toolbar">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#00e5ff;"></span>
+        <span style="color:#00e5ff; font-family:var(--font-mono); font-size:0.75rem;">GEOPANDAS VECTOR SPATIAL ANALYSIS</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <label style="font-family:var(--font-mono); font-size:0.72rem; color:var(--text-muted);">Buffer Radius:</label>
+        <input type="range" id="gpd-buffer" min="10" max="60" step="5" value="25" oninput="drawGeoPandas()" style="width:80px;">
+        <button class="btn-action" onclick="toggleGpdVoronoi()" id="btn-gpd-vor" style="font-size:0.7rem; padding:3px 8px;">Toggle Voronoi Cells</button>
+      </div>
+    </div>
+    <div class="canvas-body" style="padding:16px; background:#040705; display:flex; align-items:center; justify-content:center;">
+      <canvas id="gpd-canvas" style="width:100%; height:100%; min-height:480px;"></canvas>
+    </div>
+    <div style="padding:6px 14px; background:rgba(10,17,13,0.8); border-top:1px solid var(--border-faint); font-family:var(--font-mono); font-size:0.7rem; color:var(--text-dim); display:flex; justify-content:space-between;">
+      <span>gdf['buffer'] = gdf.geometry.buffer(distance=5000); sjoin = gpd.sjoin(gdf, census, how='inner')</span>
+      <span>GEOS C++ Topological Operations · Shapely MultiPolygon Geometric Algebra</span>
+    </div>
+    
+      </div>
+
+      <!-- Technical Inspector Panel -->
+      <div class="inspector-panel">
+        <div class="inspector-tabs">
+          <button class="tab-btn active" onclick="setTab('code')" id="tab-code">Python Code</button>
+          <button class="tab-btn" onclick="setTab('math')" id="tab-math">Mathematical Spec</button>
+          <button class="tab-btn" onclick="setTab('enterprise')" id="tab-enterprise">Enterprise Architecture</button>
+          <button class="tab-btn" onclick="setTab('metrics')" id="tab-metrics">Metrics</button>
+        </div>
+
+        <div class="inspector-content" id="tab-content-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="paradigm-filmstrip">
+    <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase;">Paradigms:</span>
+    
+        <button class="thumb-card active" onclick="switchParadigm(0)" id="thumb-0">
+            <span class="thumb-num">01</span>
+            <span class="thumb-title">Vector Spatial Joins & Multi-Ring Buffer Intersections</span>
+        </button>
+        
+  </footer>
+
+  <div id="toast">Python Code Copied!</div>
+
+  <script>
+    const PARADIGMS = [{"tag": "01 / SPATIAL JOINS & BUFFERING", "title": "Vector Spatial Joins & Multi-Ring Buffer Intersections", "subtitle": "GEOS-accelerated point-in-polygon queries, Voronoi tessellations, and CRS reprojection.", "math_desc": "Ray-casting point-in-polygon Jordan Curve Theorem: point $P$ is interior if an arbitrary ray intersects polygon edges an odd number of times.", "math_formula": "\\mathcal{J}(P, \\mathcal{P}) = \\left( \\sum_{e \\in \\mathcal{P}} \\mathbb{I}(\\text{Ray}(P) \\cap e) \\right) \\pmod 2 \\equiv 1", "time_complexity": "O(N \\log M) with R-tree spatial index", "space_complexity": "O(N) Shapely C-pointer geometry array", "enterprise_use": "Catchment area customer demographic profiling, urban zoning flood risk spatial joins.", "strengths": "Combines full power of pandas DataFrame manipulation with spatial C-geometry algorithms.", "tradeoffs": "Requires GEOS, GDAL, and PROJ system libraries.", "metrics": [{"label": "Engine", "val": "GEOS C++ / Shapely", "sub": "Hardware Spatial"}, {"label": "Indexing", "val": "R-tree / STRtree", "sub": "Sub-millisecond Join"}, {"label": "CRS", "val": "PyPROJ 4.x", "sub": "EPSG Transformations"}, {"label": "API", "val": "GeoDataFrame", "sub": "Pandas Integrated"}], "code": "import geopandas as gpd\nfrom shapely.geometry import Point\nimport numpy as np\n\n# Create GeoDataFrame of hotel property coordinates\nlats = np.random.uniform(1.25, 1.45, n_samples)\nlons = np.random.uniform(103.7, 103.95, n_samples)\ngeometry = [Point(xy) for xy in zip(lons, lats)]\n\ngdf = gpd.GeoDataFrame({'Hotel_ID': range(n_samples), 'ADR': np.random.normal(250, 40, n_samples)},\n                        geometry=geometry, crs=\"EPSG:4326\")\n\n# Re-project to UTM Zone 48N (meters) and create 1km buffer\ngdf_utm = gdf.to_crs(epsg=32648)\ngdf_utm['Buffer_1km'] = gdf_utm.buffer(1000)\n\nprint(f\"Computed spatial buffers for {len(gdf)} properties.\")"}];
+    let currentIndex = 0;
+    let currentTab = 'code';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderParadigm(0);
+
+      window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+        if (e.key === 'ArrowRight') nextParadigm();
+        if (e.key === 'ArrowLeft') prevParadigm();
+        if (e.key.toLowerCase() === 'c') copyCode();
+        if (e.key.toLowerCase() === 'f') toggleFullscreen();
+        if (e.key >= '1' && e.key <= '9') {
+          const idx = parseInt(e.key) - 1;
+          if (idx < PARADIGMS.length) switchParadigm(idx);
+        }
+      });
+    });
+
+    function renderParadigm(index) {
+      currentIndex = index;
+      const p = PARADIGMS[index];
+
+      document.getElementById('p-tag').innerText = p.tag || `0${index+1} / PARADIGM`;
+      document.getElementById('p-headline').innerText = p.title;
+      document.getElementById('p-desc').innerText = p.subtitle || '';
+
+      document.querySelectorAll('.thumb-card').forEach((el, idx) => {
+        el.classList.toggle('active', idx === index);
+      });
+
+      renderTabContent();
+      if (typeof onParadigmChange === 'function') {
+        onParadigmChange(index);
+      }
+    }
+
+    function renderTabContent() {
+      const p = PARADIGMS[currentIndex];
+      const container = document.getElementById('tab-content-container');
+
+      if (currentTab === 'code') {
+        container.innerHTML = `
+          <div class="code-container">
+            <div class="code-header-bar">
+              <span>Python 3.10+ · pip install geopandas shapely pyproj</span>
+              <button class="btn-copy" onclick="copyCode()">📋 Copy Snippet</button>
+            </div>
+            <div class="code-body" id="code-snippet">${escapeHtml(p.code)}</div>
+          </div>
+        `;
+      } else if (currentTab === 'math') {
+        container.innerHTML = `
+          <div class="spec-card">
+            <h5>Mathematical & Algorithmic Formulation</h5>
+            <p>${p.math_desc || 'Algorithmic mapping pipeline.'}</p>
+            <div class="math-formula">${p.math_formula || 'f(x) = \int K(x - y) dy'}</div>
+          </div>
+          <div class="spec-card gold-border">
+            <h5>Computational Complexity</h5>
+            <p><strong>Time:</strong> ${p.time_complexity || 'O(N \log N)'}<br>
+            <strong>Space:</strong> ${p.space_complexity || 'O(N)'} memory footprint.</p>
+          </div>
+        `;
+      } else if (currentTab === 'enterprise') {
+        container.innerHTML = `
+          <div class="spec-card cyan-border">
+            <h5>Enterprise Production Scenarios</h5>
+            <p>${p.enterprise_use || 'High-throughput enterprise telemetry and analytics.'}</p>
+          </div>
+          <div class="spec-card">
+            <h5>Architecture Strengths & Trade-offs</h5>
+            <p><strong>Strengths:</strong> ${p.strengths || 'Robust enterprise scale.'}<br>
+            <strong>Tradeoffs:</strong> ${p.tradeoffs || 'Client resource constraints.'}</p>
+          </div>
+        `;
+      } else if (currentTab === 'metrics') {
+        const m = p.metrics || [
+          { label: 'Complexity', val: 'O(N log N)', sub: 'Fast' },
+          { label: 'Max Points', val: '500,000', sub: 'Bounds' },
+          { label: 'Engine', val: 'Hardware Vector', sub: 'Native' },
+          { label: 'Latency', val: '< 16ms', sub: 'Target' }
+        ];
+        container.innerHTML = `
+          <div class="metrics-grid">
+            ${m.map(item => `
+              <div class="metric-pill">
+                <span class="lbl">${item.label}</span>
+                <span class="val">${item.val}</span>
+                <span class="sub">${item.sub}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    }
+
+    function setTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.id === `tab-${tab}`);
+      });
+      renderTabContent();
+    }
+
+    function switchParadigm(index) { renderParadigm(index); }
+    function prevParadigm() { switchParadigm((currentIndex - 1 + PARADIGMS.length) % PARADIGMS.length); }
+    function nextParadigm() { switchParadigm((currentIndex + 1) % PARADIGMS.length); }
+
+    function copyCode() {
+      const snip = document.getElementById('code-snippet');
+      if (!snip) return;
+      navigator.clipboard.writeText(snip.innerText).then(() => {
+        const t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+      });
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else if (document.exitFullscreen) document.exitFullscreen();
+    }
+
+    function escapeHtml(t) {
+      return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+
+  <!-- Custom Tool-Specific Engine JS -->
+  <script>
+    
+    let showVoronoi = true;
+    const transitStations = [
+      { name: 'Station Alpha', x: 220, y: 180, zone: 'Central' },
+      { name: 'Station Beta', x: 380, y: 150, zone: 'North' },
+      { name: 'Station Gamma', x: 490, y: 260, zone: 'East' },
+      { name: 'Station Delta', x: 310, y: 320, zone: 'South' },
+      { name: 'Station Epsilon', x: 180, y: 300, zone: 'West' }
+    ];
+
+    function toggleGpdVoronoi() {
+      showVoronoi = !showVoronoi;
+      document.getElementById('btn-gpd-vor').innerText = showVoronoi ? 'Hide Voronoi' : 'Show Voronoi';
+      drawGeoPandas();
+    }
+
+    function drawGeoPandas() {
+      const c = document.getElementById('gpd-canvas');
+      if (!c) return;
+      c.width = c.clientWidth * window.devicePixelRatio;
+      c.height = c.clientHeight * window.devicePixelRatio;
+      const ctx = c.getContext('2d');
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      const W = c.clientWidth; const H = c.clientHeight;
+
+      ctx.fillStyle = '#040705';
+      ctx.fillRect(0, 0, W, H);
+
+      const bufRadius = parseInt(document.getElementById('gpd-buffer').value);
+
+      // Draw simulated Voronoi tessellation partitions
+      if (showVoronoi) {
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 3]);
+        // Delimiter chords
+        ctx.beginPath(); ctx.moveTo(W*0.5, 0); ctx.lineTo(W*0.5, H); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, H*0.5); ctx.lineTo(W, H*0.5); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Buffer circles around transit stations
+      transitStations.forEach((st, idx) => {
+        // Buffer polygon fill
+        ctx.fillStyle = 'rgba(0, 230, 118, 0.12)';
+        ctx.strokeStyle = '#00e676';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(st.x, st.y, bufRadius * 2, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke();
+
+        // Station Point (Centroid)
+        ctx.fillStyle = '#f3cf65';
+        ctx.beginPath();
+        ctx.arc(st.x, st.y, 5, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.strokeStyle = '#040705';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Label
+        ctx.fillStyle = '#fff';
+        ctx.font = '10px JetBrains Mono';
+        ctx.fillText(st.name, st.x + 8, st.y - 8);
+      });
+
+      // Spatial Join overlay legend
+      ctx.fillStyle = 'rgba(10, 18, 14, 0.9)';
+      ctx.fillRect(20, 20, 260, 65);
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.strokeRect(20, 20, 260, 65);
+
+      ctx.fillStyle = '#00e676';
+      ctx.font = '10px JetBrains Mono';
+      ctx.fillText(`● Shapely Buffer = ${(bufRadius * 0.2).toFixed(1)} km`, 32, 40);
+      ctx.fillStyle = '#f3cf65';
+      ctx.fillText(`● Point Centroid Nodes (n=${transitStations.length})`, 32, 58);
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillText(`CRS: EPSG:4326 (WGS 84)`, 32, 74);
+    }
+
+    window.addEventListener('load', () => { drawGeoPandas(); });
+    window.addEventListener('resize', drawGeoPandas);
+    
+  </script>
+</body>
+</html>

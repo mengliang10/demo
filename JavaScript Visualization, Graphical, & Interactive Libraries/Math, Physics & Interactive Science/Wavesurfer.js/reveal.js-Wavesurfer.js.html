@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wavesurfer.js | Interactive Audio Waveform Visualizer, Waterfall Spectrograms & Regions | Visualization Masterclass</title>
+  <meta name="description" content="10 Advanced Visualization Paradigms engineered with Wavesurfer.js - Interactive Audio Waveform Visualizer, Waterfall Spectrograms & Regions">
+  
+  <!-- Typography Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Reveal.js Core Stylesheet with Local & CDN Fallback -->
+  <link rel="stylesheet" href="../../../vendor/reveal.min.css" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css'">
+  <link rel="stylesheet" href="../../../css/viz-deck.css">
+
+  <style>
+    
+:root {
+  --viz-dark-obsidian: #040805;
+  --viz-gold-bright: #f3cf65;
+  --viz-gold-deep: #b5935b;
+  --viz-neon-emerald: #00e676;
+  --viz-neon-cyan: #00e5ff;
+  --viz-crimson: #ff1744;
+  --viz-magenta: #d500f9;
+  --viz-text-light: #fffefa;
+  --viz-text-muted: #c5a880;
+  --viz-card-bg: rgba(14, 24, 19, 0.85);
+  --viz-card-border: rgba(212, 175, 55, 0.28);
+  --font-heading: 'Newsreader', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body, .reveal {
+  background-color: var(--viz-dark-obsidian) !important;
+  color: var(--viz-text-light);
+  font-family: var(--font-body);
+}
+
+.reveal .slides section {
+  text-align: left;
+  padding: 12px 30px;
+  height: 100%;
+}
+
+.deck-nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  background: rgba(4, 8, 5, 0.95);
+  border-bottom: 1px solid var(--viz-card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+}
+
+.deck-nav-bar a {
+  color: var(--viz-gold-bright);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deck-nav-bar a:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+
+.deck-footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 38px;
+  background: rgba(4, 8, 5, 0.95);
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  z-index: 1000;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--viz-text-muted);
+  box-sizing: border-box;
+}
+
+.slide-tag {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--viz-gold-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  display: inline-block;
+  margin-bottom: 2px;
+}
+
+.slide-headline {
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+  font-weight: 500;
+  color: #fffefa;
+  margin: 0 0 2px 0;
+  line-height: 1.15;
+}
+
+.slide-headline span {
+  color: var(--viz-gold-bright);
+  font-style: italic;
+}
+
+.slide-subtitle {
+  font-size: 0.88rem;
+  color: var(--viz-text-muted);
+  margin: 0 0 8px 0;
+  max-width: 95%;
+  line-height: 1.35;
+}
+
+.tech-badge {
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid var(--viz-gold-deep);
+  color: var(--viz-gold-bright);
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.viz-stage-split {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+  height: calc(100vh - 170px);
+  min-height: 520px;
+}
+
+.viz-canvas-container {
+  background: #020503;
+  border: 1px solid var(--viz-card-border);
+  border-radius: 8px;
+  padding: 12px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+.viz-info-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.spec-card {
+  background: var(--viz-card-bg);
+  border: 1px solid var(--viz-card-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.spec-card h4 {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--viz-gold-bright);
+  margin: 0 0 6px 0;
+}
+
+.spec-card p {
+  font-size: 0.82rem;
+  color: #ddd;
+  line-height: 1.45;
+  margin: 0 0 8px 0;
+}
+
+.code-box {
+  background: #050806;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #f3cf65;
+  overflow-x: auto;
+  line-height: 1.4;
+  max-height: 180px;
+}
+.code-box pre {
+  margin: 0;
+}
+
+.metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.metric-pill {
+  background: rgba(20, 32, 26, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 6px;
+  padding: 6px 8px;
+  text-align: center;
+}
+.metric-pill .lbl {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--viz-text-muted);
+  text-transform: uppercase;
+}
+.metric-pill .val {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--viz-gold-bright);
+}
+.metric-pill .sub {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--viz-neon-emerald);
+}
+
+  </style>
+
+  <script src="../../../vendor/reveal.min.js" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js'"></script>
+</head>
+<body>
+
+  <!-- PERSISTENT TOP NAVIGATION -->
+  <div class="deck-nav-bar">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="../../../index.html">
+        <span aria-hidden="true">&larr;</span> <strong>Visualization Portfolio Hub</strong>
+      </a>
+      <span style="opacity: 0.35;">|</span>
+      <span style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--viz-gold-bright);">katspaugh / Wavesurfer Team</span>
+      <span style="opacity: 0.35;">|</span>
+      <span style="color: #fffefa; font-weight: 500; font-family: var(--font-heading); font-size: 1.15rem;">Wavesurfer.js: Interactive Audio Waveform Visualizer, Waterfall Spectrograms & Regions</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="tech-badge">Wavesurfer.js 7.7</span>
+      <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--viz-text-muted);">10 Distinct Slides</span>
+    </div>
+  </div>
+
+  <!-- PERSISTENT FOOTER BAR -->
+  <div class="deck-footer-bar">
+    <span><strong>Demostration of Visualization Software</strong> &bull; Wavesurfer.js Domain Showcase</span>
+    <span>Use <strong>Space / Arrows</strong> to Navigate &bull; Press <strong>F</strong> for Fullscreen &bull; <strong>O</strong> for Overview</span>
+  </div>
+
+  <div class="reveal">
+    <div class="slides">
+      
+      <!-- SLIDE 01: High-Fidelity Audio Waveforms: Multi-Resolution Min/Max Peak Caching -->
+      <section id="s01-audio_spectrogram" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">01 / PCM Waveform Peaks</span>
+            <h2 class="slide-headline">High-Fidelity Audio Waveforms: <span> Multi-Resolution Min/Max Peak Caching</span></h2>
+            <p class="slide-subtitle">Rendering high-resolution interactive audio waveform peak graphs from decoded PCM audio buffers with min/max channel interleaving and progressive caching.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Wavesurfer.js 7.7</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Wavesurferjs-s01-audio_spectrogram-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s01-audio_spectrogram-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s01-audio_spectrogram-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Wavesurferjs-s01-audio_spectrogram-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="50" y1="130" x2="590" y2="130" stroke="rgba(255,255,255,0.15)"/>
+<path d="M 50.0,130.0 L 54.5,131.2 L 59.0,134.2 L 63.5,137.5 L 68.0,139.4 L 72.5,138.7 L 77.0,135.2 L 81.5,129.9 L 86.0,124.6 L 90.5,121.1 L 95.0,120.7 L 99.5,123.1 L 104.0,126.9 L 108.5,129.8 L 113.0,129.9 L 117.5,126.2 L 122.0,119.3 L 126.5,111.7 L 131.0,106.8 L 135.5,107.6 L 140.0,115.9 L 144.5,131.0 L 149.0,149.7 L 153.5,167.2 L 158.0,178.6 L 162.5,180.0 L 167.0,170.4 L 171.5,151.6 L 176.0,128.2 L 180.5,106.1 L 185.0,90.5 L 189.5,84.8 L 194.0,89.3 L 198.5,101.7 L 203.0,117.2 L 207.5,131.1 L 212.0,139.7 L 216.5,141.5 L 221.0,137.8 L 225.5,131.6 L 230.0,126.7 L 234.5,126.1 L 239.0,130.8 L 243.5,139.6 L 248.0,149.5 L 252.5,156.8 L 257.0,158.5 L 261.5,153.3 L 266.0,142.3 L 270.5,128.1 L 275.0,114.6 L 279.5,105.2 L 284.0,102.0 L 288.5,105.2 L 293.0,112.9 L 297.5,122.6 L 302.0,131.1 L 306.5,136.6 L 311.0,138.4 L 315.5,137.2 L 320.0,134.5 L 324.5,131.9 L 329.0,130.3 L 333.5,130.0 L 338.0,130.3 L 342.5,130.3 L 347.0,129.4 L 351.5,128.0 L 356.0,126.9 L 360.5,127.5 L 365.0,130.8 L 369.5,136.9 L 374.0,144.3 L 378.5,150.9 L 383.0,153.7 L 387.5,150.7 L 392.0,141.2 L 396.5,126.8 L 401.0,110.5 L 405.5,96.7 L 410.0,89.4 L 414.5,90.6 L 419.0,100.5 L 423.5,116.3 L 428.0,133.8 L 432.5,148.4 L 437.0,156.5 L 441.5,156.9 L 446.0,150.9 L 450.5,141.7 L 455.0,133.5 L 459.5,129.6 L 464.0,131.3 L 468.5,137.6 L 473.0,145.3 L 477.5,150.4 L 482.0,149.3 L 486.5,140.7 L 491.0,125.6 L 495.5,107.8 L 500.0,92.1 L 504.5,83.4 L 509.0,84.6 L 513.5,95.9 L 518.0,114.6 L 522.5,135.9 L 527.0,154.6 L 531.5,166.4 L 536.0,169.1 L 540.5,163.2 L 545.0,151.7 L 549.5,138.3 L 554.0,127.0 L 558.5,120.2 L 563.0,118.5 L 567.5,120.8 L 572.0,124.9 L 576.5,128.5 L 581.0,130.1 L 585.5,129.6" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<rect x="60.0" y="315.0" width="12" height="35.0" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="76.5" y="302.62980203727386" width="12" height="47.370197962726145" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="93.0" y="273.02872306978986" width="12" height="76.97127693021015" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="109.5" y="287.9180619988333" width="12" height="62.081938001166705" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="126.0" y="269.9264507596052" width="12" height="80.07354924039483" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="142.5" y="251.5507690322207" width="12" height="98.4492309677793" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="159.0" y="259.1252506697973" width="12" height="90.87474933020272" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="175.5" y="254.80070265630314" width="12" height="95.19929734369686" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="192.0" y="268.5351286587159" width="12" height="81.4648713412841" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="208.5" y="261.0963401556039" width="12" height="88.90365984439606" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="225.0" y="287.0763927948022" width="12" height="62.923607205197825" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="241.5" y="294.9169503973834" width="12" height="55.08304960261658" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="258.0" y="310.9439995970066" width="12" height="39.05600040299336" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="274.5" y="300.4097567265054" width="12" height="49.59024327349458" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="291.0" y="341.53916138448096" width="12" height="8.460838615519009" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="307.5" y="334.5780659371172" width="12" height="15.421934062882812" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="324.0" y="362.8401247653964" width="12" height="-12.84012476539641" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="340.5" y="352.7494679114292" width="12" height="-2.7494679114291785" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="357.0" y="356.8765058832548" width="12" height="-6.8765058832548505" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="373.5" y="359.9646394487689" width="12" height="-9.9646394487689" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="390.0" y="349.9462137331569" width="12" height="0.05378626684307619" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="406.5" y="341.9467246713296" width="12" height="8.053275328670402" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="423.0" y="339.27701627851957" width="12" height="10.722983721480404" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="439.5" y="348.41395387496294" width="12" height="1.5860461250370825" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="456.0" y="330.9707749099463" width="12" height="19.029225090053707" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="472.5" y="312.6589608273778" width="12" height="37.34103917262216" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="489.0" y="305.24400059560924" width="12" height="44.75599940439078" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="505.5" y="300.49779631096914" width="12" height="49.50220368903088" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="522.0" y="282.15067006406053" width="12" height="67.84932993593945" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="538.5" y="270.84595604942473" width="12" height="79.15404395057527" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="555.0" y="259.10000116126304" width="12" height="90.89999883873695" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<rect x="571.5" y="265.2700610444412" width="12" height="84.72993895555881" fill="url(#g-Wavesurferjs-s01-audio_spectrogram-primary)" rx="2"/>
+<text x="60" y="70" fill="#d4af37" font-family="JetBrains Mono" font-size="10">PCM OSCILLOGRAM (48 kHz / 24-bit)</text>
+<text x="60" y="240" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">FFT SPECTRAL MAGNITUDE BANDS</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Wavesurfer.js 7.7 pipeline executing in the Interactive Audio Waveform Visualizer, Waterfall Spectrograms & Regions domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>const wavesurfer = WaveSurfer.create({
+  container: '#waveform-stage', waveColor: 'rgba(212, 175, 55, 0.65)',
+  progressColor: '#00e5ff', barWidth: 2, barGap: 1, barRadius: 2
+});
+wavesurfer.load('master_track.wav');</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Audio Length</span>
+          <span class="val">3 min 45 s</span>
+          <span class="sub">Master Stereo Track</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Sample Rate</span>
+          <span class="val">48.0 kHz</span>
+          <span class="sub">24-Bit Linear PCM</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Waveform Bars</span>
+          <span class="val">1,200 Bars</span>
+          <span class="sub">Bar-Styled Peaks</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Cache Size</span>
+          <span class="val">34 KB</span>
+          <span class="sub">Precomputed JSON</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 02: STFT Spectral Waterfalls: Mel-Scale Frequency Magnitude Contours -->
+      <section id="s02-audio_spectrogram" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">02 / Waterfall Spectrogram Heatmaps</span>
+            <h2 class="slide-headline">STFT Spectral Waterfalls: <span> Mel-Scale Frequency Magnitude Contours</span></h2>
+            <p class="slide-subtitle">Real-time waterfall spectrogram plugin mapping frequency magnitudes (0 to 22 kHz) across time using perceptually scaled Mel/Bark color heatmaps.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Wavesurfer.js 7.7</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Wavesurferjs-s02-audio_spectrogram-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s02-audio_spectrogram-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s02-audio_spectrogram-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Wavesurferjs-s02-audio_spectrogram-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="50" y1="130" x2="590" y2="130" stroke="rgba(255,255,255,0.15)"/>
+<path d="M 50.0,130.0 L 54.5,131.2 L 59.0,134.2 L 63.5,137.5 L 68.0,139.4 L 72.5,138.7 L 77.0,135.2 L 81.5,129.9 L 86.0,124.6 L 90.5,121.1 L 95.0,120.7 L 99.5,123.1 L 104.0,126.9 L 108.5,129.8 L 113.0,129.9 L 117.5,126.2 L 122.0,119.3 L 126.5,111.7 L 131.0,106.8 L 135.5,107.6 L 140.0,115.9 L 144.5,131.0 L 149.0,149.7 L 153.5,167.2 L 158.0,178.6 L 162.5,180.0 L 167.0,170.4 L 171.5,151.6 L 176.0,128.2 L 180.5,106.1 L 185.0,90.5 L 189.5,84.8 L 194.0,89.3 L 198.5,101.7 L 203.0,117.2 L 207.5,131.1 L 212.0,139.7 L 216.5,141.5 L 221.0,137.8 L 225.5,131.6 L 230.0,126.7 L 234.5,126.1 L 239.0,130.8 L 243.5,139.6 L 248.0,149.5 L 252.5,156.8 L 257.0,158.5 L 261.5,153.3 L 266.0,142.3 L 270.5,128.1 L 275.0,114.6 L 279.5,105.2 L 284.0,102.0 L 288.5,105.2 L 293.0,112.9 L 297.5,122.6 L 302.0,131.1 L 306.5,136.6 L 311.0,138.4 L 315.5,137.2 L 320.0,134.5 L 324.5,131.9 L 329.0,130.3 L 333.5,130.0 L 338.0,130.3 L 342.5,130.3 L 347.0,129.4 L 351.5,128.0 L 356.0,126.9 L 360.5,127.5 L 365.0,130.8 L 369.5,136.9 L 374.0,144.3 L 378.5,150.9 L 383.0,153.7 L 387.5,150.7 L 392.0,141.2 L 396.5,126.8 L 401.0,110.5 L 405.5,96.7 L 410.0,89.4 L 414.5,90.6 L 419.0,100.5 L 423.5,116.3 L 428.0,133.8 L 432.5,148.4 L 437.0,156.5 L 441.5,156.9 L 446.0,150.9 L 450.5,141.7 L 455.0,133.5 L 459.5,129.6 L 464.0,131.3 L 468.5,137.6 L 473.0,145.3 L 477.5,150.4 L 482.0,149.3 L 486.5,140.7 L 491.0,125.6 L 495.5,107.8 L 500.0,92.1 L 504.5,83.4 L 509.0,84.6 L 513.5,95.9 L 518.0,114.6 L 522.5,135.9 L 527.0,154.6 L 531.5,166.4 L 536.0,169.1 L 540.5,163.2 L 545.0,151.7 L 549.5,138.3 L 554.0,127.0 L 558.5,120.2 L 563.0,118.5 L 567.5,120.8 L 572.0,124.9 L 576.5,128.5 L 581.0,130.1 L 585.5,129.6" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<rect x="60.0" y="302.0" width="12" height="48.0" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="76.5" y="307.62980203727386" width="12" height="42.370197962726145" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="93.0" y="289.02872306978986" width="12" height="60.97127693021015" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="109.5" y="260.9180619988333" width="12" height="89.0819380011667" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="126.0" y="278.9264507596052" width="12" height="71.07354924039483" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="142.5" y="255.5507690322207" width="12" height="94.4492309677793" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="159.0" y="266.1252506697973" width="12" height="83.87474933020272" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="175.5" y="271.80070265630314" width="12" height="78.19929734369686" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="192.0" y="257.5351286587159" width="12" height="92.4648713412841" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="208.5" y="281.0963401556039" width="12" height="68.90365984439606" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="225.0" y="281.0763927948022" width="12" height="68.92360720519783" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="241.5" y="280.9169503973834" width="12" height="69.08304960261658" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="258.0" y="292.9439995970066" width="12" height="57.05600040299336" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="274.5" y="319.4097567265054" width="12" height="30.590243273494583" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="291.0" y="331.53916138448096" width="12" height="18.46083861551901" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="307.5" y="344.5780659371172" width="12" height="5.421934062882812" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="324.0" y="338.8401247653964" width="12" height="11.15987523460359" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="340.5" y="360.7494679114292" width="12" height="-10.749467911429178" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="357.0" y="364.8765058832548" width="12" height="-14.87650588325485" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="373.5" y="364.9646394487689" width="12" height="-14.9646394487689" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="390.0" y="351.9462137331569" width="12" height="-1.9462137331569238" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="406.5" y="349.9467246713296" width="12" height="0.05327532867040219" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="423.0" y="360.27701627851957" width="12" height="-10.277016278519596" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="439.5" y="341.41395387496294" width="12" height="8.586046125037083" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="456.0" y="333.9707749099463" width="12" height="16.029225090053707" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="472.5" y="308.6589608273778" width="12" height="41.34103917262216" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="489.0" y="284.24400059560924" width="12" height="65.75599940439078" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="505.5" y="300.49779631096914" width="12" height="49.50220368903088" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="522.0" y="279.15067006406053" width="12" height="70.84932993593945" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="538.5" y="266.84595604942473" width="12" height="83.15404395057527" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="555.0" y="255.10000116126304" width="12" height="94.89999883873695" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<rect x="571.5" y="257.2700610444412" width="12" height="92.72993895555881" fill="url(#g-Wavesurferjs-s02-audio_spectrogram-primary)" rx="2"/>
+<text x="60" y="70" fill="#d4af37" font-family="JetBrains Mono" font-size="10">PCM OSCILLOGRAM (48 kHz / 24-bit)</text>
+<text x="60" y="240" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">FFT SPECTRAL MAGNITUDE BANDS</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Wavesurfer.js 7.7 pipeline executing in the Interactive Audio Waveform Visualizer, Waterfall Spectrograms & Regions domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>import SpectrogramPlugin from 'wavesurfer.js/dist/plugins/spectrogram.esm.js';
+wavesurfer.registerPlugin(SpectrogramPlugin.create({
+  container: '#spectrogram-stage', labels: true, fftSamples: 512,
+  colorMap: [[0, '#040805'], [0.4, '#00e5ff'], [0.7, '#d4af37'], [1, '#ff1744']]
+}));</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">FFT Window</span>
+          <span class="val">512 Samples</span>
+          <span class="sub">Frequency Resolution</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Bandwidth</span>
+          <span class="val">20 Hz - 20 kHz</span>
+          <span class="sub">Audible Spectrum</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Color Gradient</span>
+          <span class="val">Obsidian/Gold</span>
+          <span class="sub">Dynamic Range Map</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Time Step</span>
+          <span class="val">10 ms Slices</span>
+          <span class="sub">STFT Time Slices</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 03: Sample-Accurate Audio Scrubbing: Zoomable DAW Timecode Rulers -->
+      <section id="s03-gantt" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">03 / DAW Timeline Scrubbers</span>
+            <h2 class="slide-headline">Sample-Accurate Audio Scrubbing: <span> Zoomable DAW Timecode Rulers</span></h2>
+            <p class="slide-subtitle">Interactive zoomable audio timeline displaying fractional seconds, beat grids, minute markers, and sample-accurate cursor dragging.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Wavesurfer.js 7.7</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Wavesurferjs-s03-gantt-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s03-gantt-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s03-gantt-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Wavesurferjs-s03-gantt-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<text x="165" y="111" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Architecture Blueprint</text>
+<rect x="70" y="95" width="180" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="70" y="95" width="180.0" height="22" rx="4" fill="#d4af37" fill-opacity="0.85"/>
+<text x="260" y="110" fill="#d4af37" font-family="JetBrains Mono" font-size="10">100%</text>
+<text x="165" y="159" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Security Mesh</text>
+<rect x="140" y="143" width="160" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="140" y="143" width="136.0" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85"/>
+<text x="310" y="158" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">85%</text>
+<text x="165" y="207" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Data Ingestion</text>
+<rect x="190" y="191" width="190" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="190" y="191" width="114.0" height="22" rx="4" fill="#00e676" fill-opacity="0.85"/>
+<text x="390" y="206" fill="#00e676" font-family="JetBrains Mono" font-size="10">60%</text>
+<text x="165" y="255" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Training & Validation</text>
+<rect x="260" y="239" width="170" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="260" y="239" width="68.0" height="22" rx="4" fill="#d500f9" fill-opacity="0.85"/>
+<text x="440" y="254" fill="#d500f9" font-family="JetBrains Mono" font-size="10">40%</text>
+<text x="165" y="303" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Global Deployment</text>
+<rect x="340" y="287" width="150" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="340" y="287" width="22.5" height="22" rx="4" fill="#ff9100" fill-opacity="0.85"/>
+<text x="500" y="302" fill="#ff9100" font-family="JetBrains Mono" font-size="10">15%</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Wavesurfer.js 7.7 pipeline executing in the Interactive Audio Waveform Visualizer, Waterfall Spectrograms & Regions domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline.esm.js';
+wavesurfer.registerPlugin(TimelinePlugin.create({
+  container: '#timeline-stage', timeInterval: 5, primaryLabelInterval: 10
+}));
+wavesurfer.zoom(50); // 50 pixels per second</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Zoom Level</span>
+          <span class="val">50 px / sec</span>
+          <span class="sub">Adjustable Scale</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Scrub Accuracy</span>
+          <span class="val">Sample-Accurate</span>
+          <span class="sub">Sub-Millisecond</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Major Markers</span>
+          <span class="val">Every 10 s</span>
+          <span class="sub">Timecode Ticks</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Scroll Sync</span>
+          <span class="val">Auto-Scroll</span>
+          <span class="sub">Follows Playhead</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 04: Audio Annotation Boundaries: Drag-and-Drop Loop Slices & Marker Cues -->
+      <section id="s04-gantt" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">04 / Interactive Loop Regions</span>
+            <h2 class="slide-headline">Audio Annotation Boundaries: <span> Drag-and-Drop Loop Slices & Marker Cues</span></h2>
+            <p class="slide-subtitle">Drag-and-drop audio region selection plugin allowing users to create loop sections, labeled audio clips, and hot cue points with millisecond boundaries.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Wavesurfer.js 7.7</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Wavesurferjs-s04-gantt-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s04-gantt-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s04-gantt-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Wavesurferjs-s04-gantt-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<text x="165" y="111" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Architecture Blueprint</text>
+<rect x="70" y="95" width="180" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="70" y="95" width="180.0" height="22" rx="4" fill="#d4af37" fill-opacity="0.85"/>
+<text x="260" y="110" fill="#d4af37" font-family="JetBrains Mono" font-size="10">100%</text>
+<text x="165" y="159" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Security Mesh</text>
+<rect x="140" y="143" width="160" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="140" y="143" width="136.0" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85"/>
+<text x="310" y="158" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">85%</text>
+<text x="165" y="207" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Data Ingestion</text>
+<rect x="190" y="191" width="190" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="190" y="191" width="114.0" height="22" rx="4" fill="#00e676" fill-opacity="0.85"/>
+<text x="390" y="206" fill="#00e676" font-family="JetBrains Mono" font-size="10">60%</text>
+<text x="165" y="255" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Training & Validation</text>
+<rect x="260" y="239" width="170" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="260" y="239" width="68.0" height="22" rx="4" fill="#d500f9" fill-opacity="0.85"/>
+<text x="440" y="254" fill="#d500f9" font-family="JetBrains Mono" font-size="10">40%</text>
+<text x="165" y="303" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Global Deployment</text>
+<rect x="340" y="287" width="150" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="340" y="287" width="22.5" height="22" rx="4" fill="#ff9100" fill-opacity="0.85"/>
+<text x="500" y="302" fill="#ff9100" font-family="JetBrains Mono" font-size="10">15%</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Wavesurfer.js 7.7 pipeline executing in the Interactive Audio Waveform Visualizer, Waterfall Spectrograms & Regions domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.esm.js';
+const wsRegions = wavesurfer.registerPlugin(RegionsPlugin.create());
+wsRegions.addRegion({
+  start: 42.5, end: 64.0, content: 'Chorus Hook [Loop A]', drag: true, resize: true
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Loop Region</span>
+          <span class="val">42.5s - 64.0s</span>
+          <span class="sub">Active Loop Slice</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Region Count</span>
+          <span class="val">12 Sections</span>
+          <span class="sub">Verses, Chorus, Outro</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Interaction</span>
+          <span class="val">Drag & Resize</span>
+          <span class="sub">Bilateral Handles</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Event Hooks</span>
+          <span class="val">in, out, update</span>
+          <span class="sub">Lifecycle Callbacks</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 05: Multi-Stem Audio Mixing: Synchronized Playback Buffers & Solo/Mute -->
+      <section id="s05-stream" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">05 / Multi-Track Stem Alignment</span>
+            <h2 class="slide-headline">Multi-Stem Audio Mixing: <span> Synchronized Playback Buffers & Solo/Mute</span></h2>
+            <p class="slide-subtitle">Simultaneous synchronization of multiple isolated audio stems (Vocals, Drums, Bass, Synth) with individual track volume faders and solo/mute toggles.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Wavesurfer.js 7.7</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Wavesurferjs-s05-stream-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s05-stream-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s05-stream-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Wavesurferjs-s05-stream-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="50" y1="50" x2="50" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="50" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2019</text>
+<line x1="125" y1="50" x2="125" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="125" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2020</text>
+<line x1="200" y1="50" x2="200" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="200" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2021</text>
+<line x1="275" y1="50" x2="275" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="275" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2022</text>
+<line x1="350" y1="50" x2="350" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="350" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2023</text>
+<line x1="425" y1="50" x2="425" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="425" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2024</text>
+<line x1="500" y1="50" x2="500" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="500" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2025</text>
+<line x1="575" y1="50" x2="575" y2="350" stroke="rgba(255,255,255,0.05)" stroke-dasharray="2,2"/>
+<text x="575" y="368" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">2026</text>
+<polygon points="50,90 125,95 200,75 275,60 350,85 425,70 500,65 575,80 575,50 500,35 425,40 350,55 275,35 200,45 125,65 50,60" fill="#ff9100" fill-opacity="0.65" stroke="#050806" stroke-width="1.5"/>
+<polygon points="50,130 125,135 200,115 275,95 350,125 425,105 500,100 575,120 575,80 500,65 425,70 350,85 275,60 200,75 125,95 50,90" fill="#d500f9" fill-opacity="0.65" stroke="#050806" stroke-width="1.5"/>
+<polygon points="50,175 125,180 200,160 275,140 350,170 425,150 500,145 575,165 575,120 500,100 425,105 350,125 275,95 200,115 125,135 50,130" fill="#00e676" fill-opacity="0.65" stroke="#050806" stroke-width="1.5"/>
+<polygon points="50,210 125,225 200,200 275,185 350,220 425,205 500,195 575,210 575,165 500,145 425,150 350,170 275,140 200,160 125,180 50,175" fill="#00e5ff" fill-opacity="0.65" stroke="#050806" stroke-width="1.5"/></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Wavesurfer.js 7.7 pipeline executing in the Interactive Audio Waveform Visualizer, Waterfall Spectrograms & Regions domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>const tracks = ['vocals.wav', 'drums.wav', 'bass.wav', 'synths.wav'];
+const surfers = tracks.map(url => {
+  const ws = WaveSurfer.create({ container: `#stem-${url}` });
+  ws.load(url); return ws;
+});
+playBtn.onclick = () => surfers.forEach(ws => ws.play());</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Stem Tracks</span>
+          <span class="val">4 Stems</span>
+          <span class="sub">Synchronized Channels</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Clock Drift</span>
+          <span class="val">0.0 ms</span>
+          <span class="sub">Unified AudioContext</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Controls</span>
+          <span class="val">Solo / Mute</span>
+          <span class="sub">Channel Gain Control</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Total Memory</span>
+          <span class="val">48 MB</span>
+          <span class="sub">Decoded Float32 Buffers</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 06: Real-Time Biquad Filtering: 3-Band Parametric Master Equalizers -->
+      <section id="s06-spline" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">06 / WebAudio Parametric EQs</span>
+            <h2 class="slide-headline">Real-Time Biquad Filtering: <span> 3-Band Parametric Master Equalizers</span></h2>
+            <p class="slide-subtitle">Inserting 3-band parametric biquad equalizer filters (Low Shelf 100 Hz, Peaking 1 kHz, High Shelf 8 kHz) into the WaveSurfer playback chain.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Wavesurfer.js 7.7</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Wavesurferjs-s06-spline-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s06-spline-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s06-spline-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Wavesurferjs-s06-spline-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="60" y1="70" x2="580" y2="70" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="130" x2="580" y2="130" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="190" x2="580" y2="190" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="250" x2="580" y2="250" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="310" x2="580" y2="310" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<polygon points="70,260 130,235 190,205 250,165 310,120 370,85 430,60 490,40 550,25 550,135 490,150 430,180 370,195 310,220 250,255 190,275 130,285 70,300" fill="rgba(0, 229, 255, 0.12)" stroke="rgba(0, 229, 255, 0.3)" stroke-dasharray="2,2"/>
+<path d="M 70 280 L 130 260 L 190 240 L 250 210 L 310 170 L 370 140 L 430 120 L 490 95 L 550 80" fill="none" stroke="#d4af37" stroke-width="3" filter="url(#g-Wavesurferjs-s06-spline-glow)"/>
+<circle cx="70" cy="280" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="130" cy="260" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="190" cy="240" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="250" cy="210" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="310" cy="170" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="370" cy="140" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<circle cx="430" cy="120" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<circle cx="490" cy="95" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<circle cx="550" cy="80" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<line x1="310" y1="50" x2="310" y2="330" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="4,4"/>
+<text x="316" y="65" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">Forecast Horizon T+1</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Wavesurfer.js 7.7 pipeline executing in the Interactive Audio Waveform Visualizer, Waterfall Spectrograms & Regions domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>const lowPass = audioCtx.createBiquadFilter();
+lowPass.type = 'lowshelf'; lowPass.frequency.value = 120; lowPass.gain.value = 4.5;
+const highPass = audioCtx.createBiquadFilter();
+highPass.type = 'highshelf'; highPass.frequency.value = 8000;
+wavesurfer.setFilters([lowPass, highPass]);</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Low Shelf</span>
+          <span class="val">+4.5 dB @ 120 Hz</span>
+          <span class="sub">Bass Boost</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Mid Peaking</span>
+          <span class="val">0.0 dB @ 1 kHz</span>
+          <span class="sub">Vocal Presence (Q=1)</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">High Shelf</span>
+          <span class="val">-3.0 dB @ 8 kHz</span>
+          <span class="sub">Treble Cut</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Filter Type</span>
+          <span class="val">Biquad IIR</span>
+          <span class="sub">Direct Form II</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 07: Live Acoustic Visualizers: Microphone Input Streams & YIN Pitch Tracing -->
+      <section id="s07-audio_spectrogram" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">07 / Microphone Live Waveforms</span>
+            <h2 class="slide-headline">Live Acoustic Visualizers: <span> Microphone Input Streams & YIN Pitch Tracing</span></h2>
+            <p class="slide-subtitle">Streaming live microphone input into WaveSurfer via navigator.mediaDevices.getUserMedia with real-time waveform oscillograms and auto-correlation pitch detection.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Wavesurfer.js 7.7</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Wavesurferjs-s07-audio_spectrogram-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s07-audio_spectrogram-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s07-audio_spectrogram-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Wavesurferjs-s07-audio_spectrogram-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="50" y1="130" x2="590" y2="130" stroke="rgba(255,255,255,0.15)"/>
+<path d="M 50.0,130.0 L 54.5,131.2 L 59.0,134.2 L 63.5,137.5 L 68.0,139.4 L 72.5,138.7 L 77.0,135.2 L 81.5,129.9 L 86.0,124.6 L 90.5,121.1 L 95.0,120.7 L 99.5,123.1 L 104.0,126.9 L 108.5,129.8 L 113.0,129.9 L 117.5,126.2 L 122.0,119.3 L 126.5,111.7 L 131.0,106.8 L 135.5,107.6 L 140.0,115.9 L 144.5,131.0 L 149.0,149.7 L 153.5,167.2 L 158.0,178.6 L 162.5,180.0 L 167.0,170.4 L 171.5,151.6 L 176.0,128.2 L 180.5,106.1 L 185.0,90.5 L 189.5,84.8 L 194.0,89.3 L 198.5,101.7 L 203.0,117.2 L 207.5,131.1 L 212.0,139.7 L 216.5,141.5 L 221.0,137.8 L 225.5,131.6 L 230.0,126.7 L 234.5,126.1 L 239.0,130.8 L 243.5,139.6 L 248.0,149.5 L 252.5,156.8 L 257.0,158.5 L 261.5,153.3 L 266.0,142.3 L 270.5,128.1 L 275.0,114.6 L 279.5,105.2 L 284.0,102.0 L 288.5,105.2 L 293.0,112.9 L 297.5,122.6 L 302.0,131.1 L 306.5,136.6 L 311.0,138.4 L 315.5,137.2 L 320.0,134.5 L 324.5,131.9 L 329.0,130.3 L 333.5,130.0 L 338.0,130.3 L 342.5,130.3 L 347.0,129.4 L 351.5,128.0 L 356.0,126.9 L 360.5,127.5 L 365.0,130.8 L 369.5,136.9 L 374.0,144.3 L 378.5,150.9 L 383.0,153.7 L 387.5,150.7 L 392.0,141.2 L 396.5,126.8 L 401.0,110.5 L 405.5,96.7 L 410.0,89.4 L 414.5,90.6 L 419.0,100.5 L 423.5,116.3 L 428.0,133.8 L 432.5,148.4 L 437.0,156.5 L 441.5,156.9 L 446.0,150.9 L 450.5,141.7 L 455.0,133.5 L 459.5,129.6 L 464.0,131.3 L 468.5,137.6 L 473.0,145.3 L 477.5,150.4 L 482.0,149.3 L 486.5,140.7 L 491.0,125.6 L 495.5,107.8 L 500.0,92.1 L 504.5,83.4 L 509.0,84.6 L 513.5,95.9 L 518.0,114.6 L 522.5,135.9 L 527.0,154.6 L 531.5,166.4 L 536.0,169.1 L 540.5,163.2 L 545.0,151.7 L 549.5,138.3 L 554.0,127.0 L 558.5,120.2 L 563.0,118.5 L 567.5,120.8 L 572.0,124.9 L 576.5,128.5 L 581.0,130.1 L 585.5,129.6" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<rect x="60.0" y="298.0" width="12" height="52.0" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="76.5" y="302.62980203727386" width="12" height="47.370197962726145" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="93.0" y="296.02872306978986" width="12" height="53.97127693021015" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="109.5" y="263.9180619988333" width="12" height="86.0819380011667" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="126.0" y="278.9264507596052" width="12" height="71.07354924039483" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="142.5" y="248.5507690322207" width="12" height="101.4492309677793" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="159.0" y="260.1252506697973" width="12" height="89.87474933020272" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="175.5" y="254.80070265630314" width="12" height="95.19929734369686" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="192.0" y="275.5351286587159" width="12" height="74.4648713412841" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="208.5" y="273.0963401556039" width="12" height="76.90365984439606" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="225.0" y="288.0763927948022" width="12" height="61.923607205197825" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="241.5" y="300.9169503973834" width="12" height="49.08304960261658" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="258.0" y="287.9439995970066" width="12" height="62.05600040299336" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="274.5" y="310.4097567265054" width="12" height="39.59024327349458" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="291.0" y="315.53916138448096" width="12" height="34.46083861551901" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="307.5" y="344.5780659371172" width="12" height="5.421934062882812" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="324.0" y="344.8401247653964" width="12" height="5.159875234603589" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="340.5" y="364.7494679114292" width="12" height="-14.749467911429178" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="357.0" y="360.8765058832548" width="12" height="-10.87650588325485" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="373.5" y="357.9646394487689" width="12" height="-7.964639448768899" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="390.0" y="344.9462137331569" width="12" height="5.053786266843076" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="406.5" y="361.9467246713296" width="12" height="-11.946724671329598" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="423.0" y="339.27701627851957" width="12" height="10.722983721480404" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="439.5" y="330.41395387496294" width="12" height="19.586046125037083" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="456.0" y="323.9707749099463" width="12" height="26.029225090053707" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="472.5" y="302.6589608273778" width="12" height="47.34103917262216" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="489.0" y="311.24400059560924" width="12" height="38.75599940439078" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="505.5" y="302.49779631096914" width="12" height="47.50220368903088" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="522.0" y="273.15067006406053" width="12" height="76.84932993593945" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="538.5" y="263.84595604942473" width="12" height="86.15404395057527" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="555.0" y="259.10000116126304" width="12" height="90.89999883873695" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<rect x="571.5" y="269.2700610444412" width="12" height="80.72993895555881" fill="url(#g-Wavesurferjs-s07-audio_spectrogram-primary)" rx="2"/>
+<text x="60" y="70" fill="#d4af37" font-family="JetBrains Mono" font-size="10">PCM OSCILLOGRAM (48 kHz / 24-bit)</text>
+<text x="60" y="240" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">FFT SPECTRAL MAGNITUDE BANDS</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Wavesurfer.js 7.7 pipeline executing in the Interactive Audio Waveform Visualizer, Waterfall Spectrograms & Regions domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>import RecordPlugin from 'wavesurfer.js/dist/plugins/record.esm.js';
+const record = wavesurfer.registerPlugin(RecordPlugin.create({
+  scrollingWaveform: true, renderRecordedAudio: true
+}));
+record.startMic();</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Mic Input</span>
+          <span class="val">Live Stream</span>
+          <span class="sub">48 kHz Mono Capture</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Buffer Latency</span>
+          <span class="val">8.5 ms</span>
+          <span class="sub">Low Input Latency</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Pitch Detected</span>
+          <span class="val">A4 (440.2 Hz)</span>
+          <span class="sub">YIN Algorithm</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Scrolling Mode</span>
+          <span class="val">Waterfall</span>
+          <span class="sub">Real-Time Stream</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 08: Dynamics Automation Splines: Polynomial Gain Nodes & Fade Envelopes -->
+      <section id="s08-spline" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">08 / Volume Automation Envelopes</span>
+            <h2 class="slide-headline">Dynamics Automation Splines: <span> Polynomial Gain Nodes & Fade Envelopes</span></h2>
+            <p class="slide-subtitle">Extracting audio amplitude envelopes using root-mean-square (RMS) windowing and peak hold decay to detect drum transients and dynamic range.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Wavesurfer.js 7.7</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Wavesurferjs-s08-spline-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s08-spline-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s08-spline-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Wavesurferjs-s08-spline-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="60" y1="70" x2="580" y2="70" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="130" x2="580" y2="130" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="190" x2="580" y2="190" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="250" x2="580" y2="250" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="310" x2="580" y2="310" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<polygon points="70,260 130,235 190,205 250,165 310,120 370,85 430,60 490,40 550,25 550,135 490,150 430,180 370,195 310,220 250,255 190,275 130,285 70,300" fill="rgba(0, 229, 255, 0.12)" stroke="rgba(0, 229, 255, 0.3)" stroke-dasharray="2,2"/>
+<path d="M 70 280 L 130 260 L 190 240 L 250 210 L 310 170 L 370 140 L 430 120 L 490 95 L 550 80" fill="none" stroke="#d4af37" stroke-width="3" filter="url(#g-Wavesurferjs-s08-spline-glow)"/>
+<circle cx="70" cy="280" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="130" cy="260" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="190" cy="240" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="250" cy="210" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="310" cy="170" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="370" cy="140" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<circle cx="430" cy="120" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<circle cx="490" cy="95" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<circle cx="550" cy="80" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<line x1="310" y1="50" x2="310" y2="330" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="4,4"/>
+<text x="316" y="65" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">Forecast Horizon T+1</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Wavesurfer.js 7.7 pipeline executing in the Interactive Audio Waveform Visualizer, Waterfall Spectrograms & Regions domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>import EnvelopePlugin from 'wavesurfer.js/dist/plugins/envelope.esm.js';
+const envelope = wavesurfer.registerPlugin(EnvelopePlugin.create({
+  fadeInEnd: 0.5, fadeOutStart: 180.0, volume: 0.8
+}));</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Fade In</span>
+          <span class="val">0.50 s</span>
+          <span class="sub">Linear Amplitude Ramp</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Fade Out</span>
+          <span class="val">5.00 s</span>
+          <span class="sub">Logarithmic Decay</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Volume Nodes</span>
+          <span class="val">8 Keyframes</span>
+          <span class="sub">Automation Curve</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Gain Max</span>
+          <span class="val">1.0 (0 dBFS)</span>
+          <span class="sub">Normalized Ceiling</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 09: Dual-Tiered Navigation: Full-Track Minimap Sliders & Viewport Sliders -->
+      <section id="s09-radar" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">09 / Overview Bird's-Eye Minimaps</span>
+            <h2 class="slide-headline">Dual-Tiered Navigation: <span> Full-Track Minimap Sliders & Viewport Sliders</span></h2>
+            <p class="slide-subtitle">Dual-tiered waveform interface featuring a 100% full-track bird's-eye minimap with highlighted viewport bounding box controlling the primary zoomed track.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Wavesurfer.js 7.7</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Wavesurferjs-s09-radar-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s09-radar-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s09-radar-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Wavesurferjs-s09-radar-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<polygon points="320.0,175.0 350.3,192.5 350.3,227.5 320.0,245.0 289.7,227.5 289.7,192.5" fill="none" stroke="rgba(212,175,55,0.2)" stroke-dasharray="2,2"/>
+<polygon points="320.0,140.0 380.6,175.0 380.6,245.0 320.0,280.0 259.4,245.0 259.4,175.0" fill="none" stroke="rgba(212,175,55,0.2)" stroke-dasharray="2,2"/>
+<polygon points="320.0,105.0 410.9,157.5 410.9,262.5 320.0,315.0 229.1,262.5 229.1,157.5" fill="none" stroke="rgba(212,175,55,0.2)" stroke-dasharray="2,2"/>
+<polygon points="320.0,70.0 441.2,140.0 441.2,280.0 320.0,350.0 198.8,280.0 198.8,140.0" fill="none" stroke="rgba(212,175,55,0.2)" stroke-dasharray="2,2"/>
+<line x1="320" y1="210" x2="320.0" y2="70.0" stroke="rgba(212,175,55,0.35)"/>
+<text x="320.0" y="50.0" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="middle">Security</text>
+<line x1="320" y1="210" x2="441.2" y2="140.0" stroke="rgba(212,175,55,0.35)"/>
+<text x="462.0" y="132.0" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="middle">Throughput</text>
+<line x1="320" y1="210" x2="441.2" y2="280.0" stroke="rgba(212,175,55,0.35)"/>
+<text x="462.0" y="296.0" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="middle">Latency</text>
+<line x1="320" y1="210" x2="320.0" y2="350.0" stroke="rgba(212,175,55,0.35)"/>
+<text x="320.0" y="378.0" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="middle">Resilience</text>
+<line x1="320" y1="210" x2="198.8" y2="280.0" stroke="rgba(212,175,55,0.35)"/>
+<text x="178.0" y="296.0" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="middle">Scalability</text>
+<line x1="320" y1="210" x2="198.8" y2="140.0" stroke="rgba(212,175,55,0.35)"/>
+<text x="178.0" y="132.0" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="middle">Compliance</text>
+<polygon points="320.0,91.0 431.5,145.6 414.6,264.6 320.0,343.0 213.3,271.6 230.3,158.2" fill="rgba(212,175,55,0.35)" stroke="#d4af37" stroke-width="2.5"/>
+<polygon points="320.0,126.0 398.8,164.5 383.0,246.4 320.0,308.0 249.7,250.6 244.8,166.6" fill="rgba(0,229,255,0.18)" stroke="#00e5ff" stroke-width="2" stroke-dasharray="4,4"/></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Wavesurfer.js 7.7 pipeline executing in the Interactive Audio Waveform Visualizer, Waterfall Spectrograms & Regions domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>import MinimapPlugin from 'wavesurfer.js/dist/plugins/minimap.esm.js';
+wavesurfer.registerPlugin(MinimapPlugin.create({
+  container: '#minimap-stage', waveColor: 'rgba(212, 175, 55, 0.4)',
+  progressColor: '#00e5ff', height: 45
+}));</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Full Length</span>
+          <span class="val">45 min 20 s</span>
+          <span class="sub">Long-Form Podcast</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Minimap Height</span>
+          <span class="val">45 px</span>
+          <span class="sub">Compact Overview Bar</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Viewport Window</span>
+          <span class="val">2 min Visible</span>
+          <span class="sub">Current Zoom (4.4%)</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Minimap Res</span>
+          <span class="val">800 Points</span>
+          <span class="sub">Downsampled Overview</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 10: High-DPI Waveform Acceleration: WebGL Line Shaders vs 2D Canvas SLA -->
+      <section id="s10-bullet" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">10 / GPU WebGL Waveform SLA</span>
+            <h2 class="slide-headline">High-DPI Waveform Acceleration: <span> WebGL Line Shaders vs 2D Canvas SLA</span></h2>
+            <p class="slide-subtitle">Benchmarking 2D HTML5 Canvas rendering versus GPU-accelerated WebGL instanced line shaders when displaying multi-hour high-resolution audio files.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Wavesurfer.js 7.7</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Wavesurferjs-s10-bullet-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s10-bullet-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Wavesurferjs-s10-bullet-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Wavesurferjs-s10-bullet-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<text x="180" y="93" fill="#fffefa" font-family="Newsreader" font-size="13" text-anchor="end">Throughput Target</text>
+<rect x="200" y="75" width="360" height="34" rx="3" fill="rgba(255,255,255,0.06)"/>
+<rect x="200" y="75" width="280" height="34" rx="3" fill="rgba(255,255,255,0.1)"/>
+<rect x="200" y="84" width="302.4" height="16" fill="#d4af37" rx="2"/>
+<line x1="545.5999999999999" y1="71" x2="545.5999999999999" y2="113" stroke="#00e5ff" stroke-width="3"/>
+<text x="180" y="168" fill="#fffefa" font-family="Newsreader" font-size="13" text-anchor="end">Operating Margin</text>
+<rect x="200" y="150" width="360" height="34" rx="3" fill="rgba(255,255,255,0.06)"/>
+<rect x="200" y="150" width="280" height="34" rx="3" fill="rgba(255,255,255,0.1)"/>
+<rect x="200" y="159" width="262.4" height="16" fill="#d4af37" rx="2"/>
+<line x1="488.0" y1="146" x2="488.0" y2="188" stroke="#00e5ff" stroke-width="3"/>
+<text x="180" y="243" fill="#fffefa" font-family="Newsreader" font-size="13" text-anchor="end">Retention Rate</text>
+<rect x="200" y="225" width="360" height="34" rx="3" fill="rgba(255,255,255,0.06)"/>
+<rect x="200" y="225" width="280" height="34" rx="3" fill="rgba(255,255,255,0.1)"/>
+<rect x="200" y="234" width="300.79999999999995" height="16" fill="#d4af37" rx="2"/>
+<line x1="504.0" y1="221" x2="504.0" y2="263" stroke="#00e5ff" stroke-width="3"/>
+<text x="180" y="318" fill="#fffefa" font-family="Newsreader" font-size="13" text-anchor="end">Sprint Velocity</text>
+<rect x="200" y="300" width="360" height="34" rx="3" fill="rgba(255,255,255,0.06)"/>
+<rect x="200" y="300" width="280" height="34" rx="3" fill="rgba(255,255,255,0.1)"/>
+<rect x="200" y="309" width="118.80000000000001" height="16" fill="#d4af37" rx="2"/>
+<line x1="308.0" y1="296" x2="308.0" y2="338" stroke="#00e5ff" stroke-width="3"/></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Wavesurfer.js 7.7 pipeline executing in the Interactive Audio Waveform Visualizer, Waterfall Spectrograms & Regions domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>// Benchmark: 1-hour audio file waveform rendering at 120 FPS
+// WebGL Shaders: 1.8 ms frame render time
+// 2D Canvas:    14.2 ms frame render time
+// GPU Memory:   4.2 MB VRAM buffer</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">WebGL Render</span>
+          <span class="val">1.8 ms</span>
+          <span class="sub">Instanced GPU Pipeline</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">2D Canvas Render</span>
+          <span class="val">14.2 ms</span>
+          <span class="sub">CPU Path Drawing</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">FPS Maintained</span>
+          <span class="val">120 FPS</span>
+          <span class="sub">Smooth Zoom/Pan</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">VRAM Used</span>
+          <span class="val">4.2 MB</span>
+          <span class="sub">Float32 Vertex Buffer</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+    </div>
+  </div>
+
+  <!-- Reveal.js Engine Initialization -->
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      controls: true,
+      progress: true,
+      center: false,
+      transition: 'fade',
+      width: 1440,
+      height: 900,
+      margin: 0.04
+    });
+    Reveal.on('slidechanged', function(event) {
+      window.dispatchEvent(new Event('resize'));
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Go Cloud-Native & Concurrent Systems Ecosystem - Executive Demonstration Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --accent: #00add8;
+      --accent-glow: rgba(0, 173, 216, 0.4);
+      --bg-dark: #080a0f;
+      --bg-card: #0f141f;
+      --bg-card-hover: #161e2e;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(0, 173, 216, 0.35);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-glow), transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 80%, rgba(255, 255, 255, 0.02), transparent 100%);
+    }
+
+    /* TOP GLOBAL NAVBAR */
+    .global-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(8, 10, 15, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-badge {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      list-style: none;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .nav-link:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-color);
+    }
+
+    .nav-link.active {
+      color: #fff;
+      background: rgba(0, 173, 216, 0.15);
+      border-color: var(--border-accent);
+    }
+
+    /* HERO SECTION */
+    .hero {
+      padding: 4rem 2.5rem 2.5rem 2.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .hero-pre {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .hero-pre::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      max-width: 860px;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    /* STATS STRIP */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-val {
+      font-size: 1.8rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: #fff;
+    }
+
+    .stat-lbl {
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    /* SEARCH / FILTER BAR */
+    .filter-bar {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .search-input {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    /* PACKAGE GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 1.75rem;
+      margin-bottom: 4rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-accent);
+      background: var(--bg-card-hover);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--accent-glow);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.85rem;
+    }
+
+    .card-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    .card-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(0, 173, 216, 0.12);
+      border: 1px solid rgba(0, 173, 216, 0.25);
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+    }
+
+    .card-paradigm {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .card-desc {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+      flex: 1;
+    }
+
+    .card-math {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      padding: 0.65rem 0.85rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.82rem;
+      overflow-x: auto;
+    }
+
+    .card-usecase {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .card-usecase strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      flex: 1;
+      text-align: center;
+      text-decoration: none;
+      padding: 0.7rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary:hover {
+      background: #fff;
+      color: #000;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border-color);
+      padding: 2rem 2.5rem;
+      background: rgba(8, 10, 15, 0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- GLOBAL NAVIGATION -->
+  <nav class="global-nav">
+    <div class="nav-brand">
+      <span class="nav-badge">Go / Goroutines / Microservices</span>
+      <span>Visualization Suite</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="../R%20Visualization/index.html" class="nav-link ">R</a></li>
+      <li><a href="../Julia%20Visualization/index.html" class="nav-link ">Julia</a></li>
+      <li><a href="../Rust%20VIsualization/index.html" class="nav-link ">Rust</a></li>
+      <li><a href="../Go%20Visualization/index.html" class="nav-link active">Go</a></li>
+      <li><a href="../C%20Plus%20Plus%20Visualization/index.html" class="nav-link ">C++</a></li>
+      <li><a href="../C%20Visualization/index.html" class="nav-link ">C</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <div class="hero">
+    <div class="hero-pre">Go / Goroutines / Microservices Enterprise Demonstrations</div>
+    <h1>Go Cloud-Native & Concurrent Systems Ecosystem</h1>
+    <p>Goroutine concurrency, high-throughput microservices, zero-dependency SVG streaming, and cross-platform native vector drivers.</p>
+
+    <!-- METRICS STRIP -->
+    <div class="stats-strip">
+      <div class="stat-card">
+        <div class="stat-val">8</div>
+        <div class="stat-lbl">Production Packages</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">100%</div>
+        <div class="stat-lbl">Interactive Web Studios</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">0</div>
+        <div class="stat-lbl">External Slide Frameworks</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">Native</div>
+        <div class="stat-lbl">Code, Math & Architecture</div>
+      </div>
+    </div>
+
+    <!-- FILTER / SEARCH BAR -->
+    <div class="filter-bar">
+      <input type="text" id="filterInput" class="search-input" placeholder="Filter packages by algorithm, name, math model, or enterprise application..." onkeyup="filterCards()">
+    </div>
+
+    <!-- PACKAGE GRID -->
+    <div class="grid" id="pkgGrid">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">go-echarts</h2>
+          <span class="card-tag">go-echarts</span>
+        </div>
+        <div class="card-paradigm">High-Throughput Microservice Dashboard Generator</div>
+        <p class="card-desc">Clean idiomatic Go generator for Apache ECharts, outputting standalone HTML/JS visualizations with zero CGO dependencies.</p>
+        <div class="card-math">$$\text{Throughput} = \frac{\sum_{i=1}^M \text{Requests}_i}{\Delta t}, \quad \text{ConcurrentRoutines} \le 100{,}000$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Kubernetes cluster pod metrics visualization, multi-tenant API gateway traffic monitor.</div>
+        <div class="card-actions">
+          <a href="go-echarts/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="go-echarts/go_echarts_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">gonum/plot</h2>
+          <span class="card-tag">gonum_plot</span>
+        </div>
+        <div class="card-paradigm">Scientific 2D Plotting Pipeline & Monte Carlo Walk</div>
+        <p class="card-desc">Rigorous scientific numerical visualization library from the Gonum project, featuring typed coordinate pipelines and statistical distributions.</p>
+        <div class="card-math">$$S(t) = S_0 \exp\left(\left(\mu - \frac{1}{2}\sigma^2\right)t + \sigma W_t\right)$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Quantitative algorithmic derivative pricing, risk factor sensitivity backtesting.</div>
+        <div class="card-actions">
+          <a href="gonum_plot/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="gonum_plot/gonum_plot_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Ebitengine</h2>
+          <span class="card-tag">Ebitengine</span>
+        </div>
+        <div class="card-paradigm">Hardware Blitting 2D Simulation Engine</div>
+        <p class="card-desc">Ultra-fast dead-simple 2D simulation and game engine in Go, using direct GPU texture blitting and batching at 60 FPS.</p>
+        <div class="card-math">$$\mathbf{p}_{i, t+1} = \mathbf{p}_{i, t} + \mathbf{v}_{i, t} \Delta t + \mathbf{F}_{\text{collision}}$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Autonomous warehouse robotic swarm navigation, crowd evacuation simulation.</div>
+        <div class="card-actions">
+          <a href="Ebitengine/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="Ebitengine/ebitengine_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Gio</h2>
+          <span class="card-tag">gio</span>
+        </div>
+        <div class="card-paradigm">Immediate Mode Vector GUI & Minimal Instruction Stream</div>
+        <p class="card-desc">Portable vector GUI library rendering directly to Vulkan, Metal, Direct3D, and WebAssembly with zero CGO overhead.</p>
+        <div class="card-math">$$\mathcal{I} = \{ \text{OpClipPath}, \text{OpPaint}, \text{OpTransform} \}_{n=1}^N$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Embedded industrial control panels, cross-platform crypto hardware wallet UI.</div>
+        <div class="card-actions">
+          <a href="gio/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="gio/gio_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">svgo</h2>
+          <span class="card-tag">svgo</span>
+        </div>
+        <div class="card-paradigm">Scalable Vector Graphics XML Streaming Engine</div>
+        <p class="card-desc">High-speed SVG streaming engine generating architectural system topologies and circuit layouts directly to io.Writer streams.</p>
+        <div class="card-math">$$\text{XML}_{\text{Stream}} \leftarrow \prod_{k=1}^K \langle \text{polygon points}=\dots \text{fill}=\dots \rangle$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Automated enterprise microservice topology diagrams, CI/CD pipeline dependency maps.</div>
+        <div class="card-actions">
+          <a href="svgo/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="svgo/svgo_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">go-chart</h2>
+          <span class="card-tag">chart</span>
+        </div>
+        <div class="card-paradigm">Zero-Dependency Statistical Time-Series Engine</div>
+        <p class="card-desc">Pure Go charting library with continuous series smoothing, moving averages, and secondary axis rendering.</p>
+        <div class="card-math">$$\text{SMA}_k(t) = \frac{1}{k} \sum_{i=0}^{k-1} P(t-i), \quad \text{EMA}(t) = \alpha P(t) + (1-\alpha)\text{EMA}(t-1)$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Serverless AWS Lambda telemetry charts, automated email alert PDF visualizer.</div>
+        <div class="card-actions">
+          <a href="chart/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="chart/chart_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">go-graphviz</h2>
+          <span class="card-tag">go-graphviz</span>
+        </div>
+        <div class="card-paradigm">Dependency Graph Sugiyama Layered Layout</div>
+        <p class="card-desc">High-performance Graphviz bindings in Go with automatic cycle breaking, rank assignment, and crossing minimization.</p>
+        <div class="card-math">$$\min_{\text{crossings}} \sum_{(u,v), (x,y) \in E} \mathbb{I}(\text{cross}(uv, xy))$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Database schema migration dependency resolver, distributed tracing span graphs.</div>
+        <div class="card-actions">
+          <a href="go-graphviz/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="go-graphviz/go_graphviz_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">fyne</h2>
+          <span class="card-tag">fyne</span>
+        </div>
+        <div class="card-paradigm">Cross-Platform Material Design GUI & Live Monitoring</div>
+        <p class="card-desc">Modern retained-mode desktop and mobile UI toolkit built entirely in Go using OpenGL hardware drivers and responsive layouts.</p>
+        <div class="card-math">$$\text{Layout}(\text{Widget}) = \text{MeasureMinSize}() \times \text{ContainerScalingPolicy}$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Enterprise IT operations dashboard, edge gateway diagnostic utility.</div>
+        <div class="card-actions">
+          <a href="fyne/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="fyne/fyne_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>Executive Visualization Demonstration Portfolio &bull; 6 Language Implementations</div>
+    <div>Bespoke Pure-Code Interactive Engineering &bull; Fully Standalone HTML</div>
+  </footer>
+
+  <script>
+    function filterCards() {
+      const query = document.getElementById('filterInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        if (text.includes(query)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

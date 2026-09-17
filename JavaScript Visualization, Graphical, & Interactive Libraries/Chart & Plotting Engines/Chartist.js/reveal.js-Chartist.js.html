@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chartist.js | Mobile App Performance, Telemetry & UX Metrics | Visualization Masterclass</title>
+  <meta name="description" content="10 Advanced Visualization Paradigms engineered with Chartist.js - Mobile App Performance, Telemetry & UX Metrics">
+  
+  <!-- Typography Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Reveal.js Core Stylesheet with Local & CDN Fallback -->
+  <link rel="stylesheet" href="../../../../vendor/reveal.min.css" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css'">
+  <link rel="stylesheet" href="../../../../css/viz-deck.css">
+
+  <style>
+    
+:root {
+  --viz-dark-obsidian: #040805;
+  --viz-gold-bright: #f3cf65;
+  --viz-gold-deep: #b5935b;
+  --viz-neon-emerald: #00e676;
+  --viz-neon-cyan: #00e5ff;
+  --viz-crimson: #ff1744;
+  --viz-magenta: #d500f9;
+  --viz-text-light: #fffefa;
+  --viz-text-muted: #c5a880;
+  --viz-card-bg: rgba(14, 24, 19, 0.85);
+  --viz-card-border: rgba(212, 175, 55, 0.28);
+  --font-heading: 'Newsreader', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body, .reveal {
+  background-color: var(--viz-dark-obsidian) !important;
+  color: var(--viz-text-light);
+  font-family: var(--font-body);
+}
+
+.reveal .slides section {
+  text-align: left;
+  padding: 12px 30px;
+  height: 100%;
+}
+
+.deck-nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  background: rgba(4, 8, 5, 0.95);
+  border-bottom: 1px solid var(--viz-card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+}
+
+.deck-nav-bar a {
+  color: var(--viz-gold-bright);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deck-nav-bar a:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+
+.deck-footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 38px;
+  background: rgba(4, 8, 5, 0.95);
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  z-index: 1000;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--viz-text-muted);
+  box-sizing: border-box;
+}
+
+.slide-tag {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--viz-gold-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  display: inline-block;
+  margin-bottom: 2px;
+}
+
+.slide-headline {
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+  font-weight: 500;
+  color: #fffefa;
+  margin: 0 0 2px 0;
+  line-height: 1.15;
+}
+
+.slide-headline span {
+  color: var(--viz-gold-bright);
+  font-style: italic;
+}
+
+.slide-subtitle {
+  font-size: 0.88rem;
+  color: var(--viz-text-muted);
+  margin: 0 0 8px 0;
+  max-width: 95%;
+  line-height: 1.35;
+}
+
+.tech-badge {
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid var(--viz-gold-deep);
+  color: var(--viz-gold-bright);
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.viz-stage-split {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+  height: calc(100vh - 170px);
+  min-height: 520px;
+}
+
+.viz-canvas-container {
+  background: #020503;
+  border: 1px solid var(--viz-card-border);
+  border-radius: 8px;
+  padding: 12px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+.viz-info-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.spec-card {
+  background: var(--viz-card-bg);
+  border: 1px solid var(--viz-card-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.spec-card h4 {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--viz-gold-bright);
+  margin: 0 0 6px 0;
+}
+
+.spec-card p {
+  font-size: 0.82rem;
+  color: #ddd;
+  line-height: 1.45;
+  margin: 0 0 8px 0;
+}
+
+.code-box {
+  background: #050806;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #f3cf65;
+  overflow-x: auto;
+  line-height: 1.4;
+  max-height: 180px;
+}
+.code-box pre {
+  margin: 0;
+}
+
+.metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.metric-pill {
+  background: rgba(20, 32, 26, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 6px;
+  padding: 6px 8px;
+  text-align: center;
+}
+.metric-pill .lbl {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--viz-text-muted);
+  text-transform: uppercase;
+}
+.metric-pill .val {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--viz-gold-bright);
+}
+.metric-pill .sub {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--viz-neon-emerald);
+}
+
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+</head>
+<body>
+
+  <!-- PERSISTENT TOP NAVIGATION -->
+  <div class="deck-nav-bar">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="../../../../index.html">
+        <span aria-hidden="true">&larr;</span> <strong>Visualization Portfolio Hub</strong>
+      </a>
+      <span style="opacity: 0.35;">|</span>
+      <span style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--viz-gold-bright);">Gion Kunz</span>
+      <span style="opacity: 0.35;">|</span>
+      <span style="color: #fffefa; font-weight: 500; font-family: var(--font-heading); font-size: 1.15rem;">Chartist.js: Mobile App Performance, Telemetry & UX Metrics</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="tech-badge">Chartist 1.3</span>
+      <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--viz-text-muted);">10 Distinct Slides</span>
+    </div>
+  </div>
+
+  <!-- PERSISTENT FOOTER BAR -->
+  <div class="deck-footer-bar">
+    <span><strong>Demostration of Visualization Software</strong> &bull; Chartist.js Domain Showcase</span>
+    <span>Use <strong>Space / Arrows</strong> to Navigate &bull; Press <strong>F</strong> for Fullscreen &bull; <strong>O</strong> for Overview</span>
+  </div>
+
+  <div class="reveal">
+    <div class="slides">
+      
+      <!-- SLIDE 01: App Cold Launch Time Spline: P50, P90, P99 Startup Milliseconds -->
+      <section id="s01-spline" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">01 / Startup Latency</span>
+            <h2 class="slide-headline">App Cold Launch Time Spline: <span> P50, P90, P99 Startup Milliseconds</span></h2>
+            <p class="slide-subtitle">Mobile application cold-boot latency curves tracing framework initialization, DI graph, and first paint.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Chartist 1.3</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Chartistjs-s01-spline-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s01-spline-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s01-spline-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Chartistjs-s01-spline-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="60" y1="70" x2="580" y2="70" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="130" x2="580" y2="130" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="190" x2="580" y2="190" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="250" x2="580" y2="250" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<line x1="60" y1="310" x2="580" y2="310" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+<polygon points="70,260 130,235 190,205 250,165 310,120 370,85 430,60 490,40 550,25 550,135 490,150 430,180 370,195 310,220 250,255 190,275 130,285 70,300" fill="rgba(0, 229, 255, 0.12)" stroke="rgba(0, 229, 255, 0.3)" stroke-dasharray="2,2"/>
+<path d="M 70 280 Q 70 280, 100.0 270.0 Q 130 260, 160.0 250.0 Q 190 240, 220.0 225.0 Q 250 210, 280.0 190.0 Q 310 170, 340.0 155.0 Q 370 140, 400.0 130.0 Q 430 120, 460.0 107.5 Q 490 95, 520.0 87.5 T 550 80" fill="none" stroke="#d4af37" stroke-width="3" filter="url(#g-Chartistjs-s01-spline-glow)"/>
+<circle cx="70" cy="280" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="130" cy="260" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="190" cy="240" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="250" cy="210" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="310" cy="170" r="5" fill="#f3cf65" stroke="#fff" stroke-width="1.5"/>
+<circle cx="370" cy="140" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<circle cx="430" cy="120" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<circle cx="490" cy="95" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<circle cx="550" cy="80" r="5" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<line x1="310" y1="50" x2="310" y2="330" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="4,4"/>
+<text x="316" y="65" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">Forecast Horizon T+1</text>
+<rect x="70" y="360" width="12" height="12" fill="#d4af37"/>
+<text x="90" y="370" fill="#fff" font-family="JetBrains Mono" font-size="10">Kalman Filtered Actual</text>
+<rect x="250" y="360" width="12" height="12" fill="rgba(0, 229, 255, 0.4)"/>
+<text x="270" y="370" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">95% Bayesian Confidence Corridor</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Chartist 1.3 pipeline executing in the Mobile App Performance, Telemetry & UX Metrics domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>new Chartist.Line(dom, {
+  labels: releases, series: [p50, p90, p99]
+}, { low: 0, showArea: true });</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">83.5k</span>
+          <span class="sub">Events/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">0.92 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 02: Frame Rate Drop Frequency: 60fps Smooth vs Jank Frame Funnel -->
+      <section id="s02-funnel" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">02 / UI Stutter (Jank)</span>
+            <h2 class="slide-headline">Frame Rate Drop Frequency: <span> 60fps Smooth vs Jank Frame Funnel</span></h2>
+            <p class="slide-subtitle">UI rendering pipeline funnel tracking smooth 16.6ms frames, skipped vsync pulses, and severe ANR pauses.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Chartist 1.3</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Chartistjs-s02-funnel-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s02-funnel-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s02-funnel-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Chartistjs-s02-funnel-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<polygon points="70.0,70 570.0,70 540.0,118 100.0,118" fill="#d4af37" fill-opacity="0.55" stroke="#050806" stroke-width="1.5"/>
+<text x="320" y="98" fill="#fffefa" font-family="Newsreader" font-size="13" font-weight="600" text-anchor="middle">Total Ingestion</text>
+<text x="586.0" y="94" fill="#d4af37" font-family="JetBrains Mono" font-size="10">1,250,000 (100%)</text>
+<polygon points="100.0,126 540.0,126 500.0,174 140.0,174" fill="#00e5ff" fill-opacity="0.55" stroke="#050806" stroke-width="1.5"/>
+<text x="320" y="154" fill="#fffefa" font-family="Newsreader" font-size="13" font-weight="600" text-anchor="middle">Syntactic Parsing</text>
+<text x="556.0" y="150" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">880,000 (70.4%)</text>
+<polygon points="140.0,182 500.0,182 455.0,230 185.0,230" fill="#00e676" fill-opacity="0.55" stroke="#050806" stroke-width="1.5"/>
+<text x="320" y="210" fill="#fffefa" font-family="Newsreader" font-size="13" font-weight="600" text-anchor="middle">Entity Enrichment</text>
+<text x="516.0" y="206" fill="#00e676" font-family="JetBrains Mono" font-size="10">540,000 (43.2%)</text>
+<polygon points="185.0,238 455.0,238 410.0,286 230.0,286" fill="#ff9100" fill-opacity="0.55" stroke="#050806" stroke-width="1.5"/>
+<text x="320" y="266" fill="#fffefa" font-family="Newsreader" font-size="13" font-weight="600" text-anchor="middle">High-Risk Flagged</text>
+<text x="471.0" y="262" fill="#ff9100" font-family="JetBrains Mono" font-size="10">180,000 (14.4%)</text>
+<polygon points="230.0,294 410.0,294 375.0,342 265.0,342" fill="#ff1744" fill-opacity="0.55" stroke="#050806" stroke-width="1.5"/>
+<text x="320" y="322" fill="#fffefa" font-family="Newsreader" font-size="13" font-weight="600" text-anchor="middle">Compliance Escrow</text>
+<text x="426.0" y="318" fill="#ff1744" font-family="JetBrains Mono" font-size="10">45,000 (3.6%)</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Chartist 1.3 pipeline executing in the Mobile App Performance, Telemetry & UX Metrics domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>new Chartist.Bar(dom, {
+  labels: stages, series: [frameVolumes]
+}, { distributeSeries: true });</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">92.0k</span>
+          <span class="sub">Events/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.04 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 03: Component Energy Drain: GPS, Camera, ML & Network Radios -->
+      <section id="s03-doughnut" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">03 / Battery Consumption</span>
+            <h2 class="slide-headline">Component Energy Drain: <span> GPS, Camera, ML & Network Radios</span></h2>
+            <p class="slide-subtitle">Proportional battery milliamp-hour drain with central runtime impact metric.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Chartist 1.3</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Chartistjs-s03-doughnut-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s03-doughnut-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s03-doughnut-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Chartistjs-s03-doughnut-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<path d="M 365.0 210.0 L 420.0 210.0 A 140 140 0 0 1 209.32154535601995 330.84931133084234 L 237.0880811090121 283.3727961651543 A 85 85 0 0 0 365.0 210.0 Z" fill="#d4af37" stroke="#050a07" stroke-width="2"/>
+<polyline points="355.6,341.8 372.1,370.5" fill="none" stroke="#d4af37" stroke-width="1.5"/>
+<text x="378.1" y="374.5" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="start">Enterprise SaaS (38.5%)</text>
+<path d="M 233.47459843417698 281.1363972178723 L 203.36992683276208 327.1658307117897 A 140 140 0 0 1 169.26452033198166 124.33989526801935 L 212.76774448727457 157.9920792698689 A 85 85 0 0 0 233.47459843417698 281.1363972178723 Z" fill="#00e5ff" stroke="#050a07" stroke-width="2"/>
+<polyline points="130.1,235.2 97.6,240.7" fill="none" stroke="#00e5ff" stroke-width="1.5"/>
+<text x="91.6" y="244.7" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="end">Fintech Infra (26.2%)</text>
+<path d="M 215.45107997331183 154.69686334946078 L 173.6841317207489 118.91248081087657 A 140 140 0 0 1 332.9168839798172 80.38594447411745 L 312.1281081306033 131.30575200214275 A 85 85 0 0 0 215.45107997331183 154.69686334946078 Z" fill="#00e676" stroke="#050a07" stroke-width="2"/>
+<polyline points="244.3,62.3 236.5,30.2" fill="none" stroke="#00e676" stroke-width="1.5"/>
+<text x="230.5" y="34.2" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="end">Edge Telemetry (20.1%)</text>
+<path d="M 316.0210295027514 133.00983547516012 L 339.3287544751199 83.19267019438138 A 140 140 0 0 1 419.7206261528047 201.1599418854742 L 364.83038016420284 204.6328218590379 A 85 85 0 0 0 316.0210295027514 133.00983547516012 Z" fill="#d500f9" stroke="#050a07" stroke-width="2"/>
+<polyline points="405.6,124.4 432.9,105.8" fill="none" stroke="#d500f9" stroke-width="1.5"/>
+<text x="438.9" y="109.8" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="start">Cyber Sec (15.2%)</text>
+<circle cx="280" cy="210" r="83" fill="#040805"/>
+<text x="280" y="202" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="middle">TOTAL RUN-RATE</text>
+<text x="280" y="224" fill="#d4af37" font-family="JetBrains Mono" font-size="17" font-weight="700" text-anchor="middle">$1.42 B</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Chartist 1.3 pipeline executing in the Mobile App Performance, Telemetry & UX Metrics domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>new Chartist.Pie(dom, {
+  series: [35, 25, 20, 20]
+}, { donut: true, donutWidth: 40 });</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">100.5k</span>
+          <span class="sub">Events/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.16 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 04: Mobile OS Fragmentation Waffle: 100-Unit Version Installed Base -->
+      <section id="s04-waffle" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">04 / Device Ecosystem</span>
+            <h2 class="slide-headline">Mobile OS Fragmentation Waffle: <span> 100-Unit Version Installed Base</span></h2>
+            <p class="slide-subtitle">100-cell square matrix displaying active user distribution across iOS 18, iOS 17, Android 15, and Android 14.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Chartist 1.3</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Chartistjs-s04-waffle-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s04-waffle-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s04-waffle-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Chartistjs-s04-waffle-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<rect x="80" y="60" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="106" y="60" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="132" y="60" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="158" y="60" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="184" y="60" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="210" y="60" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="236" y="60" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="262" y="60" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="288" y="60" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="314" y="60" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="80" y="86" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="106" y="86" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="132" y="86" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="158" y="86" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="184" y="86" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="210" y="86" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="236" y="86" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="262" y="86" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="288" y="86" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="314" y="86" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="80" y="112" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="106" y="112" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="132" y="112" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="158" y="112" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="184" y="112" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="210" y="112" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="236" y="112" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="262" y="112" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="288" y="112" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="314" y="112" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="80" y="138" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="106" y="138" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="132" y="138" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="158" y="138" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="184" y="138" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="210" y="138" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="236" y="138" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="262" y="138" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="288" y="138" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="314" y="138" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="80" y="164" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="106" y="164" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="132" y="164" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="158" y="164" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="184" y="164" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="210" y="164" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="236" y="164" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="262" y="164" width="22" height="22" rx="4" fill="#d4af37" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="288" y="164" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="314" y="164" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="80" y="190" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="106" y="190" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="132" y="190" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="158" y="190" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="184" y="190" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="210" y="190" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="236" y="190" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="262" y="190" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="288" y="190" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="314" y="190" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="80" y="216" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="106" y="216" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="132" y="216" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="158" y="216" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="184" y="216" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="210" y="216" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="236" y="216" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="262" y="216" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="288" y="216" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="314" y="216" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="80" y="242" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="106" y="242" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="132" y="242" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="158" y="242" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="184" y="242" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="210" y="242" width="22" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="236" y="242" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="262" y="242" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="288" y="242" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="314" y="242" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="80" y="268" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="106" y="268" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="132" y="268" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="158" y="268" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="184" y="268" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="210" y="268" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="236" y="268" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="262" y="268" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="288" y="268" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="314" y="268" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="80" y="294" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="106" y="294" width="22" height="22" rx="4" fill="#00e676" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="132" y="294" width="22" height="22" rx="4" fill="#d500f9" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="158" y="294" width="22" height="22" rx="4" fill="#d500f9" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="184" y="294" width="22" height="22" rx="4" fill="#d500f9" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="210" y="294" width="22" height="22" rx="4" fill="#d500f9" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="236" y="294" width="22" height="22" rx="4" fill="#d500f9" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="262" y="294" width="22" height="22" rx="4" fill="#d500f9" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="288" y="294" width="22" height="22" rx="4" fill="#d500f9" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<rect x="314" y="294" width="22" height="22" rx="4" fill="#d500f9" fill-opacity="0.85" stroke="#050a07" stroke-width="1.5"/>
+<text x="380" y="80" fill="#fffefa" font-family="Newsreader" font-size="18" font-weight="600">Subscriber Composition</text>
+<text x="380" y="100" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="10">100 UNITS = 100% POPULATION</text>
+<rect x="380" y="135" width="16" height="16" rx="3" fill="#d4af37"/>
+<text x="406" y="148" fill="#fffefa" font-family="Newsreader" font-size="14">Enterprise Tier</text>
+<text x="560" y="148" fill="#d4af37" font-family="JetBrains Mono" font-size="13" font-weight="700" text-anchor="end">48%</text>
+<rect x="380" y="180" width="16" height="16" rx="3" fill="#00e5ff"/>
+<text x="406" y="193" fill="#fffefa" font-family="Newsreader" font-size="14">Pro Growth</text>
+<text x="560" y="193" fill="#00e5ff" font-family="JetBrains Mono" font-size="13" font-weight="700" text-anchor="end">28%</text>
+<rect x="380" y="225" width="16" height="16" rx="3" fill="#00e676"/>
+<text x="406" y="238" fill="#fffefa" font-family="Newsreader" font-size="14">Mid-Market</text>
+<text x="560" y="238" fill="#00e676" font-family="JetBrains Mono" font-size="13" font-weight="700" text-anchor="end">16%</text>
+<rect x="380" y="270" width="16" height="16" rx="3" fill="#d500f9"/>
+<text x="406" y="283" fill="#fffefa" font-family="Newsreader" font-size="14">Developer Free</text>
+<text x="560" y="283" fill="#d500f9" font-family="JetBrains Mono" font-size="13" font-weight="700" text-anchor="end">8%</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Chartist 1.3 pipeline executing in the Mobile App Performance, Telemetry & UX Metrics domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>new Chartist.Pie(dom, {
+  series: [48, 28, 16, 8]
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">109.0k</span>
+          <span class="sub">Events/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.28 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 05: Heap Memory Allocation Waterfall: Native Heap to GC Reclamation -->
+      <section id="s05-waterfall" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">05 / Memory Footprint</span>
+            <h2 class="slide-headline">Heap Memory Allocation Waterfall: <span> Native Heap to GC Reclamation</span></h2>
+            <p class="slide-subtitle">Step-wise RAM consumption: Bitmap cache allocation, native allocations, leak retainers, and GC reclamation.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Chartist 1.3</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Chartistjs-s05-waterfall-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s05-waterfall-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s05-waterfall-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Chartistjs-s05-waterfall-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="50" y1="320" x2="590" y2="320" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+<rect x="65" y="86.0" width="44" height="234.0" fill="#d4af37" fill-opacity="0.8" rx="3" stroke="#fff" stroke-width="1"/>
+<text x="87.0" y="78.0" fill="#d4af37" font-family="JetBrains Mono" font-size="9" text-anchor="middle">+$180M</text>
+<text x="87.0" y="342" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="middle">Gross Rev</text>
+<line x1="109" y1="86.0" x2="130" y2="86.0" stroke="rgba(212,175,55,0.4)" stroke-dasharray="2,2"/>
+<rect x="130" y="86.0" width="44" height="71.5" fill="#ff1744" fill-opacity="0.8" rx="3" stroke="#fff" stroke-width="1"/>
+<text x="152.0" y="78.0" fill="#ff1744" font-family="JetBrains Mono" font-size="9" text-anchor="middle">-$55M</text>
+<text x="152.0" y="342" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="middle">COGS</text>
+<line x1="174" y1="157.5" x2="195" y2="157.5" stroke="rgba(212,175,55,0.4)" stroke-dasharray="2,2"/>
+<rect x="195" y="157.5" width="44" height="58.5" fill="#ff1744" fill-opacity="0.8" rx="3" stroke="#fff" stroke-width="1"/>
+<text x="217.0" y="149.5" fill="#ff1744" font-family="JetBrains Mono" font-size="9" text-anchor="middle">-$45M</text>
+<text x="217.0" y="342" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="middle">R&D</text>
+<line x1="239" y1="216.0" x2="260" y2="216.0" stroke="rgba(212,175,55,0.4)" stroke-dasharray="2,2"/>
+<rect x="260" y="216.0" width="44" height="39.0" fill="#ff1744" fill-opacity="0.8" rx="3" stroke="#fff" stroke-width="1"/>
+<text x="282.0" y="208.0" fill="#ff1744" font-family="JetBrains Mono" font-size="9" text-anchor="middle">-$30M</text>
+<text x="282.0" y="342" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="middle">SG&A</text>
+<line x1="304" y1="255.0" x2="325" y2="255.0" stroke="rgba(212,175,55,0.4)" stroke-dasharray="2,2"/>
+<rect x="325" y="196.5" width="44" height="58.5" fill="#00e676" fill-opacity="0.8" rx="3" stroke="#fff" stroke-width="1"/>
+<text x="347.0" y="188.5" fill="#00e676" font-family="JetBrains Mono" font-size="9" text-anchor="middle">+$45M</text>
+<text x="347.0" y="342" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="middle">SaaS Expansion</text>
+<line x1="369" y1="196.5" x2="390" y2="196.5" stroke="rgba(212,175,55,0.4)" stroke-dasharray="2,2"/>
+<rect x="390" y="164.0" width="44" height="32.5" fill="#00e676" fill-opacity="0.8" rx="3" stroke="#fff" stroke-width="1"/>
+<text x="412.0" y="156.0" fill="#00e676" font-family="JetBrains Mono" font-size="9" text-anchor="middle">+$25M</text>
+<text x="412.0" y="342" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="middle">Services</text>
+<line x1="434" y1="164.0" x2="455" y2="164.0" stroke="rgba(212,175,55,0.4)" stroke-dasharray="2,2"/>
+<rect x="455" y="164.0" width="44" height="26.0" fill="#ff1744" fill-opacity="0.8" rx="3" stroke="#fff" stroke-width="1"/>
+<text x="477.0" y="156.0" fill="#ff1744" font-family="JetBrains Mono" font-size="9" text-anchor="middle">-$20M</text>
+<text x="477.0" y="342" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="middle">Taxes</text>
+<rect x="520" y="190.0" width="44" height="130.0" fill="#00e5ff" fill-opacity="0.8" rx="3" stroke="#fff" stroke-width="1"/>
+<text x="542.0" y="182.0" fill="#00e5ff" font-family="JetBrains Mono" font-size="9" text-anchor="middle">$100M EBITDA</text>
+<text x="542.0" y="342" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="middle">Net Cashflow</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Chartist 1.3 pipeline executing in the Mobile App Performance, Telemetry & UX Metrics domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>new Chartist.Bar(dom, {
+  labels: memSteps, series: [memDeltas]
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">117.5k</span>
+          <span class="sub">Events/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.40 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 06: User Session Length Bubble Matrix: Duration vs Feature Adoption -->
+      <section id="s06-bubble" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">06 / User Engagement</span>
+            <h2 class="slide-headline">User Session Length Bubble Matrix: <span> Duration vs Feature Adoption</span></h2>
+            <p class="slide-subtitle">Bivariate user engagement map plotting session length, screen depth, and lifetime in-app revenue.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Chartist 1.3</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Chartistjs-s06-bubble-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s06-bubble-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s06-bubble-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Chartistjs-s06-bubble-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="320" y1="50" x2="320" y2="350" stroke="rgba(212,175,55,0.4)" stroke-width="1.5"/>
+<line x1="60" y1="200" x2="580" y2="200" stroke="rgba(212,175,55,0.4)" stroke-width="1.5"/>
+<text x="560" y="70" fill="rgba(0,230,118,0.7)" font-family="Newsreader" font-size="13" text-anchor="end">High Growth / High Margin</text>
+<text x="80" y="70" fill="rgba(0,229,255,0.7)" font-family="Newsreader" font-size="13">Incubator / Emerging</text>
+<text x="560" y="340" fill="rgba(212,175,55,0.7)" font-family="Newsreader" font-size="13" text-anchor="end">Cash Cow / Core Value</text>
+<text x="80" y="340" fill="rgba(255,23,68,0.7)" font-family="Newsreader" font-size="13">Divestment / Low Margin</text>
+<circle cx="480" cy="110" r="26" fill="#00e676" fill-opacity="0.45" stroke="#00e676" stroke-width="2"/>
+<text x="480" y="114" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Enterprise AI</text>
+<circle cx="420" cy="140" r="20" fill="#00e676" fill-opacity="0.45" stroke="#00e676" stroke-width="2"/>
+<text x="420" y="144" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Cloud Telemetry</text>
+<circle cx="500" cy="170" r="16" fill="#d4af37" fill-opacity="0.45" stroke="#d4af37" stroke-width="2"/>
+<text x="500" y="174" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Quant Execution</text>
+<circle cx="220" cy="120" r="18" fill="#00e5ff" fill-opacity="0.45" stroke="#00e5ff" stroke-width="2"/>
+<text x="220" y="124" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Edge Robotics</text>
+<circle cx="160" cy="160" r="14" fill="#00e5ff" fill-opacity="0.45" stroke="#00e5ff" stroke-width="2"/>
+<text x="160" y="164" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Bio Informatics</text>
+<circle cx="440" cy="260" r="32" fill="#d4af37" fill-opacity="0.45" stroke="#d4af37" stroke-width="2"/>
+<text x="440" y="264" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Legacy ERP Core</text>
+<circle cx="380" cy="290" r="24" fill="#d4af37" fill-opacity="0.45" stroke="#d4af37" stroke-width="2"/>
+<text x="380" y="294" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Database Fabric</text>
+<circle cx="490" cy="280" r="18" fill="#d4af37" fill-opacity="0.45" stroke="#d4af37" stroke-width="2"/>
+<text x="490" y="284" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Mainframe Ops</text>
+<circle cx="180" cy="280" r="15" fill="#ff1744" fill-opacity="0.45" stroke="#ff1744" stroke-width="2"/>
+<text x="180" y="284" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Legacy Print</text>
+<circle cx="230" cy="310" r="19" fill="#ff1744" fill-opacity="0.45" stroke="#ff1744" stroke-width="2"/>
+<text x="230" y="314" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Physical Media</text>
+<circle cx="350" cy="120" r="22" fill="#d500f9" fill-opacity="0.45" stroke="#d500f9" stroke-width="2"/>
+<text x="350" y="124" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Synthetic Bio</text>
+<circle cx="290" cy="240" r="17" fill="#ff9100" fill-opacity="0.45" stroke="#ff9100" stroke-width="2"/>
+<text x="290" y="244" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Custom Dev</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Chartist 1.3 pipeline executing in the Mobile App Performance, Telemetry & UX Metrics domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>new Chartist.Line(dom, {
+  series: [sessionBubbles]
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">126.0k</span>
+          <span class="sub">Events/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.52 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 07: Bi-Weekly Release Gantt: Feature Freeze, Beta & App Store Review -->
+      <section id="s07-gantt" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">07 / App Release Cycle</span>
+            <h2 class="slide-headline">Bi-Weekly Release Gantt: <span> Feature Freeze, Beta & App Store Review</span></h2>
+            <p class="slide-subtitle">Mobile sprint release cadence tracking automated testing, TestFlight beta distribution, and store review.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Chartist 1.3</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Chartistjs-s07-gantt-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s07-gantt-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s07-gantt-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Chartistjs-s07-gantt-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="180" y1="50" x2="180" y2="350" stroke="rgba(255,255,255,0.06)" stroke-dasharray="2,2"/>
+<text x="180" y="65" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">W1</text>
+<line x1="220" y1="50" x2="220" y2="350" stroke="rgba(255,255,255,0.06)" stroke-dasharray="2,2"/>
+<text x="220" y="65" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">W2</text>
+<line x1="260" y1="50" x2="260" y2="350" stroke="rgba(255,255,255,0.06)" stroke-dasharray="2,2"/>
+<text x="260" y="65" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">W3</text>
+<line x1="300" y1="50" x2="300" y2="350" stroke="rgba(255,255,255,0.06)" stroke-dasharray="2,2"/>
+<text x="300" y="65" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">W4</text>
+<line x1="340" y1="50" x2="340" y2="350" stroke="rgba(255,255,255,0.06)" stroke-dasharray="2,2"/>
+<text x="340" y="65" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">W5</text>
+<line x1="380" y1="50" x2="380" y2="350" stroke="rgba(255,255,255,0.06)" stroke-dasharray="2,2"/>
+<text x="380" y="65" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">W6</text>
+<line x1="420" y1="50" x2="420" y2="350" stroke="rgba(255,255,255,0.06)" stroke-dasharray="2,2"/>
+<text x="420" y="65" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">W7</text>
+<line x1="460" y1="50" x2="460" y2="350" stroke="rgba(255,255,255,0.06)" stroke-dasharray="2,2"/>
+<text x="460" y="65" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">W8</text>
+<line x1="500" y1="50" x2="500" y2="350" stroke="rgba(255,255,255,0.06)" stroke-dasharray="2,2"/>
+<text x="500" y="65" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">W9</text>
+<line x1="540" y1="50" x2="540" y2="350" stroke="rgba(255,255,255,0.06)" stroke-dasharray="2,2"/>
+<text x="540" y="65" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10" text-anchor="middle">W10</text>
+<line x1="330" y1="50" x2="330" y2="350" stroke="#00e5ff" stroke-width="2"/>
+<rect x="295" y="40" width="70" height="18" rx="2" fill="#00e5ff"/>
+<text x="330" y="53" fill="#000" font-family="JetBrains Mono" font-size="9" text-anchor="middle">TODAY</text>
+<text x="165" y="111" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Architecture Blueprint</text>
+<rect x="70" y="95" width="180" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="70" y="95" width="180.0" height="22" rx="4" fill="#d4af37" fill-opacity="0.85"/>
+<text x="260" y="110" fill="#d4af37" font-family="JetBrains Mono" font-size="10">100%</text>
+<text x="165" y="153" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Zero-Trust Security Mesh</text>
+<rect x="140" y="137" width="160" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="140" y="137" width="136.0" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85"/>
+<text x="310" y="152" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">85%</text>
+<text x="165" y="195" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Data Pipeline Ingestion</text>
+<rect x="190" y="179" width="190" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="190" y="179" width="114.0" height="22" rx="4" fill="#00e676" fill-opacity="0.85"/>
+<text x="390" y="194" fill="#00e676" font-family="JetBrains Mono" font-size="10">60%</text>
+<text x="165" y="237" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Model Training & Validation</text>
+<rect x="260" y="221" width="170" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="260" y="221" width="68.0" height="22" rx="4" fill="#d500f9" fill-opacity="0.85"/>
+<text x="440" y="236" fill="#d500f9" font-family="JetBrains Mono" font-size="10">40%</text>
+<text x="165" y="279" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Global Multi-Region Deploy</text>
+<rect x="340" y="263" width="150" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="340" y="263" width="22.5" height="22" rx="4" fill="#ff9100" fill-opacity="0.85"/>
+<text x="500" y="278" fill="#ff9100" font-family="JetBrains Mono" font-size="10">15%</text>
+<text x="165" y="321" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">SOC-2 Compliance Audit</text>
+<rect x="420" y="305" width="130" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<text x="560" y="320" fill="#ff1744" font-family="JetBrains Mono" font-size="10">0%</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Chartist 1.3 pipeline executing in the Mobile App Performance, Telemetry & UX Metrics domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>new Chartist.Bar(dom, {
+  series: [releaseWindows]
+}, { horizontalBars: true });</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">134.5k</span>
+          <span class="sub">Events/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.64 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 08: Crash-Free User Rate Bullet: 99.9% Stability Benchmark -->
+      <section id="s08-bullet" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">08 / Crash-Free Sessions</span>
+            <h2 class="slide-headline">Crash-Free User Rate Bullet: <span> 99.9% Stability Benchmark</span></h2>
+            <p class="slide-subtitle">Production stability evaluated against Google Play Vitals and App Store crash-free user thresholds.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Chartist 1.3</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Chartistjs-s08-bullet-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s08-bullet-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s08-bullet-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Chartistjs-s08-bullet-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<text x="180" y="93" fill="#fffefa" font-family="Newsreader" font-size="13" text-anchor="end">Gross Revenue Target</text>
+<text x="180" y="107" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="end">$420M / $480M Goal</text>
+<rect x="200" y="75" width="360" height="34" rx="3" fill="rgba(255,255,255,0.06)"/>
+<rect x="200" y="75" width="280" height="34" rx="3" fill="rgba(255,255,255,0.1)"/>
+<rect x="200" y="75" width="180" height="34" rx="3" fill="rgba(255,255,255,0.16)"/>
+<rect x="200" y="84" width="302.4" height="16" fill="#d4af37" rx="2"/>
+<line x1="545.5999999999999" y1="71" x2="545.5999999999999" y2="113" stroke="#00e5ff" stroke-width="3"/>
+<text x="180" y="168" fill="#fffefa" font-family="Newsreader" font-size="13" text-anchor="end">Operating Margin SLA</text>
+<text x="180" y="182" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="end">82% / 90% SLA</text>
+<rect x="200" y="150" width="360" height="34" rx="3" fill="rgba(255,255,255,0.06)"/>
+<rect x="200" y="150" width="280" height="34" rx="3" fill="rgba(255,255,255,0.1)"/>
+<rect x="200" y="150" width="180" height="34" rx="3" fill="rgba(255,255,255,0.16)"/>
+<rect x="200" y="159" width="262.4" height="16" fill="#d4af37" rx="2"/>
+<line x1="488.0" y1="146" x2="488.0" y2="188" stroke="#00e5ff" stroke-width="3"/>
+<text x="180" y="243" fill="#fffefa" font-family="Newsreader" font-size="13" text-anchor="end">Customer Retention</text>
+<text x="180" y="257" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="end">94% / 95% Benchmark</text>
+<rect x="200" y="225" width="360" height="34" rx="3" fill="rgba(255,255,255,0.06)"/>
+<rect x="200" y="225" width="280" height="34" rx="3" fill="rgba(255,255,255,0.1)"/>
+<rect x="200" y="225" width="180" height="34" rx="3" fill="rgba(255,255,255,0.16)"/>
+<rect x="200" y="234" width="300.79999999999995" height="16" fill="#d4af37" rx="2"/>
+<line x1="504.0" y1="221" x2="504.0" y2="263" stroke="#00e5ff" stroke-width="3"/>
+<text x="180" y="318" fill="#fffefa" font-family="Newsreader" font-size="13" text-anchor="end">Sprint Velocity</text>
+<text x="180" y="332" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9" text-anchor="end">165 pts / 150 Goal</text>
+<rect x="200" y="300" width="360" height="34" rx="3" fill="rgba(255,255,255,0.06)"/>
+<rect x="200" y="300" width="280" height="34" rx="3" fill="rgba(255,255,255,0.1)"/>
+<rect x="200" y="300" width="180" height="34" rx="3" fill="rgba(255,255,255,0.16)"/>
+<rect x="200" y="309" width="118.80000000000001" height="16" fill="#d4af37" rx="2"/>
+<line x1="308.0" y1="296" x2="308.0" y2="338" stroke="#00e5ff" stroke-width="3"/>
+<rect x="200" y="385" width="16" height="8" fill="#d4af37"/>
+<text x="224" y="392" fill="#d4af37" font-family="JetBrains Mono" font-size="10">Actual Progress</text>
+<line x1="350" y1="385" x2="350" y2="395" stroke="#00e5ff" stroke-width="3"/>
+<text x="365" y="392" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">Target Benchmark</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Chartist 1.3 pipeline executing in the Mobile App Performance, Telemetry & UX Metrics domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>new Chartist.Bar(dom, {
+  series: [[99.95]]
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">143.0k</span>
+          <span class="sub">Events/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.76 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 09: Feature Touchpoint Heatmap: Gestural Heat & Tap Failure Rate -->
+      <section id="s09-calendar" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">09 / UX Interaction Matrix</span>
+            <h2 class="slide-headline">Feature Touchpoint Heatmap: <span> Gestural Heat & Tap Failure Rate</span></h2>
+            <p class="slide-subtitle">Temporal touch event matrix highlighting dead taps, rage clicks, and gesture recognition failures.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Chartist 1.3</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Chartistjs-s09-calendar-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s09-calendar-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s09-calendar-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Chartistjs-s09-calendar-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<text x="70" y="70" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10">Jan</text>
+<text x="112" y="70" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10">Feb</text>
+<text x="154" y="70" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10">Mar</text>
+<text x="196" y="70" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10">Apr</text>
+<text x="238" y="70" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10">May</text>
+<text x="280" y="70" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10">Jun</text>
+<text x="322" y="70" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10">Jul</text>
+<text x="364" y="70" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10">Aug</text>
+<text x="406" y="70" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10">Sep</text>
+<text x="448" y="70" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10">Oct</text>
+<text x="490" y="70" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10">Nov</text>
+<text x="532" y="70" fill="rgba(212,175,55,0.7)" font-family="JetBrains Mono" font-size="10">Dec</text>
+<text x="42" y="105" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9">Mon</text>
+<text x="42" y="155" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9">Wed</text>
+<text x="42" y="205" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9">Fri</text>
+<rect x="70.0" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="70.0" y="115" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="70.0" y="140" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="70.0" y="165" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="70.0" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="70.0" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="70.0" y="240" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="79.8" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="79.8" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="79.8" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="79.8" y="165" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="79.8" y="190" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="79.8" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="79.8" y="240" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="89.6" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="89.6" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="89.6" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="89.6" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="89.6" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="89.6" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="89.6" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="99.4" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="99.4" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="99.4" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="99.4" y="165" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="99.4" y="190" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="99.4" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="99.4" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="109.2" y="90" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="109.2" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="109.2" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="109.2" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="109.2" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="109.2" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="109.2" y="240" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="119.0" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="119.0" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="119.0" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="119.0" y="165" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="119.0" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="119.0" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="119.0" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="128.8" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="128.8" y="115" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="128.8" y="140" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="128.8" y="165" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="128.8" y="190" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="128.8" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="128.8" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="138.6" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="138.6" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="138.6" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="138.6" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="138.6" y="190" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="138.6" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="138.6" y="240" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="148.4" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="148.4" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="148.4" y="140" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="148.4" y="165" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="148.4" y="190" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="148.4" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="148.4" y="240" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="158.2" y="90" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="158.2" y="115" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="158.2" y="140" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="158.2" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="158.2" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="158.2" y="215" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="158.2" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="168.0" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="168.0" y="115" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="168.0" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="168.0" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="168.0" y="190" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="168.0" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="168.0" y="240" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="177.8" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="177.8" y="115" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="177.8" y="140" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="177.8" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="177.8" y="190" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="177.8" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="177.8" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="187.6" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="187.6" y="115" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="187.6" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="187.6" y="165" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="187.6" y="190" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="187.6" y="215" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="187.6" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="197.4" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="197.4" y="115" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="197.4" y="140" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="197.4" y="165" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="197.4" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="197.4" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="197.4" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="207.2" y="90" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="207.2" y="115" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="207.2" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="207.2" y="165" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="207.2" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="207.2" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="207.2" y="240" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="217.0" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="217.0" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="217.0" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="217.0" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="217.0" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="217.0" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="217.0" y="240" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="226.8" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="226.8" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="226.8" y="140" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="226.8" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="226.8" y="190" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="226.8" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="226.8" y="240" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="236.6" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="236.6" y="115" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="236.6" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="236.6" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="236.6" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="236.6" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="236.6" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="246.4" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="246.4" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="246.4" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="246.4" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="246.4" y="190" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="246.4" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="246.4" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="256.2" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="256.2" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="256.2" y="140" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="256.2" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="256.2" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="256.2" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="256.2" y="240" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="266.0" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="266.0" y="115" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="266.0" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="266.0" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="266.0" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="266.0" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="266.0" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="275.8" y="90" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="275.8" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="275.8" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="275.8" y="165" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="275.8" y="190" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="275.8" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="275.8" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="285.6" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="285.6" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="285.6" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="285.6" y="165" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="285.6" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="285.6" y="215" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="285.6" y="240" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="295.4" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="295.4" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="295.4" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="295.4" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="295.4" y="190" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="295.4" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="295.4" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="305.2" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="305.2" y="115" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="305.2" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="305.2" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="305.2" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="305.2" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="305.2" y="240" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="315.0" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="315.0" y="115" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="315.0" y="140" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="315.0" y="165" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="315.0" y="190" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="315.0" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="315.0" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="324.8" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="324.8" y="115" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="324.8" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="324.8" y="165" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="324.8" y="190" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="324.8" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="324.8" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="334.6" y="90" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="334.6" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="334.6" y="140" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="334.6" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="334.6" y="190" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="334.6" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="334.6" y="240" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="344.4" y="90" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="344.4" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="344.4" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="344.4" y="165" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="344.4" y="190" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="344.4" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="344.4" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="354.2" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="354.2" y="115" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="354.2" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="354.2" y="165" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="354.2" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="354.2" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="354.2" y="240" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="364.0" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="364.0" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="364.0" y="140" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="364.0" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="364.0" y="190" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="364.0" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="364.0" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="373.8" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="373.8" y="115" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="373.8" y="140" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="373.8" y="165" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="373.8" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="373.8" y="215" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="373.8" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="383.6" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="383.6" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="383.6" y="140" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="383.6" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="383.6" y="190" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="383.6" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="383.6" y="240" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="393.4" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="393.4" y="115" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="393.4" y="140" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="393.4" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="393.4" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="393.4" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="393.4" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="403.2" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="403.2" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="403.2" y="140" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="403.2" y="165" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="403.2" y="190" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="403.2" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="403.2" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="413.0" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="413.0" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="413.0" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="413.0" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="413.0" y="190" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="413.0" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="413.0" y="240" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="422.8" y="90" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="422.8" y="115" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="422.8" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="422.8" y="165" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="422.8" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="422.8" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="422.8" y="240" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="432.6" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="432.6" y="115" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="432.6" y="140" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="432.6" y="165" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="432.6" y="190" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="432.6" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="432.6" y="240" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="442.4" y="90" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="442.4" y="115" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="442.4" y="140" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="442.4" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="442.4" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="442.4" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="442.4" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="452.2" y="90" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="452.2" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="452.2" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="452.2" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="452.2" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="452.2" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="452.2" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="462.0" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="462.0" y="115" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="462.0" y="140" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="462.0" y="165" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="462.0" y="190" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="462.0" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="462.0" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="471.8" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="471.8" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="471.8" y="140" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="471.8" y="165" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="471.8" y="190" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="471.8" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="471.8" y="240" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="481.6" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="481.6" y="115" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="481.6" y="140" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="481.6" y="165" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="481.6" y="190" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="481.6" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="481.6" y="240" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="491.4" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="491.4" y="115" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="491.4" y="140" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="491.4" y="165" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="491.4" y="190" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="491.4" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="491.4" y="240" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="501.2" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="501.2" y="115" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="501.2" y="140" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="501.2" y="165" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="501.2" y="190" width="7.8" height="18" rx="2" fill="#ff1744"/>
+<rect x="501.2" y="215" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="501.2" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="511.0" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="511.0" y="115" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="511.0" y="140" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="511.0" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="511.0" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="511.0" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="511.0" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="520.8" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="520.8" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="520.8" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="520.8" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="520.8" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="520.8" y="215" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="520.8" y="240" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="530.6" y="90" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="530.6" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="530.6" y="140" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="530.6" y="165" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="530.6" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="530.6" y="215" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="530.6" y="240" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="540.4" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="540.4" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="540.4" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="540.4" y="165" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="540.4" y="190" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="540.4" y="215" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="540.4" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="550.2" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="550.2" y="115" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="550.2" y="140" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="550.2" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="550.2" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="550.2" y="215" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="550.2" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="560.0" y="90" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="560.0" y="115" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="560.0" y="140" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="560.0" y="165" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="560.0" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="560.0" y="215" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="560.0" y="240" width="7.8" height="18" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="569.8" y="90" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="569.8" y="115" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="569.8" y="140" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="569.8" y="165" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="569.8" y="190" width="7.8" height="18" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="569.8" y="215" width="7.8" height="18" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="569.8" y="240" width="7.8" height="18" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="420" y="290" width="195" height="48" rx="4" fill="rgba(20,32,26,0.9)" stroke="#ff1744" stroke-width="1.5"/>
+<circle cx="435" cy="314" r="5" fill="#ff1744"/>
+<text x="448" y="308" fill="#fff" font-family="Newsreader" font-size="12">Anomaly Spike Detected</text>
+<text x="448" y="324" fill="#ff1744" font-family="JetBrains Mono" font-size="9">Week 42 • 482 Incidents (+340%)</text>
+<text x="70" y="310" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="10">Activity Scale:</text>
+<rect x="155" y="300" width="12" height="12" rx="2" fill="rgba(255,255,255,0.04)"/>
+<rect x="171" y="300" width="12" height="12" rx="2" fill="rgba(0, 229, 255, 0.25)"/>
+<rect x="187" y="300" width="12" height="12" rx="2" fill="rgba(0, 230, 118, 0.5)"/>
+<rect x="203" y="300" width="12" height="12" rx="2" fill="rgba(212, 175, 55, 0.75)"/>
+<rect x="219" y="300" width="12" height="12" rx="2" fill="#ff1744"/>
+<text x="245" y="310" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="9">High Density</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Chartist 1.3 pipeline executing in the Mobile App Performance, Telemetry & UX Metrics domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>new Chartist.Bar(dom, {
+  series: [touchGrid]
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">151.5k</span>
+          <span class="sub">Events/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.88 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 10: Client Disk Cache Level: Offline Storage Headroom -->
+      <section id="s10-liquid" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">10 / Network Cache Saturation</span>
+            <h2 class="slide-headline">Client Disk Cache Level: <span> Offline Storage Headroom</span></h2>
+            <p class="slide-subtitle">Local SQLite and image cache utilization monitoring automatic LRU eviction headroom.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Chartist 1.3</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Chartistjs-s10-liquid-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s10-liquid-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Chartistjs-s10-liquid-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Chartistjs-s10-liquid-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs><clipPath id="g-Chartistjs-s10-liquid-circle-clip"><circle cx="320" cy="210" r="137" /></clipPath>
+<circle cx="320" cy="210" r="140" fill="rgba(20,32,26,0.6)" stroke="#d4af37" stroke-width="3"/>
+<path d="M 160 370 L 160,228.1 L 160,228.1 L 170,234.5 L 180,240.1 L 190,244.1 L 200,245.9 L 210,245.2 L 220,242.1 L 230,237.1 L 240,230.9 L 250,224.6 L 260,219.2 L 270,215.5 L 280,214.0 L 290,215.1 L 300,218.5 L 310,223.8 L 320,230.0 L 330,236.2 L 340,241.5 L 350,244.9 L 360,246.0 L 370,244.5 L 380,240.8 L 390,235.4 L 400,229.1 L 410,222.9 L 420,217.9 L 430,214.8 L 440,214.1 L 450,215.9 L 460,219.9 L 470,225.5 L 480,231.9 L 480 370 Z" fill="url(#g-Chartistjs-s10-liquid-sec)" clip-path="url(#g-Chartistjs-s10-liquid-circle-clip)" opacity="0.6"/>
+<path d="M 160 370 L 160,253.9 L 160,253.9 L 170,252.2 L 180,248.6 L 190,243.6 L 200,238.0 L 210,232.8 L 220,228.7 L 230,226.4 L 240,226.2 L 250,228.2 L 260,232.1 L 270,237.2 L 280,242.8 L 290,247.9 L 300,251.8 L 310,253.8 L 320,253.6 L 330,251.3 L 340,247.2 L 350,242.0 L 360,236.4 L 370,231.4 L 380,227.8 L 390,226.1 L 400,226.6 L 410,229.2 L 420,233.5 L 430,238.8 L 440,244.4 L 450,249.2 L 460,252.6 L 470,254.0 L 480,253.2 L 480 370 Z" fill="url(#g-Chartistjs-s10-liquid-primary)" clip-path="url(#g-Chartistjs-s10-liquid-circle-clip)" opacity="0.85"/>
+<text x="320" y="202" fill="#fffefa" font-family="JetBrains Mono" font-size="34" font-weight="700" text-anchor="middle">84.6%</text>
+<text x="320" y="228" fill="#d4af37" font-family="Newsreader" font-size="15" text-anchor="middle">Capital Adequacy Ratio</text>
+<text x="320" y="246" fill="#00e676" font-family="JetBrains Mono" font-size="10" text-anchor="middle">+480 bps above Basel III</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Chartist 1.3 pipeline executing in the Mobile App Performance, Telemetry & UX Metrics domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>new Chartist.Pie(dom, {
+  series: [84.6, 15.4]
+}, { donut: true });</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">160.0k</span>
+          <span class="sub">Events/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">2.00 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+    </div>
+  </div>
+
+  <!-- Reveal.js Engine Initialization -->
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      controls: true,
+      progress: true,
+      center: false,
+      transition: 'fade',
+      width: 1440,
+      height: 900,
+      margin: 0.04
+    });
+    Reveal.on('slidechanged', function(event) {
+      window.dispatchEvent(new Event('resize'));
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Folium | Geospatial & Mapping | PyVisWorkbench Interactive Studio</title>
+  <meta name="description" content="Interactive visual masterclass and production workbench for Folium in Python.">
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+
+  <style>
+    :root {
+      --bg-dark: #050806;
+      --bg-surface: #0a110d;
+      --bg-card: rgba(14, 23, 18, 0.94);
+      --bg-card-hover: rgba(20, 34, 27, 0.98);
+      --border-faint: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(212, 175, 55, 0.35);
+      --gold-bright: #f3cf65;
+      --gold-deep: #b5935b;
+      --emerald-neon: #00e676;
+      --emerald-dim: #00a854;
+      --cyan-neon: #00e5ff;
+      --crimson-neon: #ff1744;
+      --violet-neon: #d500f9;
+      --text-white: #fffefa;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-serif: 'Newsreader', Georgia, serif;
+      --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 12%, #122119 0%, #050806 100%);
+      color: var(--text-white);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header.workbench-nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(5, 8, 6, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-faint);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .nav-breadcrumb a {
+      color: var(--gold-bright);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-breadcrumb a:hover { color: #fff; }
+    .nav-breadcrumb .sep { color: var(--text-dim); }
+    .nav-breadcrumb .active-tool { color: var(--text-white); font-weight: 600; }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pip-pill {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      background: rgba(0, 230, 118, 0.1);
+      border: 1px solid var(--emerald-dim);
+      color: var(--emerald-neon);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .btn-action {
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid var(--border-accent);
+      color: var(--gold-bright);
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-action:hover {
+      background: rgba(212, 175, 55, 0.22);
+      color: #fff;
+    }
+
+    main.studio-stage {
+      flex: 1;
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 1800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .stage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid var(--border-faint);
+      padding-bottom: 12px;
+    }
+
+    .paradigm-tagline {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tag-pill {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--gold-bright);
+    }
+
+    .paradigm-title {
+      font-family: var(--font-serif);
+      font-size: 1.85rem;
+      font-weight: 500;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .paradigm-title span { color: var(--gold-bright); font-style: italic; }
+
+    .paradigm-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      max-width: 1100px;
+      line-height: 1.4;
+    }
+
+    .paradigm-nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-arrow-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-faint);
+      color: var(--text-white);
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .ctrl-arrow-btn:hover {
+      border-color: var(--gold-bright);
+      color: var(--gold-bright);
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 18px;
+      height: calc(100vh - 245px);
+      min-height: 580px;
+    }
+
+    .visualizer-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-faint);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .canvas-toolbar {
+      background: rgba(10, 17, 13, 0.9);
+      border-bottom: 1px solid var(--border-faint);
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+
+    .canvas-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: #040705;
+      overflow: hidden;
+    }
+
+    .inspector-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-faint);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .inspector-tabs {
+      background: rgba(10, 17, 13, 0.95);
+      border-bottom: 1px solid var(--border-faint);
+      display: flex;
+      padding: 0 8px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 14px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { color: #fff; }
+    .tab-btn.active {
+      color: var(--gold-bright);
+      border-bottom-color: var(--gold-bright);
+      font-weight: 600;
+    }
+
+    .inspector-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .code-container {
+      background: #030504;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .code-header-bar {
+      background: rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .btn-copy {
+      background: transparent;
+      border: 1px solid var(--border-accent);
+      color: var(--gold-bright);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      cursor: pointer;
+      font-family: var(--font-mono);
+    }
+    .btn-copy:hover { background: rgba(212, 175, 55, 0.2); color: #fff; }
+
+    .code-body {
+      flex: 1;
+      padding: 12px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+      white-space: pre;
+    }
+
+    .spec-card {
+      background: rgba(10, 18, 14, 0.85);
+      border: 1px solid var(--border-faint);
+      border-left: 3px solid var(--emerald-neon);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+    .spec-card.gold-border { border-left-color: var(--gold-bright); }
+    .spec-card.cyan-border { border-left-color: var(--cyan-neon); }
+
+    .spec-card h5 {
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--gold-bright);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .spec-card p { font-size: 0.84rem; color: #cbd5e1; line-height: 1.45; }
+
+    .math-formula {
+      background: #020403;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      padding: 8px 12px;
+      margin-top: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--cyan-neon);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .metric-pill {
+      background: rgba(10, 18, 14, 0.9);
+      border: 1px solid var(--border-faint);
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
+    }
+    .metric-pill .lbl { display: block; font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; }
+    .metric-pill .val { display: block; font-family: var(--font-sans); font-size: 0.92rem; font-weight: 700; color: var(--gold-bright); margin: 2px 0; }
+    .metric-pill .sub { display: block; font-size: 0.68rem; color: var(--text-muted); }
+
+    footer.paradigm-filmstrip {
+      position: sticky;
+      bottom: 0;
+      background: rgba(5, 8, 6, 0.96);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-faint);
+      padding: 8px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow-x: auto;
+      z-index: 100;
+    }
+
+    .thumb-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-faint);
+      border-radius: 5px;
+      padding: 6px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .thumb-card:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--border-accent); }
+    .thumb-card.active {
+      background: rgba(0, 230, 118, 0.15);
+      border-color: var(--emerald-neon);
+      box-shadow: 0 0 10px rgba(0, 230, 118, 0.25);
+    }
+    .thumb-num { font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold-bright); font-weight: 600; }
+    .thumb-title { font-size: 0.78rem; color: var(--text-white); }
+
+    #toast {
+      position: fixed;
+      bottom: 75px;
+      right: 24px;
+      background: rgba(0, 230, 118, 0.95);
+      color: #040805;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 4px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+      z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <header class="workbench-nav">
+    <div class="nav-breadcrumb">
+      <a href="../../../README.md">Python Visualization Ecosystem</a>
+      <span class="sep">/</span>
+      <a href="../README.md">Geospatial & Mapping</a>
+      <span class="sep">/</span>
+      <span class="active-tool">Folium</span>
+    </div>
+
+    <div class="nav-actions">
+      <span class="pip-pill">pip install folium pandas</span>
+      <a href="https://python-visualization.github.io/folium" target="_blank" class="btn-action">Docs ↗</a>
+      <button class="btn-action" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+    </div>
+  </header>
+
+  <main class="studio-stage">
+    <div class="stage-header">
+      <div class="paradigm-tagline">
+        <span class="tag-pill" id="p-tag">01 / CHOROPLETH SPATIO-TEMPORAL</span>
+        <h1 class="paradigm-title" id="p-headline">Interactive Choropleth with HeatMapWithTime Dynamic Tracking</h1>
+        <p class="paradigm-desc" id="p-desc">Binds GeoJSON administrative boundary geometries with tabular pandas metrics and animated time sliders.</p>
+      </div>
+
+      <div class="paradigm-nav-controls">
+        <button class="ctrl-arrow-btn" onclick="prevParadigm()" title="Previous Paradigm">◀</button>
+        <button class="ctrl-arrow-btn" onclick="nextParadigm()" title="Next Paradigm">▶</button>
+      </div>
+    </div>
+
+    <div class="split-grid">
+      <!-- Bespoke Tool Visualizer Panel -->
+      <div class="visualizer-panel">
+        
+    <div class="canvas-toolbar">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#00e676;"></span>
+        <span style="color:#00e676; font-family:var(--font-mono); font-size:0.75rem;">FOLIUM LEAFLET.JS SLIPPY MAP</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button class="btn-action" onclick="toggleFoliumCircles()" id="btn-fol-cir" style="font-size:0.7rem; padding:3px 8px;">Toggle Hubs</button>
+        <button class="btn-action" onclick="centerFoliumMap()" style="font-size:0.7rem; padding:3px 8px;">Recenter</button>
+      </div>
+    </div>
+    <div class="canvas-body" id="folium-map" style="width:100%; height:100%; min-height:480px; z-index:10;">
+      <!-- Leaflet map container -->
+    </div>
+    <div style="padding:6px 14px; background:rgba(10,17,13,0.8); border-top:1px solid var(--border-faint); font-family:var(--font-mono); font-size:0.7rem; color:var(--text-dim); display:flex; justify-content:space-between;">
+      <span>m = folium.Map(location=[1.3521, 103.8198], zoom_start=12, tiles='CartoDB dark_matter')</span>
+      <span>Leaflet.js DOM Layer Binding · EPSG:3857 Web Mercator Projection</span>
+    </div>
+    
+      </div>
+
+      <!-- Technical Inspector Panel -->
+      <div class="inspector-panel">
+        <div class="inspector-tabs">
+          <button class="tab-btn active" onclick="setTab('code')" id="tab-code">Python Code</button>
+          <button class="tab-btn" onclick="setTab('math')" id="tab-math">Mathematical Spec</button>
+          <button class="tab-btn" onclick="setTab('enterprise')" id="tab-enterprise">Enterprise Architecture</button>
+          <button class="tab-btn" onclick="setTab('metrics')" id="tab-metrics">Metrics</button>
+        </div>
+
+        <div class="inspector-content" id="tab-content-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="paradigm-filmstrip">
+    <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase;">Paradigms:</span>
+    
+        <button class="thumb-card active" onclick="switchParadigm(0)" id="thumb-0">
+            <span class="thumb-num">01</span>
+            <span class="thumb-title">Interactive Choropleth with HeatMapWithTime Dynamic Tracking</span>
+        </button>
+        
+  </footer>
+
+  <div id="toast">Python Code Copied!</div>
+
+  <script>
+    const PARADIGMS = [{"tag": "01 / CHOROPLETH SPATIO-TEMPORAL", "title": "Interactive Choropleth with HeatMapWithTime Dynamic Tracking", "subtitle": "Binds GeoJSON administrative boundary geometries with tabular pandas metrics and animated time sliders.", "math_desc": "Web Mercator coordinate projection: EPSG:3857 mapping spherical latitude/longitude to 2D planar coordinates: $x = R \\lambda, y = R \\ln\\left[\\tan\\left(\\frac{\\pi}{4} + \\frac{\\phi}{2}\\right)\\right]$.", "math_formula": "x = \\frac{128}{\\pi} 2^{\\text{zoom}} (\\lambda + \\pi), \\quad y = \\frac{128}{\\pi} 2^{\\text{zoom}} \\left(\\pi - \\ln\\left[\\tan\\left(\\frac{\\pi}{4} + \\frac{\\phi}{2}\\right)\\right]\\right)", "time_complexity": "O(N) tile bounding box quadkey query", "space_complexity": "O(V) GeoJSON vertex list", "enterprise_use": "Nationwide hotel portfolio occupancy rates, municipal disease vector spread monitoring.", "strengths": "Instant browser-native interactive maps; zero web server setup; outputs self-contained HTML.", "tradeoffs": "Client-side Leaflet DOM struggles with GeoJSON files exceeding ~15MB.", "metrics": [{"label": "Engine", "val": "Leaflet.js v1.9", "sub": "HTML5 Slippy Map"}, {"label": "Projection", "val": "EPSG:3857", "sub": "Web Mercator"}, {"label": "Plugins", "val": "HeatMapWithTime", "sub": "Time Slider"}, {"label": "Tiles", "val": "OSM / CartoDB", "sub": "Dark Matter"}], "code": "import folium\nfrom folium.plugins import HeatMap\nimport numpy as np\n\n# Center on Singapore\nm = folium.Map(location=[1.3521, 103.8198], zoom_start=12, tiles=\"CartoDB dark_matter\")\n\n# Generate synthetic customer trip locations\nlats = 1.3521 + np.random.normal(0, 0.05, n_samples)\nlons = 103.8198 + np.random.normal(0, 0.05, n_samples)\nheat_data = [[lat, lon, 1.0] for lat, lon in zip(lats, lons)]\n\nHeatMap(heat_data, radius=15, blur=10, min_opacity=0.4).add_to(m)\nm.save(\"folium_map.html\")"}];
+    let currentIndex = 0;
+    let currentTab = 'code';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderParadigm(0);
+
+      window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+        if (e.key === 'ArrowRight') nextParadigm();
+        if (e.key === 'ArrowLeft') prevParadigm();
+        if (e.key.toLowerCase() === 'c') copyCode();
+        if (e.key.toLowerCase() === 'f') toggleFullscreen();
+        if (e.key >= '1' && e.key <= '9') {
+          const idx = parseInt(e.key) - 1;
+          if (idx < PARADIGMS.length) switchParadigm(idx);
+        }
+      });
+    });
+
+    function renderParadigm(index) {
+      currentIndex = index;
+      const p = PARADIGMS[index];
+
+      document.getElementById('p-tag').innerText = p.tag || `0${index+1} / PARADIGM`;
+      document.getElementById('p-headline').innerText = p.title;
+      document.getElementById('p-desc').innerText = p.subtitle || '';
+
+      document.querySelectorAll('.thumb-card').forEach((el, idx) => {
+        el.classList.toggle('active', idx === index);
+      });
+
+      renderTabContent();
+      if (typeof onParadigmChange === 'function') {
+        onParadigmChange(index);
+      }
+    }
+
+    function renderTabContent() {
+      const p = PARADIGMS[currentIndex];
+      const container = document.getElementById('tab-content-container');
+
+      if (currentTab === 'code') {
+        container.innerHTML = `
+          <div class="code-container">
+            <div class="code-header-bar">
+              <span>Python 3.10+ · pip install folium pandas</span>
+              <button class="btn-copy" onclick="copyCode()">📋 Copy Snippet</button>
+            </div>
+            <div class="code-body" id="code-snippet">${escapeHtml(p.code)}</div>
+          </div>
+        `;
+      } else if (currentTab === 'math') {
+        container.innerHTML = `
+          <div class="spec-card">
+            <h5>Mathematical & Algorithmic Formulation</h5>
+            <p>${p.math_desc || 'Algorithmic mapping pipeline.'}</p>
+            <div class="math-formula">${p.math_formula || 'f(x) = \int K(x - y) dy'}</div>
+          </div>
+          <div class="spec-card gold-border">
+            <h5>Computational Complexity</h5>
+            <p><strong>Time:</strong> ${p.time_complexity || 'O(N \log N)'}<br>
+            <strong>Space:</strong> ${p.space_complexity || 'O(N)'} memory footprint.</p>
+          </div>
+        `;
+      } else if (currentTab === 'enterprise') {
+        container.innerHTML = `
+          <div class="spec-card cyan-border">
+            <h5>Enterprise Production Scenarios</h5>
+            <p>${p.enterprise_use || 'High-throughput enterprise telemetry and analytics.'}</p>
+          </div>
+          <div class="spec-card">
+            <h5>Architecture Strengths & Trade-offs</h5>
+            <p><strong>Strengths:</strong> ${p.strengths || 'Robust enterprise scale.'}<br>
+            <strong>Tradeoffs:</strong> ${p.tradeoffs || 'Client resource constraints.'}</p>
+          </div>
+        `;
+      } else if (currentTab === 'metrics') {
+        const m = p.metrics || [
+          { label: 'Complexity', val: 'O(N log N)', sub: 'Fast' },
+          { label: 'Max Points', val: '500,000', sub: 'Bounds' },
+          { label: 'Engine', val: 'Hardware Vector', sub: 'Native' },
+          { label: 'Latency', val: '< 16ms', sub: 'Target' }
+        ];
+        container.innerHTML = `
+          <div class="metrics-grid">
+            ${m.map(item => `
+              <div class="metric-pill">
+                <span class="lbl">${item.label}</span>
+                <span class="val">${item.val}</span>
+                <span class="sub">${item.sub}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    }
+
+    function setTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.id === `tab-${tab}`);
+      });
+      renderTabContent();
+    }
+
+    function switchParadigm(index) { renderParadigm(index); }
+    function prevParadigm() { switchParadigm((currentIndex - 1 + PARADIGMS.length) % PARADIGMS.length); }
+    function nextParadigm() { switchParadigm((currentIndex + 1) % PARADIGMS.length); }
+
+    function copyCode() {
+      const snip = document.getElementById('code-snippet');
+      if (!snip) return;
+      navigator.clipboard.writeText(snip.innerText).then(() => {
+        const t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+      });
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else if (document.exitFullscreen) document.exitFullscreen();
+    }
+
+    function escapeHtml(t) {
+      return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+
+  <!-- Custom Tool-Specific Engine JS -->
+  <script>
+    
+    let foliumMap, circleGroup;
+    let circlesVisible = true;
+
+    function initFolium() {
+      const container = document.getElementById('folium-map');
+      if (!container || typeof L === 'undefined') return;
+
+      foliumMap = L.map('folium-map', {
+        center: [1.3521, 103.8198],
+        zoom: 12,
+        zoomControl: true
+      });
+
+      // CartoDB Dark Matter tiles
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(foliumMap);
+
+      circleGroup = L.layerGroup().addTo(foliumMap);
+
+      const hubs = [
+        { name: 'Marina Bay Financial Hub', lat: 1.2800, lon: 103.8540, radius: 900, color: '#00e676' },
+        { name: 'One-North Bio-Tech Park', lat: 1.2980, lon: 103.7870, radius: 1200, color: '#00e5ff' },
+        { name: 'Changi Aviation Logistics', lat: 1.3644, lon: 103.9915, radius: 1600, color: '#f3cf65' },
+        { name: 'Jurong Innovation District', lat: 1.3480, lon: 103.6880, radius: 1400, color: '#ff1744' }
+      ];
+
+      hubs.forEach(h => {
+        const circle = L.circle([h.lat, h.lon], {
+          color: h.color,
+          fillColor: h.color,
+          fillOpacity: 0.35,
+          radius: h.radius
+        }).bindPopup(`<strong>${h.name}</strong><br>Status: Operational Cluster<br>Radius: ${h.radius}m`);
+        circleGroup.addLayer(circle);
+
+        L.marker([h.lat, h.lon]).addTo(circleGroup).bindPopup(h.name);
+      });
+    }
+
+    function toggleFoliumCircles() {
+      circlesVisible = !circlesVisible;
+      if (circlesVisible) foliumMap.addLayer(circleGroup);
+      else foliumMap.removeLayer(circleGroup);
+      document.getElementById('btn-fol-cir').innerText = circlesVisible ? 'Hide Hubs' : 'Show Hubs';
+    }
+
+    function centerFoliumMap() {
+      if (foliumMap) foliumMap.setView([1.3521, 103.8198], 12);
+    }
+
+    window.addEventListener('load', () => { setTimeout(initFolium, 100); });
+    
+  </script>
+</body>
+</html>

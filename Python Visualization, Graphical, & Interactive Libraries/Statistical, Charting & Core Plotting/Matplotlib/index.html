@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matplotlib | Statistical, Charting & Core Plotting | PyVisWorkbench Interactive Studio</title>
+  <meta name="description" content="Interactive visual masterclass and production workbench for Matplotlib in Python.">
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+
+  
+
+  <style>
+    :root {
+      --bg-dark: #050806;
+      --bg-surface: #0a110d;
+      --bg-card: rgba(14, 23, 18, 0.94);
+      --bg-card-hover: rgba(20, 34, 27, 0.98);
+      --border-faint: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(212, 175, 55, 0.35);
+      --gold-bright: #f3cf65;
+      --gold-deep: #b5935b;
+      --emerald-neon: #00e676;
+      --emerald-dim: #00a854;
+      --cyan-neon: #00e5ff;
+      --crimson-neon: #ff1744;
+      --violet-neon: #d500f9;
+      --text-white: #fffefa;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-serif: 'Newsreader', Georgia, serif;
+      --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 12%, #122119 0%, #050806 100%);
+      color: var(--text-white);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header.workbench-nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(5, 8, 6, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-faint);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .nav-breadcrumb a {
+      color: var(--gold-bright);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-breadcrumb a:hover { color: #fff; }
+    .nav-breadcrumb .sep { color: var(--text-dim); }
+    .nav-breadcrumb .active-tool { color: var(--text-white); font-weight: 600; }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pip-pill {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      background: rgba(0, 230, 118, 0.1);
+      border: 1px solid var(--emerald-dim);
+      color: var(--emerald-neon);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .btn-action {
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid var(--border-accent);
+      color: var(--gold-bright);
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-action:hover {
+      background: rgba(212, 175, 55, 0.22);
+      color: #fff;
+    }
+
+    main.studio-stage {
+      flex: 1;
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 1800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .stage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid var(--border-faint);
+      padding-bottom: 12px;
+    }
+
+    .paradigm-tagline {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tag-pill {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--gold-bright);
+    }
+
+    .paradigm-title {
+      font-family: var(--font-serif);
+      font-size: 1.85rem;
+      font-weight: 500;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .paradigm-title span { color: var(--gold-bright); font-style: italic; }
+
+    .paradigm-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      max-width: 1100px;
+      line-height: 1.4;
+    }
+
+    .paradigm-nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-arrow-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-faint);
+      color: var(--text-white);
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .ctrl-arrow-btn:hover {
+      border-color: var(--gold-bright);
+      color: var(--gold-bright);
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 18px;
+      height: calc(100vh - 245px);
+      min-height: 580px;
+    }
+
+    .visualizer-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-faint);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .canvas-toolbar {
+      background: rgba(10, 17, 13, 0.9);
+      border-bottom: 1px solid var(--border-faint);
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+
+    .canvas-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: #040705;
+      overflow: hidden;
+    }
+
+    .inspector-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-faint);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .inspector-tabs {
+      background: rgba(10, 17, 13, 0.95);
+      border-bottom: 1px solid var(--border-faint);
+      display: flex;
+      padding: 0 8px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 14px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { color: #fff; }
+    .tab-btn.active {
+      color: var(--gold-bright);
+      border-bottom-color: var(--gold-bright);
+      font-weight: 600;
+    }
+
+    .inspector-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .code-container {
+      background: #030504;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .code-header-bar {
+      background: rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .btn-copy {
+      background: transparent;
+      border: 1px solid var(--border-accent);
+      color: var(--gold-bright);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      cursor: pointer;
+      font-family: var(--font-mono);
+    }
+    .btn-copy:hover { background: rgba(212, 175, 55, 0.2); color: #fff; }
+
+    .code-body {
+      flex: 1;
+      padding: 12px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+      white-space: pre;
+    }
+
+    .spec-card {
+      background: rgba(10, 18, 14, 0.85);
+      border: 1px solid var(--border-faint);
+      border-left: 3px solid var(--emerald-neon);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+    .spec-card.gold-border { border-left-color: var(--gold-bright); }
+    .spec-card.cyan-border { border-left-color: var(--cyan-neon); }
+
+    .spec-card h5 {
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--gold-bright);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .spec-card p { font-size: 0.84rem; color: #cbd5e1; line-height: 1.45; }
+
+    .math-formula {
+      background: #020403;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      padding: 8px 12px;
+      margin-top: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--cyan-neon);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .metric-pill {
+      background: rgba(10, 18, 14, 0.9);
+      border: 1px solid var(--border-faint);
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
+    }
+    .metric-pill .lbl { display: block; font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; }
+    .metric-pill .val { display: block; font-family: var(--font-sans); font-size: 0.92rem; font-weight: 700; color: var(--gold-bright); margin: 2px 0; }
+    .metric-pill .sub { display: block; font-size: 0.68rem; color: var(--text-muted); }
+
+    footer.paradigm-filmstrip {
+      position: sticky;
+      bottom: 0;
+      background: rgba(5, 8, 6, 0.96);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-faint);
+      padding: 8px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow-x: auto;
+      z-index: 100;
+    }
+
+    .thumb-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-faint);
+      border-radius: 5px;
+      padding: 6px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .thumb-card:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--border-accent); }
+    .thumb-card.active {
+      background: rgba(0, 230, 118, 0.15);
+      border-color: var(--emerald-neon);
+      box-shadow: 0 0 10px rgba(0, 230, 118, 0.25);
+    }
+    .thumb-num { font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold-bright); font-weight: 600; }
+    .thumb-title { font-size: 0.78rem; color: var(--text-white); }
+
+    #toast {
+      position: fixed;
+      bottom: 75px;
+      right: 24px;
+      background: rgba(0, 230, 118, 0.95);
+      color: #040805;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 4px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+      z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <header class="workbench-nav">
+    <div class="nav-breadcrumb">
+      <a href="../../../README.md">Python Visualization Ecosystem</a>
+      <span class="sep">/</span>
+      <a href="../README.md">Statistical, Charting & Core Plotting</a>
+      <span class="sep">/</span>
+      <span class="active-tool">Matplotlib</span>
+    </div>
+
+    <div class="nav-actions">
+      <span class="pip-pill">pip install matplotlib numpy</span>
+      <a href="https://matplotlib.org" target="_blank" class="btn-action">Docs ↗</a>
+      <button class="btn-action" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+    </div>
+  </header>
+
+  <main class="studio-stage">
+    <div class="stage-header">
+      <div class="paradigm-tagline">
+        <span class="tag-pill" id="p-tag">01 / MULTI-PANEL GRIDSPEC</span>
+        <h1 class="paradigm-title" id="p-headline">Hierarchical Multi-Axis GridSpec Architecture</h1>
+        <p class="paradigm-desc" id="p-desc">Complex subplot arrangement with non-uniform row/column ratios and twin axis projections.</p>
+      </div>
+
+      <div class="paradigm-nav-controls">
+        <button class="ctrl-arrow-btn" onclick="prevParadigm()" title="Previous Paradigm">◀</button>
+        <button class="ctrl-arrow-btn" onclick="nextParadigm()" title="Next Paradigm">▶</button>
+      </div>
+    </div>
+
+    <div class="split-grid">
+      <!-- Bespoke Tool Visualizer Panel -->
+      <div class="visualizer-panel">
+        
+    <div class="canvas-toolbar">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#00e676;"></span>
+        <span style="color:#00e676; font-family:var(--font-mono); font-size:0.75rem;">MATPLOTLIB ARTIST PIPELINE ACTIVE</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <label style="font-family:var(--font-mono); font-size:0.72rem; color:var(--text-muted);">Freq: <span id="mpl-freq-val">2.5</span> Hz</label>
+        <input type="range" id="mpl-freq" min="0.5" max="8.0" step="0.1" value="2.5" oninput="updateMatplotlib()" style="width:90px;">
+        <label style="font-family:var(--font-mono); font-size:0.72rem; color:var(--text-muted); margin-left:6px;">Noise:</label>
+        <input type="range" id="mpl-noise" min="0.0" max="0.8" step="0.05" value="0.2" oninput="updateMatplotlib()" style="width:70px;">
+        <button class="btn-action" onclick="toggleMplGrid()" style="font-size:0.7rem; padding:3px 8px;">Toggle Grid</button>
+      </div>
+    </div>
+    <div class="canvas-body" style="padding:12px; background:#030504; display:flex; flex-direction:column; gap:8px; width:100%;">
+      <div style="display:grid; grid-template-columns: 1.4fr 1fr; gap:10px; width:100%; height:55%;">
+        <div style="background:#070d09; border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:8px; position:relative;">
+          <div style="font-family:var(--font-mono); font-size:0.68rem; color:var(--gold-bright); margin-bottom:4px;">ax1: ax.plot(t, signal) & Envelope</div>
+          <canvas id="mpl-canvas-signal" style="width:100%; height:calc(100% - 20px);"></canvas>
+        </div>
+        <div style="background:#070d09; border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:8px; position:relative;">
+          <div style="font-family:var(--font-mono); font-size:0.68rem; color:var(--cyan-neon); margin-bottom:4px;">ax2: np.fft.rfft Power Spectrum (dB)</div>
+          <canvas id="mpl-canvas-fft" style="width:100%; height:calc(100% - 20px);"></canvas>
+        </div>
+      </div>
+      <div style="background:#070d09; border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:8px; width:100%; height:45%;">
+        <div style="font-family:var(--font-mono); font-size:0.68rem; color:var(--emerald-neon); margin-bottom:4px;">ax3: ax.streamplot(X, Y, U, V) Vector Field Streamlines</div>
+        <canvas id="mpl-canvas-stream" style="width:100%; height:calc(100% - 20px);"></canvas>
+      </div>
+    </div>
+    <div style="padding:6px 14px; background:rgba(10,17,13,0.8); border-top:1px solid var(--border-faint); font-family:var(--font-mono); font-size:0.7rem; color:var(--text-dim); display:flex; justify-content:space-between;">
+      <span>Figure(figsize=(10, 7), dpi=300) · GridSpec(2, 2, height_ratios=[1.2, 1.0])</span>
+      <span>Agg Backend Transform Pipeline</span>
+    </div>
+    
+      </div>
+
+      <!-- Technical Inspector Panel -->
+      <div class="inspector-panel">
+        <div class="inspector-tabs">
+          <button class="tab-btn active" onclick="setTab('code')" id="tab-code">Python Code</button>
+          <button class="tab-btn" onclick="setTab('math')" id="tab-math">Mathematical Spec</button>
+          <button class="tab-btn" onclick="setTab('enterprise')" id="tab-enterprise">Enterprise Architecture</button>
+          <button class="tab-btn" onclick="setTab('metrics')" id="tab-metrics">Metrics</button>
+        </div>
+
+        <div class="inspector-content" id="tab-content-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="paradigm-filmstrip">
+    <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase;">Paradigms:</span>
+    
+        <button class="thumb-card active" onclick="switchParadigm(0)" id="thumb-0">
+            <span class="thumb-num">01</span>
+            <span class="thumb-title">Hierarchical Multi-Axis GridSpec Architecture</span>
+        </button>
+        
+
+        <button class="thumb-card " onclick="switchParadigm(1)" id="thumb-1">
+            <span class="thumb-num">02</span>
+            <span class="thumb-title">2D Vector Field & Streamline Integration</span>
+        </button>
+        
+
+        <button class="thumb-card " onclick="switchParadigm(2)" id="thumb-2">
+            <span class="thumb-num">03</span>
+            <span class="thumb-title">3D Parametric Mesh with Orthographic Shadowing</span>
+        </button>
+        
+  </footer>
+
+  <div id="toast">Python Code Copied!</div>
+
+  <script>
+    const PARADIGMS = [{"tag": "01 / MULTI-PANEL GRIDSPEC", "title": "Hierarchical Multi-Axis GridSpec Architecture", "subtitle": "Complex subplot arrangement with non-uniform row/column ratios and twin axis projections.", "math_desc": "Subplot coordinate affine transformation matrix: $T: (x, y) \\mapsto (M x + t_x, N y + t_y)$ mapping normalized figure coordinates $[0,1]^2$ to display pixel targets.", "math_formula": "P_{\\text{pixel}} = \\mathbf{M}_{\\text{disp}} \\cdot \\mathbf{M}_{\\text{axes}} \\cdot \\mathbf{M}_{\\text{data}} \\cdot P_{\\text{data}}", "time_complexity": "O(N) rendering passes", "space_complexity": "O(N) display list", "enterprise_use": "Aerospace flight recorder analysis, clinical drug trial pharmacokinetic/pharmacodynamic multi-tier panels.", "strengths": "Pixel-perfect publication alignment, arbitrary artist customization, complete backend independence.", "tradeoffs": "Verbose imperative API requiring manual canvas layout orchestration.", "metrics": [{"label": "Backend", "val": "Agg / Vector", "sub": "Anti-Grain Geometry"}, {"label": "Max Nodes", "val": "500,000", "sub": "Scatter Cap"}, {"label": "Layout", "val": "GridSpec2D", "sub": "Constrained Spacing"}, {"label": "License", "val": "PSF Open", "sub": "Enterprise Safe"}], "code": "import matplotlib.pyplot as plt\nimport matplotlib.gridspec as gridspec\nimport numpy as np\n\n# Synthetic telemetry stream\nt = np.linspace(0, 10, n_samples)\nsignal = np.sin(t) + np.random.normal(0, noise, n_samples)\nspectrum = np.abs(np.fft.rfft(signal))\n\nfig = plt.figure(figsize=(10, 6), facecolor='#050806')\ngs = gridspec.GridSpec(2, 2, height_ratios=[2, 1], width_ratios=[3, 1], hspace=0.3, wspace=0.25)\n\nax_main = fig.add_subplot(gs[0, 0], facecolor='#0a110d')\nax_main.plot(t, signal, color='#00e676', lw=1.5, label='Raw Sensor Stream')\nax_main.set_title('Time-Series Signal Acquisition', color='#fffefa', fontsize=12)\nax_main.tick_params(colors='#94a3b8')\n\nax_fft = fig.add_subplot(gs[1, 0], facecolor='#0a110d')\nax_fft.plot(spectrum, color='#f3cf65', lw=1.2)\nax_fft.set_title('Fast Fourier Spectral Density', color='#fffefa', fontsize=10)\nax_fft.tick_params(colors='#94a3b8')\n\nax_hist = fig.add_subplot(gs[:, 1], facecolor='#0a110d')\nax_hist.hist(signal, bins=25, orientation='horizontal', color='#00e5ff', alpha=0.7)\nax_hist.set_title('Amplitude Probability Distribution', color='#fffefa', fontsize=10)\nax_hist.tick_params(colors='#94a3b8')\n\nplt.show()"}, {"tag": "02 / CONTINUOUS STREAMPLOT", "title": "2D Vector Field & Streamline Integration", "subtitle": "Runge-Kutta numerical integration visualizing magnetic flux and fluid dynamic velocity fields.", "math_desc": "Streamline vector field trajectory governed by the autonomous ODE: $\\frac{d\\mathbf{r}}{ds} = \\frac{\\mathbf{v}(\\mathbf{r})}{\\|\\mathbf{v}(\\mathbf{r})\\|}$ integrated using 4th-order Runge-Kutta (RK4).", "math_formula": "\\mathbf{r}_{n+1} = \\mathbf{r}_n + \\frac{\\Delta s}{6}(k_1 + 2k_2 + 2k_3 + k_4)", "time_complexity": "O(W \\times H) cell rasterization", "space_complexity": "O(W \\times H) grid matrix", "enterprise_use": "Computational fluid dynamics (CFD) airflow simulation around automotive fuselages, wind turbine micro-siting.", "strengths": "Dense flow visualization with adaptive streamline density and vector color-mapping.", "tradeoffs": "Requires regular Cartesian grid interpolation for unstructured mesh points.", "metrics": [{"label": "Method", "val": "RK4 ODE", "sub": "Adaptive Step"}, {"label": "Grid Size", "val": "200x200", "sub": "Regular Mesh"}, {"label": "Velocity", "val": "Vector Norm", "sub": "Colormapped"}, {"label": "Format", "val": "Matplotlib Agg", "sub": "Native Vector"}], "code": "import matplotlib.pyplot as plt\nimport numpy as np\n\nY, X = np.mgrid[-3:3:100j, -3:3:100j]\nU = -1 - X**2 + Y\nV = 1 + X - Y**2\nspeed = np.sqrt(U**2 + V**2)\n\nfig, ax = plt.subplots(figsize=(8, 6), facecolor='#050806')\nax.set_facecolor('#0a110d')\n\nstream = ax.streamplot(X, Y, U, V, color=speed, cmap='plasma', density=1.4, linewidth=1.2, arrowsize=1.2)\nfig.colorbar(stream.lines, ax=ax, label='Velocity Magnitude (m/s)')\nax.set_title('Phase Space Flow Dynamics', color='#fffefa')\nax.tick_params(colors='#94a3b8')\n\nplt.show()"}, {"tag": "03 / 3D PARAMETRIC SURFACE", "title": "3D Parametric Mesh with Orthographic Shadowing", "subtitle": "Surface topology projection across rotating viewpoint angles with lighting shading normals.", "math_desc": "Parametric surface elevation: $z = f(x,y) = \\sin(\\sqrt{x^2+y^2}) / \\sqrt{x^2+y^2}$ mapped across a 2D meshgrid with Gouraud smooth surface shading.", "math_formula": "I_p = k_a I_a + k_d (\\mathbf{L} \\cdot \\mathbf{N}) I_d + k_s (\\mathbf{R} \\cdot \\mathbf{V})^n I_s", "time_complexity": "O(N^2) surface tessellation", "space_complexity": "O(N^2) face normal buffer", "enterprise_use": "Semiconductor wafer topography profiling, terrain elevation model (DEM) visualization.", "strengths": "Built-in mplot3d projection with zero external C++ dependencies.", "tradeoffs": "Lacks true GPU z-buffer hardware depth testing; relies on artist painter's algorithm.", "metrics": [{"label": "Engine", "val": "mplot3d", "sub": "Painter's Sort"}, {"label": "Mesh Faces", "val": "10,000+", "sub": "Triangulated"}, {"label": "Colormap", "val": "Viridis", "sub": "Perceptual"}, {"label": "Shading", "val": "Phong/Gouraud", "sub": "Surface Normals"}], "code": "import matplotlib.pyplot as plt\nfrom mpl_toolkits.mplot3d import Axes3D\nimport numpy as np\n\nX = np.linspace(-5, 5, 60)\nY = np.linspace(-5, 5, 60)\nX, Y = np.meshgrid(X, Y)\nR = np.sqrt(X**2 + Y**2) + 0.001\nZ = np.sin(R) / R\n\nfig = plt.figure(figsize=(9, 6), facecolor='#050806')\nax = fig.add_subplot(111, projection='3d', facecolor='#050806')\n\nsurf = ax.plot_surface(X, Y, Z, cmap='viridis', edgecolor='none', alpha=0.9, antialiased=True)\nax.view_init(elev=35, azim=45)\nax.set_title('Parametric Wavefield Topology', color='#fffefa')\nfig.colorbar(surf, shrink=0.5, aspect=10)\n\nplt.show()"}];
+    let currentIndex = 0;
+    let currentTab = 'code';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderParadigm(0);
+
+      window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+        if (e.key === 'ArrowRight') nextParadigm();
+        if (e.key === 'ArrowLeft') prevParadigm();
+        if (e.key.toLowerCase() === 'c') copyCode();
+        if (e.key.toLowerCase() === 'f') toggleFullscreen();
+        if (e.key >= '1' && e.key <= '9') {
+          const idx = parseInt(e.key) - 1;
+          if (idx < PARADIGMS.length) switchParadigm(idx);
+        }
+      });
+    });
+
+    function renderParadigm(index) {
+      currentIndex = index;
+      const p = PARADIGMS[index];
+
+      document.getElementById('p-tag').innerText = p.tag || `0${index+1} / PARADIGM`;
+      document.getElementById('p-headline').innerText = p.title;
+      document.getElementById('p-desc').innerText = p.subtitle || '';
+
+      document.querySelectorAll('.thumb-card').forEach((el, idx) => {
+        el.classList.toggle('active', idx === index);
+      });
+
+      renderTabContent();
+      if (typeof onParadigmChange === 'function') {
+        onParadigmChange(index);
+      }
+    }
+
+    function renderTabContent() {
+      const p = PARADIGMS[currentIndex];
+      const container = document.getElementById('tab-content-container');
+
+      if (currentTab === 'code') {
+        container.innerHTML = `
+          <div class="code-container">
+            <div class="code-header-bar">
+              <span>Python 3.10+ · pip install matplotlib numpy</span>
+              <button class="btn-copy" onclick="copyCode()">📋 Copy Snippet</button>
+            </div>
+            <div class="code-body" id="code-snippet">${escapeHtml(p.code)}</div>
+          </div>
+        `;
+      } else if (currentTab === 'math') {
+        container.innerHTML = `
+          <div class="spec-card">
+            <h5>Mathematical & Algorithmic Formulation</h5>
+            <p>${p.math_desc || 'Algorithmic mapping pipeline.'}</p>
+            <div class="math-formula">${p.math_formula || 'f(x) = \int K(x - y) dy'}</div>
+          </div>
+          <div class="spec-card gold-border">
+            <h5>Computational Complexity</h5>
+            <p><strong>Time:</strong> ${p.time_complexity || 'O(N \log N)'}<br>
+            <strong>Space:</strong> ${p.space_complexity || 'O(N)'} memory footprint.</p>
+          </div>
+        `;
+      } else if (currentTab === 'enterprise') {
+        container.innerHTML = `
+          <div class="spec-card cyan-border">
+            <h5>Enterprise Production Scenarios</h5>
+            <p>${p.enterprise_use || 'High-throughput enterprise telemetry and analytics.'}</p>
+          </div>
+          <div class="spec-card">
+            <h5>Architecture Strengths & Trade-offs</h5>
+            <p><strong>Strengths:</strong> ${p.strengths || 'Robust enterprise scale.'}<br>
+            <strong>Tradeoffs:</strong> ${p.tradeoffs || 'Client resource constraints.'}</p>
+          </div>
+        `;
+      } else if (currentTab === 'metrics') {
+        const m = p.metrics || [
+          { label: 'Complexity', val: 'O(N log N)', sub: 'Fast' },
+          { label: 'Max Points', val: '500,000', sub: 'Bounds' },
+          { label: 'Engine', val: 'Hardware Vector', sub: 'Native' },
+          { label: 'Latency', val: '< 16ms', sub: 'Target' }
+        ];
+        container.innerHTML = `
+          <div class="metrics-grid">
+            ${m.map(item => `
+              <div class="metric-pill">
+                <span class="lbl">${item.label}</span>
+                <span class="val">${item.val}</span>
+                <span class="sub">${item.sub}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    }
+
+    function setTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.id === `tab-${tab}`);
+      });
+      renderTabContent();
+    }
+
+    function switchParadigm(index) { renderParadigm(index); }
+    function prevParadigm() { switchParadigm((currentIndex - 1 + PARADIGMS.length) % PARADIGMS.length); }
+    function nextParadigm() { switchParadigm((currentIndex + 1) % PARADIGMS.length); }
+
+    function copyCode() {
+      const snip = document.getElementById('code-snippet');
+      if (!snip) return;
+      navigator.clipboard.writeText(snip.innerText).then(() => {
+        const t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+      });
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else if (document.exitFullscreen) document.exitFullscreen();
+    }
+
+    function escapeHtml(t) {
+      return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
+
+  <!-- Custom Tool-Specific Engine JS -->
+  <script>
+    
+    let showGrid = true;
+    function toggleMplGrid() {
+      showGrid = !showGrid;
+      updateMatplotlib();
+    }
+
+    function updateMatplotlib() {
+      const freq = parseFloat(document.getElementById('mpl-freq').value);
+      const noise = parseFloat(document.getElementById('mpl-noise').value);
+      document.getElementById('mpl-freq-val').innerText = freq.toFixed(1);
+
+      drawSignalCanvas(freq, noise);
+      drawFftCanvas(freq, noise);
+      drawStreamCanvas(freq);
+    }
+
+    function drawSignalCanvas(freq, noise) {
+      const c = document.getElementById('mpl-canvas-signal');
+      if (!c) return;
+      c.width = c.clientWidth * window.devicePixelRatio;
+      c.height = c.clientHeight * window.devicePixelRatio;
+      const ctx = c.getContext('2d');
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      const W = c.clientWidth; const H = c.clientHeight;
+
+      ctx.fillStyle = '#070d09';
+      ctx.fillRect(0, 0, W, H);
+
+      if (showGrid) {
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < W; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+        for (let y = 0; y < H; y += 25) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+      }
+
+      // Zero axis
+      ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+      ctx.beginPath(); ctx.moveTo(0, H/2); ctx.lineTo(W, H/2); ctx.stroke();
+
+      // Plot Signal
+      ctx.strokeStyle = '#00e676';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      const nPts = 200;
+      for (let i = 0; i < nPts; i++) {
+        const t = (i / nPts) * 4 * Math.PI;
+        const s = Math.sin(freq * t) + (Math.sin(freq * 2.3 * t) * 0.4) + (Math.random() - 0.5) * noise * 2;
+        const px = (i / nPts) * W;
+        const py = H/2 - (s * (H * 0.35));
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // Envelope
+      ctx.strokeStyle = 'rgba(243, 207, 101, 0.6)';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      for (let i = 0; i < nPts; i++) {
+        const t = (i / nPts) * 4 * Math.PI;
+        const env = 1.4 + (Math.random() - 0.5) * noise * 0.5;
+        const px = (i / nPts) * W;
+        const py = H/2 - (env * (H * 0.35));
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    function drawFftCanvas(freq, noise) {
+      const c = document.getElementById('mpl-canvas-fft');
+      if (!c) return;
+      c.width = c.clientWidth * window.devicePixelRatio;
+      c.height = c.clientHeight * window.devicePixelRatio;
+      const ctx = c.getContext('2d');
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      const W = c.clientWidth; const H = c.clientHeight;
+
+      ctx.fillStyle = '#070d09';
+      ctx.fillRect(0, 0, W, H);
+
+      const nBins = 32;
+      const barW = (W - 40) / nBins;
+      const peakBin = Math.min(Math.floor(freq * 3.5), nBins - 2);
+
+      for (let i = 0; i < nBins; i++) {
+        let mag = Math.random() * noise * 0.4 + 0.05;
+        if (i === peakBin) mag += 0.85;
+        if (i === Math.floor(peakBin * 2.3) && i < nBins) mag += 0.35;
+
+        const bH = mag * (H - 30);
+        const bx = 25 + i * barW;
+        const by = H - 20 - bH;
+
+        const grad = ctx.createLinearGradient(0, by, 0, H - 20);
+        grad.addColorStop(0, '#00e5ff');
+        grad.addColorStop(1, 'rgba(0, 229, 255, 0.1)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(bx, by, barW - 2, bH);
+      }
+
+      // X axis
+      ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+      ctx.beginPath(); ctx.moveTo(20, H - 20); ctx.lineTo(W - 10, H - 20); ctx.stroke();
+      ctx.fillStyle = '#64748b';
+      ctx.font = '9px JetBrains Mono';
+      ctx.fillText('0 Hz', 25, H - 6);
+      ctx.fillText('Nyquist (Fs/2)', W - 70, H - 6);
+    }
+
+    function drawStreamCanvas(freq) {
+      const c = document.getElementById('mpl-canvas-stream');
+      if (!c) return;
+      c.width = c.clientWidth * window.devicePixelRatio;
+      c.height = c.clientHeight * window.devicePixelRatio;
+      const ctx = c.getContext('2d');
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      const W = c.clientWidth; const H = c.clientHeight;
+
+      ctx.fillStyle = '#070d09';
+      ctx.fillRect(0, 0, W, H);
+
+      const rows = 6; const cols = 16;
+      const dx = W / cols; const dy = H / rows;
+
+      for (let r = 0; r < rows; r++) {
+        for (let cl = 0; cl < cols; cl++) {
+          const x = (cl + 0.5) * dx;
+          const y = (r + 0.5) * dy;
+          const u = -Math.sin((y / H) * Math.PI * (freq * 0.4));
+          const v = Math.cos((x / W) * Math.PI * (freq * 0.4));
+          const angle = Math.atan2(v, u);
+          const len = 14;
+
+          ctx.strokeStyle = `hsl(${(cl * 15 + r * 20) % 360}, 80%, 60%)`;
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(x - Math.cos(angle)*len*0.5, y - Math.sin(angle)*len*0.5);
+          ctx.lineTo(x + Math.cos(angle)*len*0.5, y + Math.sin(angle)*len*0.5);
+          ctx.stroke();
+
+          // Arrow head
+          ctx.fillStyle = ctx.strokeStyle;
+          ctx.beginPath();
+          ctx.arc(x + Math.cos(angle)*len*0.5, y + Math.sin(angle)*len*0.5, 2, 0, 2*Math.PI);
+          ctx.fill();
+        }
+      }
+    }
+
+    window.addEventListener('load', () => { setTimeout(updateMatplotlib, 100); });
+    window.addEventListener('resize', updateMatplotlib);
+    
+  </script>
+</body>
+</html>

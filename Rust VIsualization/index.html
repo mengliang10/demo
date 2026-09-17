@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rust High-Performance Systems & WebAssembly - Executive Demonstration Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --accent: #e05d22;
+      --accent-glow: rgba(224, 93, 34, 0.4);
+      --bg-dark: #080a0f;
+      --bg-card: #0f141f;
+      --bg-card-hover: #161e2e;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(224, 93, 34, 0.35);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-glow), transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 80%, rgba(255, 255, 255, 0.02), transparent 100%);
+    }
+
+    /* TOP GLOBAL NAVBAR */
+    .global-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(8, 10, 15, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-badge {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      list-style: none;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .nav-link:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-color);
+    }
+
+    .nav-link.active {
+      color: #fff;
+      background: rgba(224, 93, 34, 0.15);
+      border-color: var(--border-accent);
+    }
+
+    /* HERO SECTION */
+    .hero {
+      padding: 4rem 2.5rem 2.5rem 2.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .hero-pre {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .hero-pre::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      max-width: 860px;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    /* STATS STRIP */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-val {
+      font-size: 1.8rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: #fff;
+    }
+
+    .stat-lbl {
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    /* SEARCH / FILTER BAR */
+    .filter-bar {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .search-input {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    /* PACKAGE GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 1.75rem;
+      margin-bottom: 4rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-accent);
+      background: var(--bg-card-hover);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--accent-glow);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.85rem;
+    }
+
+    .card-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    .card-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(224, 93, 34, 0.12);
+      border: 1px solid rgba(224, 93, 34, 0.25);
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+    }
+
+    .card-paradigm {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .card-desc {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+      flex: 1;
+    }
+
+    .card-math {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      padding: 0.65rem 0.85rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.82rem;
+      overflow-x: auto;
+    }
+
+    .card-usecase {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .card-usecase strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      flex: 1;
+      text-align: center;
+      text-decoration: none;
+      padding: 0.7rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary:hover {
+      background: #fff;
+      color: #000;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border-color);
+      padding: 2rem 2.5rem;
+      background: rgba(8, 10, 15, 0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- GLOBAL NAVIGATION -->
+  <nav class="global-nav">
+    <div class="nav-brand">
+      <span class="nav-badge">Rust / WebGPU / WASM</span>
+      <span>Visualization Suite</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="../R%20Visualization/index.html" class="nav-link ">R</a></li>
+      <li><a href="../Julia%20Visualization/index.html" class="nav-link ">Julia</a></li>
+      <li><a href="../Rust%20VIsualization/index.html" class="nav-link active">Rust</a></li>
+      <li><a href="../Go%20Visualization/index.html" class="nav-link ">Go</a></li>
+      <li><a href="../C%20Plus%20Plus%20Visualization/index.html" class="nav-link ">C++</a></li>
+      <li><a href="../C%20Visualization/index.html" class="nav-link ">C</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <div class="hero">
+    <div class="hero-pre">Rust / WebGPU / WASM Enterprise Demonstrations</div>
+    <h1>Rust High-Performance Systems & WebAssembly</h1>
+    <p>Zero-cost abstractions, memory safety without garbage collection, WebGPU WGSL compute shaders, and instant WebAssembly rendering.</p>
+
+    <!-- METRICS STRIP -->
+    <div class="stats-strip">
+      <div class="stat-card">
+        <div class="stat-val">8</div>
+        <div class="stat-lbl">Production Packages</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">100%</div>
+        <div class="stat-lbl">Interactive Web Studios</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">0</div>
+        <div class="stat-lbl">External Slide Frameworks</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">Native</div>
+        <div class="stat-lbl">Code, Math & Architecture</div>
+      </div>
+    </div>
+
+    <!-- FILTER / SEARCH BAR -->
+    <div class="filter-bar">
+      <input type="text" id="filterInput" class="search-input" placeholder="Filter packages by algorithm, name, math model, or enterprise application..." onkeyup="filterCards()">
+    </div>
+
+    <!-- PACKAGE GRID -->
+    <div class="grid" id="pkgGrid">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">plotters</h2>
+          <span class="card-tag">plotters</span>
+        </div>
+        <div class="card-paradigm">Pure Rust Vector Rendering & Canvas Backend</div>
+        <p class="card-desc">Modular 2D/3D charting engine with compile-time checked drawing backends (SVG, HTML5 Canvas, WebAssembly, BitMap).</p>
+        <div class="card-math">$$y(x) = \sum_{k=1}^K \frac{(-1)^{k-1}}{2k-1} \cos((2k-1)\omega x) e^{-\zeta \omega x}$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Autonomous vehicle sensor stream telemetry, edge embedded telemetry charts.</div>
+        <div class="card-actions">
+          <a href="plotters/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="plotters/plotters_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">egui</h2>
+          <span class="card-tag">egui</span>
+        </div>
+        <div class="card-paradigm">Immediate Mode GUI & Real-Time DSP Oscilloscope</div>
+        <p class="card-desc">Zero-allocation immediate layout engine running at 120 FPS in WebAssembly, generating instantaneous vertex buffers for rendering.</p>
+        <div class="card-math">$$V_{\text{out}}(t) = V_{\text{in}} \cdot \sin(\omega_0 t + \phi) + \mathcal{N}(0, \sigma^2)$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Game engine internal developer tooling, high-frequency audio digital signal processing.</div>
+        <div class="card-actions">
+          <a href="egui/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="egui/egui_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">wgpu</h2>
+          <span class="card-tag">wgpu</span>
+        </div>
+        <div class="card-paradigm">WebGPU Compute Shaders & N-Body Gravitational Physics</div>
+        <p class="card-desc">Pure Rust native implementation of the WebGPU API with WGSL compute shaders executing parallel n-body matrix kernels.</p>
+        <div class="card-math">$$\mathbf{a}_i = G \sum_{j \neq i} \frac{m_j (\mathbf{r}_j - \mathbf{r}_i)}{(\|\mathbf{r}_j - \mathbf{r}_i\|^2 + \epsilon^2)^{3/2}}$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Astrophysical planetary accretion simulations, molecular dynamics energy minimization.</div>
+        <div class="card-actions">
+          <a href="wgpu/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="wgpu/wgpu_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">bevy</h2>
+          <span class="card-tag">bevy</span>
+        </div>
+        <div class="card-paradigm">Entity Component System (ECS) & 3D Spatial Meshes</div>
+        <p class="card-desc">Data-driven game and simulation engine utilizing archetype-based contiguous memory layouts for cache-friendly multicore scheduling.</p>
+        <div class="card-math">$$\mathbf{x}_{t+\Delta t} = \mathbf{x}_t + \mathbf{v}_t \Delta t + \frac{1}{2} \mathbf{a}_t \Delta t^2$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Digital twin smart factory floor simulation, architectural acoustics raycasting.</div>
+        <div class="card-actions">
+          <a href="bevy/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="bevy/bevy_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">kiss3d</h2>
+          <span class="card-tag">kiss3d</span>
+        </div>
+        <div class="card-paradigm">Minimalist 3D Graphics Engine & Kinematic Chains</div>
+        <p class="card-desc">Lightweight pure Rust 3D scenegraph engine seamlessly integrated with Rapier/NPhysics for forward/inverse kinematics.</p>
+        <div class="card-math">$$\mathbf{T}_{\text{end}} = \prod_{i=1}^N \begin{bmatrix} \mathbf{R}_i(\theta_i) & \mathbf{p}_i \\ \mathbf{0}^T & 1 \end{bmatrix}$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Robotic manipulator path planning, multi-axis CNC machine visual simulation.</div>
+        <div class="card-actions">
+          <a href="kiss3d/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="kiss3d/kiss3d_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">petgraph</h2>
+          <span class="card-tag">petgraph</span>
+        </div>
+        <div class="card-paradigm">Graph Theory & Minimum Spanning Tree Visualizer</div>
+        <p class="card-desc">Cache-optimized adjacency list graph algorithms including Kruskal, Prim, and Dijkstra with zero-overhead trait dispatch.</p>
+        <div class="card-math">$$\text{MST}(G) = \arg\min_T \sum_{e \in T} w(e) \quad \text{s.t. } T \text{ spans } V \text{ and is acyclic}$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Cloud VPC software-defined network routing, electrical power grid interconnect optimization.</div>
+        <div class="card-actions">
+          <a href="petgraph/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="petgraph/petgraph_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">geo</h2>
+          <span class="card-tag">geo</span>
+        </div>
+        <div class="card-paradigm">Voronoi Delaunay Tessellation & Geospatial Topology</div>
+        <p class="card-desc">Pure Rust computational geometry engine providing planar partitioning, convex hulls, and sweep-line polygon unioning.</p>
+        <div class="card-math">$$V(p_i) = \{ x \in \mathbb{R}^2 \mid \|x - p_i\| \le \|x - p_j\|, \; \forall j \neq i \}$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Urban emergency response station placement, cellular tower coverage optimization.</div>
+        <div class="card-actions">
+          <a href="geo/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="geo/geo_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">leptos</h2>
+          <span class="card-tag">leptos</span>
+        </div>
+        <div class="card-paradigm">Fine-Grained Reactive Web Framework & Level-2 Order Book</div>
+        <p class="card-desc">Cutting-edge signal-based reactive framework without a virtual DOM, compiling into tiny WebAssembly payloads with zero re-rendering overhead.</p>
+        <div class="card-math">$$\text{Depth}(P) = \sum_{i: p_i = P} q_i, \quad \text{Spread} = \min(P_{\text{ask}}) - \max(P_{\text{bid}})$$</div>
+        <div class="card-usecase"><strong>Enterprise:</strong> Crypto exchange high-frequency matching engine telemetry, institutional FX order book display.</div>
+        <div class="card-actions">
+          <a href="leptos/index.html" class="btn btn-primary">Launch Studio &rarr;</a>
+          <a href="leptos/leptos_studio.html" class="btn btn-secondary">Direct File</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>Executive Visualization Demonstration Portfolio &bull; 6 Language Implementations</div>
+    <div>Bespoke Pure-Code Interactive Engineering &bull; Fully Standalone HTML</div>
+  </footer>
+
+  <script>
+    function filterCards() {
+      const query = document.getElementById('filterInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        if (text.includes(query)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kepler.gl | Spatiotemporal Mobility Intelligence, GPS Traces & Fleet Flows | Visualization Masterclass</title>
+  <meta name="description" content="10 Advanced Visualization Paradigms engineered with Kepler.gl - Spatiotemporal Mobility Intelligence, GPS Traces & Fleet Flows">
+  
+  <!-- Typography Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Reveal.js Core Stylesheet with Local & CDN Fallback -->
+  <link rel="stylesheet" href="../../../vendor/reveal.min.css" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css'">
+  <link rel="stylesheet" href="../../../css/viz-deck.css">
+
+  <style>
+    
+:root {
+  --viz-dark-obsidian: #040805;
+  --viz-gold-bright: #f3cf65;
+  --viz-gold-deep: #b5935b;
+  --viz-neon-emerald: #00e676;
+  --viz-neon-cyan: #00e5ff;
+  --viz-crimson: #ff1744;
+  --viz-magenta: #d500f9;
+  --viz-text-light: #fffefa;
+  --viz-text-muted: #c5a880;
+  --viz-card-bg: rgba(14, 24, 19, 0.85);
+  --viz-card-border: rgba(212, 175, 55, 0.28);
+  --font-heading: 'Newsreader', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body, .reveal {
+  background-color: var(--viz-dark-obsidian) !important;
+  color: var(--viz-text-light);
+  font-family: var(--font-body);
+}
+
+.reveal .slides section {
+  text-align: left;
+  padding: 12px 30px;
+  height: 100%;
+}
+
+.deck-nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  background: rgba(4, 8, 5, 0.95);
+  border-bottom: 1px solid var(--viz-card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+}
+
+.deck-nav-bar a {
+  color: var(--viz-gold-bright);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deck-nav-bar a:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+
+.deck-footer-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 38px;
+  background: rgba(4, 8, 5, 0.95);
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  z-index: 1000;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--viz-text-muted);
+  box-sizing: border-box;
+}
+
+.slide-tag {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--viz-gold-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  display: inline-block;
+  margin-bottom: 2px;
+}
+
+.slide-headline {
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+  font-weight: 500;
+  color: #fffefa;
+  margin: 0 0 2px 0;
+  line-height: 1.15;
+}
+
+.slide-headline span {
+  color: var(--viz-gold-bright);
+  font-style: italic;
+}
+
+.slide-subtitle {
+  font-size: 0.88rem;
+  color: var(--viz-text-muted);
+  margin: 0 0 8px 0;
+  max-width: 95%;
+  line-height: 1.35;
+}
+
+.tech-badge {
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid var(--viz-gold-deep);
+  color: var(--viz-gold-bright);
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.viz-stage-split {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+  height: calc(100vh - 170px);
+  min-height: 520px;
+}
+
+.viz-canvas-container {
+  background: #020503;
+  border: 1px solid var(--viz-card-border);
+  border-radius: 8px;
+  padding: 12px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+.viz-info-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.spec-card {
+  background: var(--viz-card-bg);
+  border: 1px solid var(--viz-card-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.spec-card h4 {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--viz-gold-bright);
+  margin: 0 0 6px 0;
+}
+
+.spec-card p {
+  font-size: 0.82rem;
+  color: #ddd;
+  line-height: 1.45;
+  margin: 0 0 8px 0;
+}
+
+.code-box {
+  background: #050806;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #f3cf65;
+  overflow-x: auto;
+  line-height: 1.4;
+  max-height: 180px;
+}
+.code-box pre {
+  margin: 0;
+}
+
+.metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.metric-pill {
+  background: rgba(20, 32, 26, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 6px;
+  padding: 6px 8px;
+  text-align: center;
+}
+.metric-pill .lbl {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--viz-text-muted);
+  text-transform: uppercase;
+}
+.metric-pill .val {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--viz-gold-bright);
+}
+.metric-pill .sub {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--viz-neon-emerald);
+}
+
+  </style>
+
+  <script src="../../../vendor/reveal.min.js" onerror="this.href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js'"></script>
+</head>
+<body>
+
+  <!-- PERSISTENT TOP NAVIGATION -->
+  <div class="deck-nav-bar">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <a href="../../../index.html">
+        <span aria-hidden="true">&larr;</span> <strong>Visualization Portfolio Hub</strong>
+      </a>
+      <span style="opacity: 0.35;">|</span>
+      <span style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--viz-gold-bright);">Urban Computing Foundation</span>
+      <span style="opacity: 0.35;">|</span>
+      <span style="color: #fffefa; font-weight: 500; font-family: var(--font-heading); font-size: 1.15rem;">Kepler.gl: Spatiotemporal Mobility Intelligence, GPS Traces & Fleet Flows</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="tech-badge">Kepler.gl 3.0</span>
+      <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--viz-text-muted);">10 Distinct Slides</span>
+    </div>
+  </div>
+
+  <!-- PERSISTENT FOOTER BAR -->
+  <div class="deck-footer-bar">
+    <span><strong>Demostration of Visualization Software</strong> &bull; Kepler.gl Domain Showcase</span>
+    <span>Use <strong>Space / Arrows</strong> to Navigate &bull; Press <strong>F</strong> for Fullscreen &bull; <strong>O</strong> for Overview</span>
+  </div>
+
+  <div class="reveal">
+    <div class="slides">
+      
+      <!-- SLIDE 01: Spatiotemporal GPS Trip Trails: Time-Filtered Fleet Movement -->
+      <section id="s01-geo" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">01 / Spatiotemporal Flows</span>
+            <h2 class="slide-headline">Spatiotemporal GPS Trip Trails: <span> Time-Filtered Fleet Movement</span></h2>
+            <p class="slide-subtitle">GPU trip paths with animated head-trail decay mapping urban courier vehicle delivery routes over 24 hours.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Kepler.gl 3.0</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Keplergl-s01-geo-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s01-geo-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s01-geo-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Keplergl-s01-geo-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<path d="M 90 120 Q 140 90, 200 110 Q 230 160, 180 200 Q 120 220, 80 180 Z" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)"/>
+<path d="M 280 100 Q 360 80, 420 120 Q 380 190, 320 180 Q 270 140, 280 100 Z" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)"/>
+<path d="M 170 145 Q 237.5 80 305 125" fill="none" stroke="#d4af37" stroke-width="2" stroke-dasharray="4,4"/>
+<path d="M 305 125 Q 347.5 80 390 185" fill="none" stroke="#d4af37" stroke-width="2" stroke-dasharray="4,4"/>
+<path d="M 390 185 Q 437.5 140 485 240" fill="none" stroke="#d4af37" stroke-width="2" stroke-dasharray="4,4"/>
+<path d="M 485 240 Q 515.0 105 545 150" fill="none" stroke="#d4af37" stroke-width="2" stroke-dasharray="4,4"/>
+<path d="M 545 150 Q 357.5 100 170 145" fill="none" stroke="#d4af37" stroke-width="2" stroke-dasharray="4,4"/>
+<circle cx="170" cy="145" r="12" fill="rgba(0,229,255,0.2)"/>
+<circle cx="170" cy="145" r="5" fill="#00e5ff" stroke="#fff" stroke-width="1.5"/>
+<text x="170" y="135" fill="#fffefa" font-family="JetBrains Mono" font-size="10" font-weight="700" text-anchor="middle">JFK</text>
+<circle cx="305" cy="125" r="12" fill="rgba(0,229,255,0.2)"/>
+<circle cx="305" cy="125" r="5" fill="#00e5ff" stroke="#fff" stroke-width="1.5"/>
+<text x="305" y="115" fill="#fffefa" font-family="JetBrains Mono" font-size="10" font-weight="700" text-anchor="middle">LHR</text>
+<circle cx="390" cy="185" r="12" fill="rgba(0,229,255,0.2)"/>
+<circle cx="390" cy="185" r="5" fill="#00e5ff" stroke="#fff" stroke-width="1.5"/>
+<text x="390" y="175" fill="#fffefa" font-family="JetBrains Mono" font-size="10" font-weight="700" text-anchor="middle">DXB</text>
+<circle cx="485" cy="240" r="12" fill="rgba(0,229,255,0.2)"/>
+<circle cx="485" cy="240" r="5" fill="#00e5ff" stroke="#fff" stroke-width="1.5"/>
+<text x="485" y="230" fill="#fffefa" font-family="JetBrains Mono" font-size="10" font-weight="700" text-anchor="middle">SIN</text>
+<circle cx="545" cy="150" r="12" fill="rgba(0,229,255,0.2)"/>
+<circle cx="545" cy="150" r="5" fill="#00e5ff" stroke="#fff" stroke-width="1.5"/>
+<text x="545" y="140" fill="#fffefa" font-family="JetBrains Mono" font-size="10" font-weight="700" text-anchor="middle">HND</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Kepler.gl 3.0 pipeline executing in the Spatiotemporal Mobility Intelligence, GPS Traces & Fleet Flows domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>const map = renderKeplerMap({
+  id: 'kepler-map', mapState: { latitude: 37.77, longitude: -122.41, zoom: 11 },
+  visState: { filters: [{ type: 'timeRange', value: [startTime, endTime] }] }
+});</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">88.2k</span>
+          <span class="sub">Records/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">0.81 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 02: Uber H3 Spatial Hexagonal Hierarchy: Resolution 9 Demand Bins -->
+      <section id="s02-hexbin" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">02 / H3 Spatial Hexagons</span>
+            <h2 class="slide-headline">Uber H3 Spatial Hexagonal Hierarchy: <span> Resolution 9 Demand Bins</span></h2>
+            <p class="slide-subtitle">Discrete global grid system aggregating ride-hail surge pricing multipliers across hexagonal indices.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Kepler.gl 3.0</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Keplergl-s02-hexbin-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s02-hexbin-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s02-hexbin-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Keplergl-s02-hexbin-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<polygon points="98.0,65.0 89.0,80.6 71.0,80.6 62.0,65.0 71.0,49.4 89.0,49.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="129.2,65.0 120.2,80.6 102.2,80.6 93.2,65.0 102.2,49.4 120.2,49.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="160.4,65.0 151.4,80.6 133.4,80.6 124.4,65.0 133.4,49.4 151.4,49.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="191.5,65.0 182.5,80.6 164.5,80.6 155.5,65.0 164.5,49.4 182.5,49.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="222.7,65.0 213.7,80.6 195.7,80.6 186.7,65.0 195.7,49.4 213.7,49.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="253.9,65.0 244.9,80.6 226.9,80.6 217.9,65.0 226.9,49.4 244.9,49.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="285.1,65.0 276.1,80.6 258.1,80.6 249.1,65.0 258.1,49.4 276.1,49.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="316.2,65.0 307.2,80.6 289.2,80.6 280.2,65.0 289.2,49.4 307.2,49.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="347.4,65.0 338.4,80.6 320.4,80.6 311.4,65.0 320.4,49.4 338.4,49.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="378.6,65.0 369.6,80.6 351.6,80.6 342.6,65.0 351.6,49.4 369.6,49.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="409.8,65.0 400.8,80.6 382.8,80.6 373.8,65.0 382.8,49.4 400.8,49.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="440.9,65.0 431.9,80.6 413.9,80.6 404.9,65.0 413.9,49.4 431.9,49.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="472.1,65.0 463.1,80.6 445.1,80.6 436.1,65.0 445.1,49.4 463.1,49.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="503.3,65.0 494.3,80.6 476.3,80.6 467.3,65.0 476.3,49.4 494.3,49.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="534.5,65.0 525.5,80.6 507.5,80.6 498.5,65.0 507.5,49.4 525.5,49.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="565.6,65.0 556.6,80.6 538.6,80.6 529.6,65.0 538.6,49.4 556.6,49.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="113.6,92.0 104.6,107.6 86.6,107.6 77.6,92.0 86.6,76.4 104.6,76.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="144.8,92.0 135.8,107.6 117.8,107.6 108.8,92.0 117.8,76.4 135.8,76.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="175.9,92.0 166.9,107.6 148.9,107.6 139.9,92.0 148.9,76.4 166.9,76.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="207.1,92.0 198.1,107.6 180.1,107.6 171.1,92.0 180.1,76.4 198.1,76.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="238.3,92.0 229.3,107.6 211.3,107.6 202.3,92.0 211.3,76.4 229.3,76.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="269.5,92.0 260.5,107.6 242.5,107.6 233.5,92.0 242.5,76.4 260.5,76.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="300.6,92.0 291.6,107.6 273.6,107.6 264.6,92.0 273.6,76.4 291.6,76.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="331.8,92.0 322.8,107.6 304.8,107.6 295.8,92.0 304.8,76.4 322.8,76.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="363.0,92.0 354.0,107.6 336.0,107.6 327.0,92.0 336.0,76.4 354.0,76.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="394.2,92.0 385.2,107.6 367.2,107.6 358.2,92.0 367.2,76.4 385.2,76.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="425.3,92.0 416.3,107.6 398.3,107.6 389.3,92.0 398.3,76.4 416.3,76.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="456.5,92.0 447.5,107.6 429.5,107.6 420.5,92.0 429.5,76.4 447.5,76.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="487.7,92.0 478.7,107.6 460.7,107.6 451.7,92.0 460.7,76.4 478.7,76.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="518.9,92.0 509.9,107.6 491.9,107.6 482.9,92.0 491.9,76.4 509.9,76.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="550.1,92.0 541.1,107.6 523.1,107.6 514.1,92.0 523.1,76.4 541.1,76.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="581.2,92.0 572.2,107.6 554.2,107.6 545.2,92.0 554.2,76.4 572.2,76.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="98.0,119.0 89.0,134.6 71.0,134.6 62.0,119.0 71.0,103.4 89.0,103.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="129.2,119.0 120.2,134.6 102.2,134.6 93.2,119.0 102.2,103.4 120.2,103.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="160.4,119.0 151.4,134.6 133.4,134.6 124.4,119.0 133.4,103.4 151.4,103.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="191.5,119.0 182.5,134.6 164.5,134.6 155.5,119.0 164.5,103.4 182.5,103.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="222.7,119.0 213.7,134.6 195.7,134.6 186.7,119.0 195.7,103.4 213.7,103.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="253.9,119.0 244.9,134.6 226.9,134.6 217.9,119.0 226.9,103.4 244.9,103.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="285.1,119.0 276.1,134.6 258.1,134.6 249.1,119.0 258.1,103.4 276.1,103.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="316.2,119.0 307.2,134.6 289.2,134.6 280.2,119.0 289.2,103.4 307.2,103.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="347.4,119.0 338.4,134.6 320.4,134.6 311.4,119.0 320.4,103.4 338.4,103.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="378.6,119.0 369.6,134.6 351.6,134.6 342.6,119.0 351.6,103.4 369.6,103.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="409.8,119.0 400.8,134.6 382.8,134.6 373.8,119.0 382.8,103.4 400.8,103.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="440.9,119.0 431.9,134.6 413.9,134.6 404.9,119.0 413.9,103.4 431.9,103.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="472.1,119.0 463.1,134.6 445.1,134.6 436.1,119.0 445.1,103.4 463.1,103.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="503.3,119.0 494.3,134.6 476.3,134.6 467.3,119.0 476.3,103.4 494.3,103.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="534.5,119.0 525.5,134.6 507.5,134.6 498.5,119.0 507.5,103.4 525.5,103.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="565.6,119.0 556.6,134.6 538.6,134.6 529.6,119.0 538.6,103.4 556.6,103.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="113.6,146.0 104.6,161.6 86.6,161.6 77.6,146.0 86.6,130.4 104.6,130.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="144.8,146.0 135.8,161.6 117.8,161.6 108.8,146.0 117.8,130.4 135.8,130.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="175.9,146.0 166.9,161.6 148.9,161.6 139.9,146.0 148.9,130.4 166.9,130.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="207.1,146.0 198.1,161.6 180.1,161.6 171.1,146.0 180.1,130.4 198.1,130.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="238.3,146.0 229.3,161.6 211.3,161.6 202.3,146.0 211.3,130.4 229.3,130.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="269.5,146.0 260.5,161.6 242.5,161.6 233.5,146.0 242.5,130.4 260.5,130.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="300.6,146.0 291.6,161.6 273.6,161.6 264.6,146.0 273.6,130.4 291.6,130.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="331.8,146.0 322.8,161.6 304.8,161.6 295.8,146.0 304.8,130.4 322.8,130.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="363.0,146.0 354.0,161.6 336.0,161.6 327.0,146.0 336.0,130.4 354.0,130.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="394.2,146.0 385.2,161.6 367.2,161.6 358.2,146.0 367.2,130.4 385.2,130.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="425.3,146.0 416.3,161.6 398.3,161.6 389.3,146.0 398.3,130.4 416.3,130.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="456.5,146.0 447.5,161.6 429.5,161.6 420.5,146.0 429.5,130.4 447.5,130.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="487.7,146.0 478.7,161.6 460.7,161.6 451.7,146.0 460.7,130.4 478.7,130.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="518.9,146.0 509.9,161.6 491.9,161.6 482.9,146.0 491.9,130.4 509.9,130.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="550.1,146.0 541.1,161.6 523.1,161.6 514.1,146.0 523.1,130.4 541.1,130.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="581.2,146.0 572.2,161.6 554.2,161.6 545.2,146.0 554.2,130.4 572.2,130.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="98.0,173.0 89.0,188.6 71.0,188.6 62.0,173.0 71.0,157.4 89.0,157.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="129.2,173.0 120.2,188.6 102.2,188.6 93.2,173.0 102.2,157.4 120.2,157.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="160.4,173.0 151.4,188.6 133.4,188.6 124.4,173.0 133.4,157.4 151.4,157.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="191.5,173.0 182.5,188.6 164.5,188.6 155.5,173.0 164.5,157.4 182.5,157.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="222.7,173.0 213.7,188.6 195.7,188.6 186.7,173.0 195.7,157.4 213.7,157.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="253.9,173.0 244.9,188.6 226.9,188.6 217.9,173.0 226.9,157.4 244.9,157.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="285.1,173.0 276.1,188.6 258.1,188.6 249.1,173.0 258.1,157.4 276.1,157.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="316.2,173.0 307.2,188.6 289.2,188.6 280.2,173.0 289.2,157.4 307.2,157.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="347.4,173.0 338.4,188.6 320.4,188.6 311.4,173.0 320.4,157.4 338.4,157.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="378.6,173.0 369.6,188.6 351.6,188.6 342.6,173.0 351.6,157.4 369.6,157.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="409.8,173.0 400.8,188.6 382.8,188.6 373.8,173.0 382.8,157.4 400.8,157.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="440.9,173.0 431.9,188.6 413.9,188.6 404.9,173.0 413.9,157.4 431.9,157.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="472.1,173.0 463.1,188.6 445.1,188.6 436.1,173.0 445.1,157.4 463.1,157.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="503.3,173.0 494.3,188.6 476.3,188.6 467.3,173.0 476.3,157.4 494.3,157.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="534.5,173.0 525.5,188.6 507.5,188.6 498.5,173.0 507.5,157.4 525.5,157.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="565.6,173.0 556.6,188.6 538.6,188.6 529.6,173.0 538.6,157.4 556.6,157.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="113.6,200.0 104.6,215.6 86.6,215.6 77.6,200.0 86.6,184.4 104.6,184.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="144.8,200.0 135.8,215.6 117.8,215.6 108.8,200.0 117.8,184.4 135.8,184.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="175.9,200.0 166.9,215.6 148.9,215.6 139.9,200.0 148.9,184.4 166.9,184.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="207.1,200.0 198.1,215.6 180.1,215.6 171.1,200.0 180.1,184.4 198.1,184.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="238.3,200.0 229.3,215.6 211.3,215.6 202.3,200.0 211.3,184.4 229.3,184.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="269.5,200.0 260.5,215.6 242.5,215.6 233.5,200.0 242.5,184.4 260.5,184.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="300.6,200.0 291.6,215.6 273.6,215.6 264.6,200.0 273.6,184.4 291.6,184.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="331.8,200.0 322.8,215.6 304.8,215.6 295.8,200.0 304.8,184.4 322.8,184.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="363.0,200.0 354.0,215.6 336.0,215.6 327.0,200.0 336.0,184.4 354.0,184.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="394.2,200.0 385.2,215.6 367.2,215.6 358.2,200.0 367.2,184.4 385.2,184.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="425.3,200.0 416.3,215.6 398.3,215.6 389.3,200.0 398.3,184.4 416.3,184.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="456.5,200.0 447.5,215.6 429.5,215.6 420.5,200.0 429.5,184.4 447.5,184.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="487.7,200.0 478.7,215.6 460.7,215.6 451.7,200.0 460.7,184.4 478.7,184.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="518.9,200.0 509.9,215.6 491.9,215.6 482.9,200.0 491.9,184.4 509.9,184.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="550.1,200.0 541.1,215.6 523.1,215.6 514.1,200.0 523.1,184.4 541.1,184.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="581.2,200.0 572.2,215.6 554.2,215.6 545.2,200.0 554.2,184.4 572.2,184.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="98.0,227.0 89.0,242.6 71.0,242.6 62.0,227.0 71.0,211.4 89.0,211.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="129.2,227.0 120.2,242.6 102.2,242.6 93.2,227.0 102.2,211.4 120.2,211.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="160.4,227.0 151.4,242.6 133.4,242.6 124.4,227.0 133.4,211.4 151.4,211.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="191.5,227.0 182.5,242.6 164.5,242.6 155.5,227.0 164.5,211.4 182.5,211.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="222.7,227.0 213.7,242.6 195.7,242.6 186.7,227.0 195.7,211.4 213.7,211.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="253.9,227.0 244.9,242.6 226.9,242.6 217.9,227.0 226.9,211.4 244.9,211.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="285.1,227.0 276.1,242.6 258.1,242.6 249.1,227.0 258.1,211.4 276.1,211.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="316.2,227.0 307.2,242.6 289.2,242.6 280.2,227.0 289.2,211.4 307.2,211.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="347.4,227.0 338.4,242.6 320.4,242.6 311.4,227.0 320.4,211.4 338.4,211.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="378.6,227.0 369.6,242.6 351.6,242.6 342.6,227.0 351.6,211.4 369.6,211.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="409.8,227.0 400.8,242.6 382.8,242.6 373.8,227.0 382.8,211.4 400.8,211.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="440.9,227.0 431.9,242.6 413.9,242.6 404.9,227.0 413.9,211.4 431.9,211.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="472.1,227.0 463.1,242.6 445.1,242.6 436.1,227.0 445.1,211.4 463.1,211.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="503.3,227.0 494.3,242.6 476.3,242.6 467.3,227.0 476.3,211.4 494.3,211.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="534.5,227.0 525.5,242.6 507.5,242.6 498.5,227.0 507.5,211.4 525.5,211.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="565.6,227.0 556.6,242.6 538.6,242.6 529.6,227.0 538.6,211.4 556.6,211.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="113.6,254.0 104.6,269.6 86.6,269.6 77.6,254.0 86.6,238.4 104.6,238.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="144.8,254.0 135.8,269.6 117.8,269.6 108.8,254.0 117.8,238.4 135.8,238.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="175.9,254.0 166.9,269.6 148.9,269.6 139.9,254.0 148.9,238.4 166.9,238.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="207.1,254.0 198.1,269.6 180.1,269.6 171.1,254.0 180.1,238.4 198.1,238.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="238.3,254.0 229.3,269.6 211.3,269.6 202.3,254.0 211.3,238.4 229.3,238.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="269.5,254.0 260.5,269.6 242.5,269.6 233.5,254.0 242.5,238.4 260.5,238.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="300.6,254.0 291.6,269.6 273.6,269.6 264.6,254.0 273.6,238.4 291.6,238.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="331.8,254.0 322.8,269.6 304.8,269.6 295.8,254.0 304.8,238.4 322.8,238.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="363.0,254.0 354.0,269.6 336.0,269.6 327.0,254.0 336.0,238.4 354.0,238.4" fill="#d4af37" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="394.2,254.0 385.2,269.6 367.2,269.6 358.2,254.0 367.2,238.4 385.2,238.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="425.3,254.0 416.3,269.6 398.3,269.6 389.3,254.0 398.3,238.4 416.3,238.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="456.5,254.0 447.5,269.6 429.5,269.6 420.5,254.0 429.5,238.4 447.5,238.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="487.7,254.0 478.7,269.6 460.7,269.6 451.7,254.0 460.7,238.4 478.7,238.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="518.9,254.0 509.9,269.6 491.9,269.6 482.9,254.0 491.9,238.4 509.9,238.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="550.1,254.0 541.1,269.6 523.1,269.6 514.1,254.0 523.1,238.4 541.1,238.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="581.2,254.0 572.2,269.6 554.2,269.6 545.2,254.0 554.2,238.4 572.2,238.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="98.0,281.0 89.0,296.6 71.0,296.6 62.0,281.0 71.0,265.4 89.0,265.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="129.2,281.0 120.2,296.6 102.2,296.6 93.2,281.0 102.2,265.4 120.2,265.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="160.4,281.0 151.4,296.6 133.4,296.6 124.4,281.0 133.4,265.4 151.4,265.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="191.5,281.0 182.5,296.6 164.5,296.6 155.5,281.0 164.5,265.4 182.5,265.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="222.7,281.0 213.7,296.6 195.7,296.6 186.7,281.0 195.7,265.4 213.7,265.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="253.9,281.0 244.9,296.6 226.9,296.6 217.9,281.0 226.9,265.4 244.9,265.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="285.1,281.0 276.1,296.6 258.1,296.6 249.1,281.0 258.1,265.4 276.1,265.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="316.2,281.0 307.2,296.6 289.2,296.6 280.2,281.0 289.2,265.4 307.2,265.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="347.4,281.0 338.4,296.6 320.4,296.6 311.4,281.0 320.4,265.4 338.4,265.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="378.6,281.0 369.6,296.6 351.6,296.6 342.6,281.0 351.6,265.4 369.6,265.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="409.8,281.0 400.8,296.6 382.8,296.6 373.8,281.0 382.8,265.4 400.8,265.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="440.9,281.0 431.9,296.6 413.9,296.6 404.9,281.0 413.9,265.4 431.9,265.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="472.1,281.0 463.1,296.6 445.1,296.6 436.1,281.0 445.1,265.4 463.1,265.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="503.3,281.0 494.3,296.6 476.3,296.6 467.3,281.0 476.3,265.4 494.3,265.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="534.5,281.0 525.5,296.6 507.5,296.6 498.5,281.0 507.5,265.4 525.5,265.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="565.6,281.0 556.6,296.6 538.6,296.6 529.6,281.0 538.6,265.4 556.6,265.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="113.6,308.0 104.6,323.6 86.6,323.6 77.6,308.0 86.6,292.4 104.6,292.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="144.8,308.0 135.8,323.6 117.8,323.6 108.8,308.0 117.8,292.4 135.8,292.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="175.9,308.0 166.9,323.6 148.9,323.6 139.9,308.0 148.9,292.4 166.9,292.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="207.1,308.0 198.1,323.6 180.1,323.6 171.1,308.0 180.1,292.4 198.1,292.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="238.3,308.0 229.3,323.6 211.3,323.6 202.3,308.0 211.3,292.4 229.3,292.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="269.5,308.0 260.5,323.6 242.5,323.6 233.5,308.0 242.5,292.4 260.5,292.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="300.6,308.0 291.6,323.6 273.6,323.6 264.6,308.0 273.6,292.4 291.6,292.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="331.8,308.0 322.8,323.6 304.8,323.6 295.8,308.0 304.8,292.4 322.8,292.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="363.0,308.0 354.0,323.6 336.0,323.6 327.0,308.0 336.0,292.4 354.0,292.4" fill="rgba(0, 229, 255, 0.65)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="394.2,308.0 385.2,323.6 367.2,323.6 358.2,308.0 367.2,292.4 385.2,292.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="425.3,308.0 416.3,323.6 398.3,323.6 389.3,308.0 398.3,292.4 416.3,292.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="456.5,308.0 447.5,323.6 429.5,323.6 420.5,308.0 429.5,292.4 447.5,292.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="487.7,308.0 478.7,323.6 460.7,323.6 451.7,308.0 460.7,292.4 478.7,292.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="518.9,308.0 509.9,323.6 491.9,323.6 482.9,308.0 491.9,292.4 509.9,292.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="550.1,308.0 541.1,323.6 523.1,323.6 514.1,308.0 523.1,292.4 541.1,292.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="581.2,308.0 572.2,323.6 554.2,323.6 545.2,308.0 554.2,292.4 572.2,292.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="98.0,335.0 89.0,350.6 71.0,350.6 62.0,335.0 71.0,319.4 89.0,319.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="129.2,335.0 120.2,350.6 102.2,350.6 93.2,335.0 102.2,319.4 120.2,319.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="160.4,335.0 151.4,350.6 133.4,350.6 124.4,335.0 133.4,319.4 151.4,319.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="191.5,335.0 182.5,350.6 164.5,350.6 155.5,335.0 164.5,319.4 182.5,319.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="222.7,335.0 213.7,350.6 195.7,350.6 186.7,335.0 195.7,319.4 213.7,319.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="253.9,335.0 244.9,350.6 226.9,350.6 217.9,335.0 226.9,319.4 244.9,319.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="285.1,335.0 276.1,350.6 258.1,350.6 249.1,335.0 258.1,319.4 276.1,319.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="316.2,335.0 307.2,350.6 289.2,350.6 280.2,335.0 289.2,319.4 307.2,319.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="347.4,335.0 338.4,350.6 320.4,350.6 311.4,335.0 320.4,319.4 338.4,319.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="378.6,335.0 369.6,350.6 351.6,350.6 342.6,335.0 351.6,319.4 369.6,319.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="409.8,335.0 400.8,350.6 382.8,350.6 373.8,335.0 382.8,319.4 400.8,319.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="440.9,335.0 431.9,350.6 413.9,350.6 404.9,335.0 413.9,319.4 431.9,319.4" fill="rgba(0, 230, 118, 0.4)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="472.1,335.0 463.1,350.6 445.1,350.6 436.1,335.0 445.1,319.4 463.1,319.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="503.3,335.0 494.3,350.6 476.3,350.6 467.3,335.0 476.3,319.4 494.3,319.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="534.5,335.0 525.5,350.6 507.5,350.6 498.5,335.0 507.5,319.4 525.5,319.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<polygon points="565.6,335.0 556.6,350.6 538.6,350.6 529.6,335.0 538.6,319.4 556.6,319.4" fill="rgba(255, 255, 255, 0.03)" stroke="#060c08" stroke-width="1.2"/>
+<rect x="390" y="45" width="180" height="42" rx="4" fill="rgba(20,32,26,0.85)" stroke="#d4af37"/>
+<text x="400" y="62" fill="#fff" font-family="Newsreader" font-size="12">Dense Bivariate Modal Peak</text>
+<text x="400" y="78" fill="#d4af37" font-family="JetBrains Mono" font-size="9">λ = 14.8 events / hex cell</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Kepler.gl 3.0 pipeline executing in the Spatiotemporal Mobility Intelligence, GPS Traces & Fleet Flows domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>addDataToMap({ datasets: { info: { id: 'surge_data' }, data: h3Data } });</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">96.4k</span>
+          <span class="sub">Records/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">0.92 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 03: Bivariate Mobility Scatter: Vehicle Velocity vs Idle Dwell Time -->
+      <section id="s03-bubble" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">03 / Bivariate Point Clouds</span>
+            <h2 class="slide-headline">Bivariate Mobility Scatter: <span> Vehicle Velocity vs Idle Dwell Time</span></h2>
+            <p class="slide-subtitle">Point cluster layer correlating instantaneous vehicle speed against passenger boarding dwell duration.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Kepler.gl 3.0</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Keplergl-s03-bubble-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s03-bubble-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s03-bubble-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Keplergl-s03-bubble-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<line x1="320" y1="50" x2="320" y2="350" stroke="rgba(212,175,55,0.4)" stroke-width="1.5"/>
+<line x1="60" y1="200" x2="580" y2="200" stroke="rgba(212,175,55,0.4)" stroke-width="1.5"/>
+<circle cx="480" cy="110" r="26" fill="#00e676" fill-opacity="0.45" stroke="#00e676" stroke-width="2"/>
+<text x="480" y="114" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Alpha Core</text>
+<circle cx="420" cy="140" r="20" fill="#00e676" fill-opacity="0.45" stroke="#00e676" stroke-width="2"/>
+<text x="420" y="144" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Telemetry</text>
+<circle cx="500" cy="170" r="16" fill="#d4af37" fill-opacity="0.45" stroke="#d4af37" stroke-width="2"/>
+<text x="500" y="174" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Quant Node</text>
+<circle cx="220" cy="120" r="18" fill="#00e5ff" fill-opacity="0.45" stroke="#00e5ff" stroke-width="2"/>
+<text x="220" y="124" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Edge Fabric</text>
+<circle cx="440" cy="260" r="32" fill="#d4af37" fill-opacity="0.45" stroke="#d4af37" stroke-width="2"/>
+<text x="440" y="264" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Legacy Core</text>
+<circle cx="180" cy="280" r="15" fill="#ff1744" fill-opacity="0.45" stroke="#ff1744" stroke-width="2"/>
+<text x="180" y="284" fill="#fffefa" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Deprecate</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Kepler.gl 3.0 pipeline executing in the Spatiotemporal Mobility Intelligence, GPS Traces & Fleet Flows domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>updateMap({ visState: { layerBlending: 'additive' } });</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">104.6k</span>
+          <span class="sub">Records/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.03 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 04: Census Block Group Choropleth: Public Transit Commute Share -->
+      <section id="s04-geo_choropleth" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">04 / District Polygon Extrusion</span>
+            <h2 class="slide-headline">Census Block Group Choropleth: <span> Public Transit Commute Share</span></h2>
+            <p class="slide-subtitle">3D polygon choropleth highlighting public transit adoption rates across metropolitan census tracts.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Kepler.gl 3.0</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Keplergl-s04-geo_choropleth-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s04-geo_choropleth-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s04-geo_choropleth-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Keplergl-s04-geo_choropleth-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<polygon points="80,90 240,70 260,170 120,190" fill="rgba(212,175,55,0.45)" stroke="#030805" stroke-width="2.5"/>
+<polygon points="240,70 420,60 400,160 260,170" fill="rgba(0,229,255,0.55)" stroke="#030805" stroke-width="2.5"/>
+<polygon points="420,60 560,80 540,190 400,160" fill="rgba(0,230,118,0.4)" stroke="#030805" stroke-width="2.5"/>
+<polygon points="120,190 260,170 280,310 100,320" fill="rgba(213,0,249,0.35)" stroke="#030805" stroke-width="2.5"/>
+<polygon points="260,170 400,160 420,300 280,310" fill="rgba(212,175,55,0.75)" stroke="#030805" stroke-width="2.5"/>
+<polygon points="400,160 540,190 520,320 420,300" fill="rgba(255,145,0,0.4)" stroke="#030805" stroke-width="2.5"/>
+<circle cx="340" cy="235" r="8" fill="#fff" stroke="#d4af37" stroke-width="3" filter="url(#{gid}-glow)"/>
+<text x="340" y="220" fill="#fffefa" font-family="JetBrains Mono" font-size="10" text-anchor="middle">Metropolitan Epicenter</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Kepler.gl 3.0 pipeline executing in the Spatiotemporal Mobility Intelligence, GPS Traces & Fleet Flows domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>addCustomMapboxStyle();</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">112.8k</span>
+          <span class="sub">Records/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.14 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 05: Bilateral Commuting Flux: Inter-Borough Worker Inflow Chords -->
+      <section id="s05-chord" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">05 / Traffic Flow Matrix</span>
+            <h2 class="slide-headline">Bilateral Commuting Flux: <span> Inter-Borough Worker Inflow Chords</span></h2>
+            <p class="slide-subtitle">Directional chord flow mapping daily workforce migration across municipal bridge and tunnel crossings.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Kepler.gl 3.0</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Keplergl-s05-chord-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s05-chord-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s05-chord-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Keplergl-s05-chord-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<path d="M 465.0 210.0 A 145 145 0 0 1 410.1 323.6" fill="none" stroke="#d4af37" stroke-width="14" stroke-linecap="round"/>
+<text x="474.0" y="288.4" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="middle">Region Alpha</text>
+<path d="M 398.3 332.0 A 145 145 0 0 1 259.7 341.8" fill="none" stroke="#00e5ff" stroke-width="14" stroke-linecap="round"/>
+<text x="332.1" y="384.6" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="middle">Cluster Beta</text>
+<path d="M 246.8 335.2 A 145 145 0 0 1 175.1 216.0" fill="none" stroke="#00e676" stroke-width="14" stroke-linecap="round"/>
+<text x="173.5" y="302.2" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="middle">Fabric Gamma</text>
+<path d="M 175.2 201.5 A 145 145 0 0 1 248.9 83.6" fill="none" stroke="#d500f9" stroke-width="14" stroke-linecap="round"/>
+<text x="175.0" y="123.4" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="middle">Gateway Delta</text>
+<path d="M 261.9 77.2 A 145 145 0 0 1 387.9 81.9" fill="none" stroke="#ff9100" stroke-width="14" stroke-linecap="round"/>
+<text x="326.4" y="43.1" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="middle">Storage Epsilon</text>
+<path d="M 400.4 89.3 A 145 145 0 0 1 463.7 190.7" fill="none" stroke="#ff1744" stroke-width="14" stroke-linecap="round"/>
+<text x="465.0" y="123.4" fill="#fffefa" font-family="Newsreader" font-size="11" text-anchor="middle">Edge Zeta</text>
+<path d="M 454.3 237.2 Q 320 210 356.6 342.0 L 288.9 343.4 Q 320 210 424.8 298.3 Z" fill="#d4af37" fill-opacity="0.45"/>
+<path d="M 446.2 263.4 Q 320 210 228.7 312.2 L 190.9 255.9 Q 320 210 415.4 308.3 Z" fill="#00e5ff" fill-opacity="0.35"/>
+<path d="M 369.6 337.7 Q 320 210 187.5 175.0 L 220.5 115.8 Q 320 210 302.3 345.9 Z" fill="#00e676" fill-opacity="0.4"/>
+<path d="M 239.4 320.8 Q 320 210 291.1 76.1 L 358.9 78.6 Q 320 210 196.1 268.6 Z" fill="#ff9100" fill-opacity="0.35"/>
+<path d="M 184.7 188.4 Q 320 210 417.1 113.3 L 451.5 171.7 Q 320 210 211.6 126.2 Z" fill="#d500f9" fill-opacity="0.4"/>
+<text x="320" y="216" fill="#d4af37" font-family="JetBrains Mono" font-size="14" font-weight="700" text-anchor="middle">$842.6 M FLUX</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Kepler.gl 3.0 pipeline executing in the Spatiotemporal Mobility Intelligence, GPS Traces & Fleet Flows domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>fitBounds(bounds);</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">121.0k</span>
+          <span class="sub">Records/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.25 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 06: Kepler.gl Redux State Flow: Dataset Ingestion to Layer Config -->
+      <section id="s06-diagram_flow" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">06 / Filter Pipeline Flow</span>
+            <h2 class="slide-headline">Kepler.gl Redux State Flow: <span> Dataset Ingestion to Layer Config</span></h2>
+            <p class="slide-subtitle">Flowchart modeling action dispatchers: addDataToMap, updateVisData, layerConfigChange, and UI state.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Kepler.gl 3.0</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Keplergl-s06-diagram_flow-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s06-diagram_flow-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s06-diagram_flow-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Keplergl-s06-diagram_flow-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<rect x="50" y="60" width="540" height="135" fill="rgba(255,255,255,0.02)" stroke="rgba(212,175,55,0.2)" rx="4"/>
+<text x="65" y="80" fill="rgba(212,175,55,0.6)" font-family="JetBrains Mono" font-size="10">USER AGENT LANE</text>
+<rect x="50" y="205" width="540" height="155" fill="rgba(255,255,255,0.03)" stroke="rgba(0,229,255,0.2)" rx="4"/>
+<text x="65" y="225" fill="rgba(0,229,255,0.6)" font-family="JetBrains Mono" font-size="10">BACKEND ENGINE LANE</text>
+<circle cx="100" cy="125" r="18" fill="rgba(0,230,118,0.2)" stroke="#00e676" stroke-width="2.5"/>
+<polygon points="95,116 108,125 95,134" fill="#00e676"/>
+<rect x="150" y="102" width="110" height="46" rx="6" fill="#14201a" stroke="#d4af37" stroke-width="1.5"/>
+<text x="205" y="125" fill="#fff" font-family="Newsreader" font-size="11" text-anchor="middle">Submit Ingest</text>
+<text x="205" y="138" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="8" text-anchor="middle">REST / GraphQL</text>
+<polygon points="320,95 355,125 320,155 285,125" fill="#14201a" stroke="#00e5ff" stroke-width="2"/>
+<text x="320" y="129" fill="#00e5ff" font-family="JetBrains Mono" font-size="11" font-weight="700" text-anchor="middle">VALID?</text>
+<rect x="265" y="255" width="110" height="48" rx="6" fill="#14201a" stroke="#00e5ff" stroke-width="1.5"/>
+<text x="320" y="278" fill="#fff" font-family="Newsreader" font-size="11" text-anchor="middle">Async Pipeline</text>
+<text x="320" y="292" fill="#00e676" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Kafka Partition</text>
+<rect x="425" y="255" width="110" height="48" rx="6" fill="#14201a" stroke="#d4af37" stroke-width="1.5"/>
+<text x="480" y="278" fill="#fff" font-family="Newsreader" font-size="11" text-anchor="middle">Consensus Ledger</text>
+<text x="480" y="292" fill="#d4af37" font-family="JetBrains Mono" font-size="8" text-anchor="middle">Raft Commit</text>
+<circle cx="550" cy="125" r="18" fill="rgba(255,23,68,0.15)" stroke="#ff1744" stroke-width="3"/>
+<circle cx="550" cy="125" r="13" fill="#ff1744"/>
+<line x1="118" y1="125" x2="150" y2="125" stroke="#00e676" stroke-width="2"/>
+<line x1="260" y1="125" x2="285" y2="125" stroke="#d4af37" stroke-width="2"/>
+<line x1="320" y1="155" x2="320" y2="255" stroke="#00e5ff" stroke-width="2"/>
+<text x="328" y="215" fill="#00e5ff" font-family="JetBrains Mono" font-size="9">[Valid: Yes]</text>
+<line x1="375" y1="279" x2="425" y2="279" stroke="#00e5ff" stroke-width="2"/>
+<path d="M 480 255 L 480 125 L 532 125" fill="none" stroke="#d4af37" stroke-width="2"/>
+<line x1="355" y1="125" x2="532" y2="125" stroke="#ff1744" stroke-width="2" stroke-dasharray="3,3"/>
+<text x="430" y="118" fill="#ff1744" font-family="JetBrains Mono" font-size="9">[Reject: 400]</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Kepler.gl 3.0 pipeline executing in the Spatiotemporal Mobility Intelligence, GPS Traces & Fleet Flows domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>dispatch(addDataToMap({ datasets, options }));</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">129.2k</span>
+          <span class="sub">Records/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.36 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 07: Connected Vehicle Cloud Schema: Fleet GPS Telemetry ERD -->
+      <section id="s07-er_diagram" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">07 / Fleet Telemetry ERD</span>
+            <h2 class="slide-headline">Connected Vehicle Cloud Schema: <span> Fleet GPS Telemetry ERD</span></h2>
+            <p class="slide-subtitle">Entity relationship diagram mapping vehicle device shadow, geofence definitions, and trip analytics.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Kepler.gl 3.0</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Keplergl-s07-er_diagram-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s07-er_diagram-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s07-er_diagram-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Keplergl-s07-er_diagram-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<rect x="60" y="80" width="160" height="120" fill="#0a120d" stroke="#d4af37" stroke-width="1.5" rx="4"/>
+<rect x="60" y="80" width="160" height="28" fill="rgba(212,175,55,0.2)" rx="4"/>
+<text x="140.0" y="98" fill="#fffefa" font-family="Newsreader" font-size="12" font-weight="600" text-anchor="middle">users</text>
+<text x="70" y="126" fill="#00e676" font-family="JetBrains Mono" font-size="9">[PK] id</text>
+<text x="210" y="126" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="8" text-anchor="end">uuid</text>
+<text x="70" y="148" fill="#00e5ff" font-family="JetBrains Mono" font-size="9">[FK] org_id</text>
+<text x="210" y="148" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="8" text-anchor="end">uuid</text>
+<text x="70" y="170" fill="rgba(255,255,255,0.7)" font-family="JetBrains Mono" font-size="9"> email</text>
+<text x="210" y="170" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="8" text-anchor="end">varchar</text>
+<text x="70" y="192" fill="rgba(255,255,255,0.7)" font-family="JetBrains Mono" font-size="9"> role</text>
+<text x="210" y="192" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="8" text-anchor="end">varchar</text>
+<rect x="390" y="80" width="170" height="120" fill="#0a120d" stroke="#d4af37" stroke-width="1.5" rx="4"/>
+<rect x="390" y="80" width="170" height="28" fill="rgba(212,175,55,0.2)" rx="4"/>
+<text x="475.0" y="98" fill="#fffefa" font-family="Newsreader" font-size="12" font-weight="600" text-anchor="middle">organizations</text>
+<text x="400" y="126" fill="#00e676" font-family="JetBrains Mono" font-size="9">[PK] id</text>
+<text x="550" y="126" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="8" text-anchor="end">uuid</text>
+<text x="400" y="148" fill="rgba(255,255,255,0.7)" font-family="JetBrains Mono" font-size="9"> name</text>
+<text x="550" y="148" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="8" text-anchor="end">varchar</text>
+<text x="400" y="170" fill="rgba(255,255,255,0.7)" font-family="JetBrains Mono" font-size="9"> tier</text>
+<text x="550" y="170" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="8" text-anchor="end">varchar</text>
+<text x="400" y="192" fill="rgba(255,255,255,0.7)" font-family="JetBrains Mono" font-size="9"> mrr</text>
+<text x="550" y="192" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="8" text-anchor="end">numeric</text>
+<rect x="225" y="230" width="180" height="142" fill="#0a120d" stroke="#d4af37" stroke-width="1.5" rx="4"/>
+<rect x="225" y="230" width="180" height="28" fill="rgba(212,175,55,0.2)" rx="4"/>
+<text x="315.0" y="248" fill="#fffefa" font-family="Newsreader" font-size="12" font-weight="600" text-anchor="middle">subscriptions</text>
+<text x="235" y="276" fill="#00e676" font-family="JetBrains Mono" font-size="9">[PK] id</text>
+<text x="395" y="276" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="8" text-anchor="end">uuid</text>
+<text x="235" y="298" fill="#00e5ff" font-family="JetBrains Mono" font-size="9">[FK] user_id</text>
+<text x="395" y="298" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="8" text-anchor="end">uuid</text>
+<text x="235" y="320" fill="rgba(255,255,255,0.7)" font-family="JetBrains Mono" font-size="9"> plan_id</text>
+<text x="395" y="320" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="8" text-anchor="end">varchar</text>
+<text x="235" y="342" fill="rgba(255,255,255,0.7)" font-family="JetBrains Mono" font-size="9"> status</text>
+<text x="395" y="342" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="8" text-anchor="end">varchar</text>
+<text x="235" y="364" fill="rgba(255,255,255,0.7)" font-family="JetBrains Mono" font-size="9"> renew_at</text>
+<text x="395" y="364" fill="rgba(255,255,255,0.4)" font-family="JetBrains Mono" font-size="8" text-anchor="end">timestamptz</text>
+<path d="M 220 135 L 390 135" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<path d="M 140 200 L 140 280 L 225 280" fill="none" stroke="#00e676" stroke-width="2"/>
+<path d="M 475 200 L 475 280 L 405 280" fill="none" stroke="#d4af37" stroke-width="2"/></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Kepler.gl 3.0 pipeline executing in the Spatiotemporal Mobility Intelligence, GPS Traces & Fleet Flows domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>dispatch(updateMap(mapState));</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">137.4k</span>
+          <span class="sub">Records/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.47 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 08: EV Fleet Transition Roadmap Gantt: Depot Charger Installation -->
+      <section id="s08-gantt" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">08 / Fleet Electrification</span>
+            <h2 class="slide-headline">EV Fleet Transition Roadmap Gantt: <span> Depot Charger Installation</span></h2>
+            <p class="slide-subtitle">Fleet electrification timeline: High-voltage utility grid interconnects, fast DC chargers, and battery vans.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Kepler.gl 3.0</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Keplergl-s08-gantt-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s08-gantt-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s08-gantt-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Keplergl-s08-gantt-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<text x="165" y="111" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Architecture Blueprint</text>
+<rect x="70" y="95" width="180" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="70" y="95" width="180.0" height="22" rx="4" fill="#d4af37" fill-opacity="0.85"/>
+<text x="260" y="110" fill="#d4af37" font-family="JetBrains Mono" font-size="10">100%</text>
+<text x="165" y="159" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Security Mesh</text>
+<rect x="140" y="143" width="160" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="140" y="143" width="136.0" height="22" rx="4" fill="#00e5ff" fill-opacity="0.85"/>
+<text x="310" y="158" fill="#00e5ff" font-family="JetBrains Mono" font-size="10">85%</text>
+<text x="165" y="207" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Data Ingestion</text>
+<rect x="190" y="191" width="190" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="190" y="191" width="114.0" height="22" rx="4" fill="#00e676" fill-opacity="0.85"/>
+<text x="390" y="206" fill="#00e676" font-family="JetBrains Mono" font-size="10">60%</text>
+<text x="165" y="255" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Training & Validation</text>
+<rect x="260" y="239" width="170" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="260" y="239" width="68.0" height="22" rx="4" fill="#d500f9" fill-opacity="0.85"/>
+<text x="440" y="254" fill="#d500f9" font-family="JetBrains Mono" font-size="10">40%</text>
+<text x="165" y="303" fill="#fffefa" font-family="Newsreader" font-size="12" text-anchor="end">Global Deployment</text>
+<rect x="340" y="287" width="150" height="22" rx="4" fill="rgba(255,255,255,0.08)"/>
+<rect x="340" y="287" width="22.5" height="22" rx="4" fill="#ff9100" fill-opacity="0.85"/>
+<text x="500" y="302" fill="#ff9100" font-family="JetBrains Mono" font-size="10">15%</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Kepler.gl 3.0 pipeline executing in the Spatiotemporal Mobility Intelligence, GPS Traces & Fleet Flows domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>dispatch(toggleSidePanel('layer'));</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">145.6k</span>
+          <span class="sub">Records/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.58 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 09: Large Dataset Load Time Bullet: 1 Million Rows Loaded in 2.5s -->
+      <section id="s09-bullet" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">09 / Map Ingestion SLA</span>
+            <h2 class="slide-headline">Large Dataset Load Time Bullet: <span> 1 Million Rows Loaded in 2.5s</span></h2>
+            <p class="slide-subtitle">CSV/Arrow spatial parsing and GPU buffer generation evaluated against interactive browser standards.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Kepler.gl 3.0</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Keplergl-s09-bullet-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s09-bullet-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s09-bullet-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ff1744" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Keplergl-s09-bullet-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+<text x="180" y="93" fill="#fffefa" font-family="Newsreader" font-size="13" text-anchor="end">Throughput Target</text>
+<rect x="200" y="75" width="360" height="34" rx="3" fill="rgba(255,255,255,0.06)"/>
+<rect x="200" y="75" width="280" height="34" rx="3" fill="rgba(255,255,255,0.1)"/>
+<rect x="200" y="84" width="302.4" height="16" fill="#d4af37" rx="2"/>
+<line x1="545.5999999999999" y1="71" x2="545.5999999999999" y2="113" stroke="#00e5ff" stroke-width="3"/>
+<text x="180" y="168" fill="#fffefa" font-family="Newsreader" font-size="13" text-anchor="end">Operating Margin</text>
+<rect x="200" y="150" width="360" height="34" rx="3" fill="rgba(255,255,255,0.06)"/>
+<rect x="200" y="150" width="280" height="34" rx="3" fill="rgba(255,255,255,0.1)"/>
+<rect x="200" y="159" width="262.4" height="16" fill="#d4af37" rx="2"/>
+<line x1="488.0" y1="146" x2="488.0" y2="188" stroke="#00e5ff" stroke-width="3"/>
+<text x="180" y="243" fill="#fffefa" font-family="Newsreader" font-size="13" text-anchor="end">Retention Rate</text>
+<rect x="200" y="225" width="360" height="34" rx="3" fill="rgba(255,255,255,0.06)"/>
+<rect x="200" y="225" width="280" height="34" rx="3" fill="rgba(255,255,255,0.1)"/>
+<rect x="200" y="234" width="300.79999999999995" height="16" fill="#d4af37" rx="2"/>
+<line x1="504.0" y1="221" x2="504.0" y2="263" stroke="#00e5ff" stroke-width="3"/>
+<text x="180" y="318" fill="#fffefa" font-family="Newsreader" font-size="13" text-anchor="end">Sprint Velocity</text>
+<rect x="200" y="300" width="360" height="34" rx="3" fill="rgba(255,255,255,0.06)"/>
+<rect x="200" y="300" width="280" height="34" rx="3" fill="rgba(255,255,255,0.1)"/>
+<rect x="200" y="309" width="118.80000000000001" height="16" fill="#d4af37" rx="2"/>
+<line x1="308.0" y1="296" x2="308.0" y2="338" stroke="#00e5ff" stroke-width="3"/></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Kepler.gl 3.0 pipeline executing in the Spatiotemporal Mobility Intelligence, GPS Traces & Fleet Flows domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>dispatch(resetMapConfig());</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">153.8k</span>
+          <span class="sub">Records/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.69 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+
+      <!-- SLIDE 10: Client In-Memory Arrow Table Saturation: RAM Headroom Level -->
+      <section id="s10-liquid" data-transition="fade">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <span class="slide-tag">10 / Browser Memory Headroom</span>
+            <h2 class="slide-headline">Client In-Memory Arrow Table Saturation: <span> RAM Headroom Level</span></h2>
+            <p class="slide-subtitle">Apache Arrow columnar table memory allocation buffer monitoring dataset size against browser tab limits.</p>
+          </div>
+          <div style="text-align: right; padding-top: 2px;">
+            <span class="tech-badge">Kepler.gl 3.0</span>
+          </div>
+        </div>
+        
+        <div class="viz-stage-split">
+          <div class="viz-canvas-container">
+            <svg viewBox="0 0 640 420" style="width:100%; height:100%;"><defs>
+      <linearGradient id="g-Keplergl-s10-liquid-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#d4af37" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.35"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s10-liquid-sec" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00e676" stop-opacity="0.15"/>
+      </linearGradient>
+      <linearGradient id="g-Keplergl-s10-liquid-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#d500f9" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#d4af37" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="g-Keplergl-s10-liquid-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs><clipPath id="g-Keplergl-s10-liquid-circle-clip"><circle cx="320" cy="210" r="137" /></clipPath>
+<circle cx="320" cy="210" r="140" fill="rgba(20,32,26,0.6)" stroke="#d4af37" stroke-width="3"/>
+<path d="M 160 370 L 160,228.1 L 160,228.1 L 170,234.5 L 180,240.1 L 190,244.1 L 200,245.9 L 210,245.2 L 220,242.1 L 230,237.1 L 240,230.9 L 250,224.6 L 260,219.2 L 270,215.5 L 280,214.0 L 290,215.1 L 300,218.5 L 310,223.8 L 320,230.0 L 330,236.2 L 340,241.5 L 350,244.9 L 360,246.0 L 370,244.5 L 380,240.8 L 390,235.4 L 400,229.1 L 410,222.9 L 420,217.9 L 430,214.8 L 440,214.1 L 450,215.9 L 460,219.9 L 470,225.5 L 480,231.9 L 480 370 Z" fill="url(#g-Keplergl-s10-liquid-sec)" clip-path="url(#g-Keplergl-s10-liquid-circle-clip)" opacity="0.6"/>
+<path d="M 160 370 L 160,253.9 L 160,253.9 L 170,252.2 L 180,248.6 L 190,243.6 L 200,238.0 L 210,232.8 L 220,228.7 L 230,226.4 L 240,226.2 L 250,228.2 L 260,232.1 L 270,237.2 L 280,242.8 L 290,247.9 L 300,251.8 L 310,253.8 L 320,253.6 L 330,251.3 L 340,247.2 L 350,242.0 L 360,236.4 L 370,231.4 L 380,227.8 L 390,226.1 L 400,226.6 L 410,229.2 L 420,233.5 L 430,238.8 L 440,244.4 L 450,249.2 L 460,252.6 L 470,254.0 L 480,253.2 L 480 370 Z" fill="url(#g-Keplergl-s10-liquid-primary)" clip-path="url(#g-Keplergl-s10-liquid-circle-clip)" opacity="0.85"/>
+<text x="320" y="202" fill="#fffefa" font-family="JetBrains Mono" font-size="34" font-weight="700" text-anchor="middle">84.6%</text>
+<text x="320" y="228" fill="#d4af37" font-family="Newsreader" font-size="15" text-anchor="middle">Capital Adequacy Ratio</text></svg>
+          </div>
+          
+          <div class="viz-info-column">
+            <div class="spec-card">
+              <h4>Engineering Architecture</h4>
+              <p>Tailored Kepler.gl 3.0 pipeline executing in the Spatiotemporal Mobility Intelligence, GPS Traces & Fleet Flows domain. Realizes strict analytical fidelity with hardware acceleration and reactive telemetry.</p>
+              <div class="code-box">
+                <pre><code>dispatch(cleanupExportImage());</code></pre>
+              </div>
+            </div>
+
+            <div class="metrics-strip">
+              <div class="metric-pill">
+          <span class="lbl">Throughput</span>
+          <span class="val">162.0k</span>
+          <span class="sub">Records/Sec</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Render Type</span>
+          <span class="val">Vector/GPU</span>
+          <span class="sub">Accelerated</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Precision</span>
+          <span class="val">64-bit</span>
+          <span class="sub">Float Math</span>
+        </div>
+<div class="metric-pill">
+          <span class="lbl">Latency</span>
+          <span class="val">1.80 ms</span>
+          <span class="sub">Native Frame</span>
+        </div>
+            </div>
+
+            <div class="spec-card" style="margin-top: -2px;">
+              <h4>Analytical Specification</h4>
+              <p>Engineered for mission-critical decision support, multivariate parameter exploration, and high-frequency real-time continuous rendering.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    
+    </div>
+  </div>
+
+  <!-- Reveal.js Engine Initialization -->
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      controls: true,
+      progress: true,
+      center: false,
+      transition: 'fade',
+      width: 1440,
+      height: 900,
+      margin: 0.04
+    });
+    Reveal.on('slidechanged', function(event) {
+      window.dispatchEvent(new Event('resize'));
+    });
+  </script>
+</body>
+</html>
