@@ -6,16 +6,19 @@
 let globalData = null;
 let currentFilter = 'all';
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function init() {
   try {
-    const res = await fetch('data/tours_distribution_data.json');
-    globalData = await res.json();
+    globalData = window.TOURS_DATA;
+    if (!globalData) {
+      const res = await fetch('data/tours_distribution_data.json');
+      globalData = await res.json();
+    }
     
     initTabs();
     // Support direct linking to tabs via URL hash
     if (window.location.hash) {
       const tabId = window.location.hash.substring(1);
-      const targetBtn = document.querySelector(".tab-btn[data-tab="" + tabId + ""]");
+      const targetBtn = document.querySelector('.tab-btn[data-tab="' + tabId + '"]');
       if (targetBtn) {
         targetBtn.click();
       }
@@ -30,7 +33,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (err) {
     console.error('Error loading tours distribution data:', err);
   }
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 
 function initTabs() {
   const tabBtns = document.querySelectorAll('.tab-btn');
