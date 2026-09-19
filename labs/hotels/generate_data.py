@@ -1,0 +1,581 @@
+import json
+import csv
+import os
+
+labs_dir = "/run/media/ml/Storage/Labs"
+
+# 1. Global Metrics
+global_metrics = {
+    "global_gbv_billions": 600.0,
+    "total_distribution_cost_billions": 87.7,
+    "net_hotel_revenue_billions": 512.3,
+    "direct_channel_share_pct": 35.0,
+    "indirect_channel_share_pct": 65.0,
+    "blended_distribution_take_rate_pct": 14.61,
+    "total_annual_room_nights_millions": 4250,
+    "global_blended_adr_usd": 141.18
+}
+
+# 2. Sankey Nodes
+nodes = [
+    # Tier 0: Hotel Supply (Index 0-3)
+    {"id": "supply_chain", "name": "Branded & Chain Hotels", "tier": 0, "category": "Supply", "color": "#3b82f6", "value": 270.0, "desc": "Marriott, Hilton, IHG, Accor, Wyndham, Hyatt, Choice"},
+    {"id": "supply_indep", "name": "Independent & Boutique Hotels", "tier": 0, "category": "Supply", "color": "#06b6d4", "value": 250.0, "desc": "Unbranded properties, boutique collections, regional hotels"},
+    {"id": "supply_resort", "name": "Resorts, Casinos & Luxury", "tier": 0, "category": "Supply", "color": "#8b5cf6", "value": 50.0, "desc": "Integrated casino resorts, luxury destination properties, safari lodges"},
+    {"id": "supply_extend", "name": "Serviced Apts & Extended Stay", "tier": 0, "category": "Supply", "color": "#10b981", "value": 30.0, "desc": "Apart-hotels, corporate housing, long-stay residences"},
+
+    # Tier 1: Tech & Connectivity (Index 4-7)
+    {"id": "tech_crs", "name": "Central Reservation Systems (CRS)", "tier": 1, "category": "Tech Infrastructure", "color": "#6366f1", "value": 280.0, "desc": "Sabre SynXis, Amadeus iHotelier, Windsurfer, MARSHA, OnQ"},
+    {"id": "tech_cm", "name": "Channel Managers & Switches", "tier": 1, "category": "Tech Infrastructure", "color": "#ec4899", "value": 220.0, "desc": "SiteMinder, RateGain, DerbySoft, D-EDGE, Pegasus Switch"},
+    {"id": "tech_pms", "name": "Direct Property PMS & Front Desk", "tier": 1, "category": "Tech Infrastructure", "color": "#f59e0b", "value": 70.0, "desc": "Oracle Opera, Cloudbeds, Mews, Protel, on-property walk-in"},
+    {"id": "tech_group", "name": "Group & MICE Sales Engines", "tier": 1, "category": "Tech Infrastructure", "color": "#14b8a6", "value": 30.0, "desc": "Amadeus Delphi, Cvent, MeetingBroker, direct RFP tools"},
+
+    # Tier 2: Primary Channels & Aggregators (Index 8-16)
+    {"id": "chan_direct_web", "name": "Direct Brand.com Web & App", "tier": 2, "category": "Direct Channels", "color": "#22c55e", "value": 130.0, "desc": "Hotel brand websites, mobile apps, direct booking engines"},
+    {"id": "chan_loyalty", "name": "Loyalty Platform (Closed User Group)", "tier": 2, "category": "Direct Channels", "color": "#15803d", "value": 35.0, "desc": "Bonvoy, Honors, IHG One, member-only rates, points redemption"},
+    {"id": "chan_voice", "name": "Direct Voice & Call Center (CRO)", "tier": 2, "category": "Direct Channels", "color": "#84cc16", "value": 20.0, "desc": "Central Reservations Office, in-house hotel phone booking agents"},
+    {"id": "chan_walkin", "name": "Property Direct & Walk-In", "tier": 2, "category": "Direct Channels", "color": "#eab308", "value": 25.0, "desc": "Front desk walk-in guests, direct phone calls to property desk"},
+    {"id": "chan_mega_ota", "name": "Global Mega-OTAs", "tier": 2, "category": "OTAs", "color": "#f97316", "value": 165.0, "desc": "Booking Holdings (Booking.com, Agoda), Expedia Group, Trip.com Group"},
+    {"id": "chan_reg_ota", "name": "Regional & Niche OTAs", "tier": 2, "category": "OTAs", "color": "#fb923c", "value": 30.0, "desc": "Traveloka, Despegar, MakeMyTrip, HRS, Rakuten Travel"},
+    {"id": "chan_gds", "name": "Global Distribution Systems (GDS)", "tier": 2, "category": "B2B Aggregators", "color": "#a855f7", "value": 105.0, "desc": "Sabre, Amadeus, Travelport (Apollo/Galileo/Worldspan)"},
+    {"id": "chan_bedbanks", "name": "Bedbanks & Wholesalers", "tier": 2, "category": "B2B Aggregators", "color": "#d946ef", "value": 60.0, "desc": "Hotelbeds, WebBeds, Travco, Tourico heritage, FIT wholesalers"},
+    {"id": "chan_mice_direct", "name": "Direct Group & MICE Sales", "tier": 2, "category": "B2B Group", "color": "#0d9488", "value": 30.0, "desc": "Hotel sales managers negotiating directly with corporate event planners"},
+
+    # Tier 3: Secondary Intermediaries & Front-Ends (Index 17-23)
+    {"id": "ret_direct_fe", "name": "Direct Brand / Consumer Front-Ends", "tier": 3, "category": "Retail Front-Ends", "color": "#4ade80", "value": 195.0, "desc": "Combined direct digital & property touchpoints ($115B web + $35B loyalty + $20B voice + $25B walk-in)"},
+    {"id": "ret_corp_portal", "name": "Corporate Direct Booking Portals", "tier": 3, "category": "Retail Front-Ends", "color": "#16a34a", "value": 15.0, "desc": "Direct corporate negotiated rates booked through enterprise client portals"},
+    {"id": "ret_ota_apps", "name": "OTA Consumer Apps & Sites", "tier": 3, "category": "OTA Retail", "color": "#ea580c", "value": 195.0, "desc": "Consumer mobile apps and websites of global & regional OTAs"},
+    {"id": "ret_tmc", "name": "Corporate TMCs & OBTs", "tier": 3, "category": "Corporate B2B", "color": "#9333ea", "value": 90.0, "desc": "Amex GBT, BCD, CWT, Navan, SAP Concur, Cytric, TravelPerk"},
+    {"id": "ret_consortia", "name": "Retail Travel Agencies & Consortia", "tier": 3, "category": "B2B Retail", "color": "#c026d3", "value": 40.0, "desc": "Virtuoso, Signature, Amex Fine Hotels + Resorts, high-street agents"},
+    {"id": "ret_tour_ops", "name": "Tour Operators & Packaging", "tier": 3, "category": "Wholesale Retail", "color": "#db2777", "value": 35.0, "desc": "TUI, Jet2holidays, Der Touristik, Airline Holidays (BA, Delta Vacations)"},
+    {"id": "ret_event_plan", "name": "Group Event Planners & Organizers", "tier": 3, "category": "Group B2B", "color": "#0f766e", "value": 30.0, "desc": "Professional conference organizers (PCOs), DMC planners, Cvent users"},
+
+    # Tier 4: Customer & Demand Segments (Index 24-31)
+    {"id": "seg_corp_managed", "name": "Corporate Managed Travelers", "tier": 4, "category": "Customer Segments", "color": "#4338ca", "value": 95.0, "desc": "Strict corporate travel policy, mandated OBT/TMC, negotiated rates"},
+    {"id": "seg_corp_sme", "name": "Corporate Unmanaged / SME", "tier": 4, "category": "Customer Segments", "color": "#6366f1", "value": 55.0, "desc": "Small business travelers booking via OTAs, direct web, or open-market tools"},
+    {"id": "seg_leisure_fit", "name": "Leisure FIT (Independent)", "tier": 4, "category": "Customer Segments", "color": "#0284c7", "value": 230.0, "desc": "Free Independent Travelers booking personal vacations and weekend getaways"},
+    {"id": "seg_leisure_pkg", "name": "Leisure Package & Holidaymakers", "tier": 4, "category": "Customer Segments", "color": "#e11d48", "value": 55.0, "desc": "Flight + hotel package buyers, all-inclusive seekers, charter tourists"},
+    {"id": "seg_luxury", "name": "Luxury & VIP Consortia Guests", "tier": 4, "category": "Customer Segments", "color": "#9333ea", "value": 35.0, "desc": "High Net Worth Individuals seeking room upgrades, bespoke luxury, VIP perks"},
+    {"id": "seg_mice", "name": "Group, Conferences & MICE", "tier": 4, "category": "Customer Segments", "color": "#0d9488", "value": 55.0, "desc": "Convention attendees, corporate retreat guests, sports and wedding room blocks"},
+    {"id": "seg_loyalty", "name": "Loyalty Program Power Users", "tier": 4, "category": "Customer Segments", "color": "#15803d", "value": 50.0, "desc": "Elite tier members redeeming points, burning certificates, booking member rates"},
+    {"id": "seg_walkin", "name": "Walk-In & Last-Minute Travelers", "tier": 4, "category": "Customer Segments", "color": "#ca8a04", "value": 25.0, "desc": "Same-day arrivals, airport flight distress, roadside road-trippers"}
+]
+
+# Map ID to Index
+node_indices = {n["id"]: i for i, n in enumerate(nodes)}
+
+# Links between tiers
+links = [
+    # Tier 0 (Supply) -> Tier 1 (Tech)
+    {"source": "supply_chain", "target": "tech_crs", "value": 190.0, "label": "Chain CRS integration"},
+    {"source": "supply_chain", "target": "tech_cm", "value": 50.0, "label": "Franchise channel manager"},
+    {"source": "supply_chain", "target": "tech_pms", "value": 20.0, "label": "On-property front desk"},
+    {"source": "supply_chain", "target": "tech_group", "value": 10.0, "label": "Brand group sales engine"},
+
+    {"source": "supply_indep", "target": "tech_crs", "value": 50.0, "label": "Independent CRS representation"},
+    {"source": "supply_indep", "target": "tech_cm", "value": 145.0, "label": "Boutique channel manager"},
+    {"source": "supply_indep", "target": "tech_pms", "value": 40.0, "label": "Local PMS direct"},
+    {"source": "supply_indep", "target": "tech_group", "value": 15.0, "label": "Direct sales RFP tools"},
+
+    {"source": "supply_resort", "target": "tech_crs", "value": 25.0, "label": "Luxury CRS connectivity"},
+    {"source": "supply_resort", "target": "tech_cm", "value": 15.0, "label": "Resort channel switch"},
+    {"source": "supply_resort", "target": "tech_pms", "value": 5.0, "label": "VIP front desk"},
+    {"source": "supply_resort", "target": "tech_group", "value": 5.0, "label": "Resort event sales"},
+
+    {"source": "supply_extend", "target": "tech_crs", "value": 15.0, "label": "Extended stay CRS"},
+    {"source": "supply_extend", "target": "tech_cm", "value": 10.0, "label": "Serviced apt channel switch"},
+    {"source": "supply_extend", "target": "tech_pms", "value": 5.0, "label": "Residence front desk"},
+
+    # Tier 1 (Tech) -> Tier 2 (Primary Channels)
+    {"source": "tech_crs", "target": "chan_direct_web", "value": 130.0, "label": "Direct booking engine"},
+    {"source": "tech_crs", "target": "chan_loyalty", "value": 35.0, "label": "Loyalty CUG engine"},
+    {"source": "tech_crs", "target": "chan_voice", "value": 20.0, "label": "CRO central voice"},
+    {"source": "tech_crs", "target": "chan_gds", "value": 75.0, "label": "GDS switch link"},
+    {"source": "tech_crs", "target": "chan_mega_ota", "value": 20.0, "label": "Direct OTA 2-way connect"},
+
+    {"source": "tech_cm", "target": "chan_mega_ota", "value": 145.0, "label": "OTA 2-way XML API"},
+    {"source": "tech_cm", "target": "chan_reg_ota", "value": 30.0, "label": "Regional OTA feed"},
+    {"source": "tech_cm", "target": "chan_bedbanks", "value": 45.0, "label": "Wholesale rate feed"},
+
+    {"source": "tech_pms", "target": "chan_walkin", "value": 25.0, "label": "Direct front desk check-in"},
+    {"source": "tech_pms", "target": "chan_bedbanks", "value": 15.0, "label": "Direct contracted static bedbank"},
+    {"source": "tech_pms", "target": "chan_gds", "value": 30.0, "label": "Representation switch (Pegasus)"},
+
+    {"source": "tech_group", "target": "chan_mice_direct", "value": 30.0, "label": "Direct MICE contracts"},
+
+    # Tier 2 (Primary Channels) -> Tier 3 (Secondary Intermediaries / Front-Ends)
+    {"source": "chan_direct_web", "target": "ret_direct_fe", "value": 115.0, "label": "Brand.com retail booking"},
+    {"source": "chan_direct_web", "target": "ret_corp_portal", "value": 15.0, "label": "Corporate negotiated portal"},
+    {"source": "chan_loyalty", "target": "ret_direct_fe", "value": 35.0, "label": "Member app booking"},
+    {"source": "chan_voice", "target": "ret_direct_fe", "value": 20.0, "label": "CRO phone desk"},
+    {"source": "chan_walkin", "target": "ret_direct_fe", "value": 25.0, "label": "Property front desk"},
+
+    {"source": "chan_mega_ota", "target": "ret_ota_apps", "value": 165.0, "label": "Booking.com/Expedia consumer app"},
+    {"source": "chan_reg_ota", "target": "ret_ota_apps", "value": 30.0, "label": "Regional OTA app"},
+
+    {"source": "chan_gds", "target": "ret_tmc", "value": 75.0, "label": "Corporate GDS feed"},
+    {"source": "chan_gds", "target": "ret_consortia", "value": 30.0, "label": "Travel agent GDS terminal"},
+
+    {"source": "chan_bedbanks", "target": "ret_tmc", "value": 15.0, "label": "Hotelbeds B2B API to TMC"},
+    {"source": "chan_bedbanks", "target": "ret_tour_ops", "value": 35.0, "label": "Wholesale net rate package"},
+    {"source": "chan_bedbanks", "target": "ret_consortia", "value": 10.0, "label": "Bedbank agent white-label"},
+
+    {"source": "chan_mice_direct", "target": "ret_event_plan", "value": 30.0, "label": "Group contract allocation"},
+
+    # Tier 3 (Secondary Intermediaries) -> Tier 4 (Customer Segments)
+    {"source": "ret_direct_fe", "target": "seg_leisure_fit", "value": 115.0, "label": "Direct leisure booking"},
+    {"source": "ret_direct_fe", "target": "seg_loyalty", "value": 50.0, "label": "Loyalty tier members"},
+    {"source": "ret_direct_fe", "target": "seg_walkin", "value": 25.0, "label": "Walk-in check-in"},
+    {"source": "ret_direct_fe", "target": "seg_corp_sme", "value": 5.0, "label": "Unmanaged business direct"},
+
+    {"source": "ret_corp_portal", "target": "seg_corp_managed", "value": 15.0, "label": "Corporate portal travelers"},
+
+    {"source": "ret_ota_apps", "target": "seg_leisure_fit", "value": 115.0, "label": "OTA leisure booking"},
+    {"source": "ret_ota_apps", "target": "seg_corp_sme", "value": 50.0, "label": "OTA business travelers (Expedia Partner/Booking for Business)"},
+    {"source": "ret_ota_apps", "target": "seg_leisure_pkg", "value": 30.0, "label": "OTA dynamic package (Flight+Hotel)"},
+
+    {"source": "ret_tmc", "target": "seg_corp_managed", "value": 80.0, "label": "Corporate managed booking"},
+    {"source": "ret_tmc", "target": "seg_mice", "value": 10.0, "label": "TMC corporate group travel"},
+
+    {"source": "ret_consortia", "target": "seg_luxury", "value": 35.0, "label": "Virtuoso/FHR luxury travelers"},
+    {"source": "ret_consortia", "target": "seg_leisure_pkg", "value": 5.0, "label": "Agent bespoke holiday"},
+
+    {"source": "ret_tour_ops", "target": "seg_leisure_pkg", "value": 20.0, "label": "Charter & tour package"},
+    {"source": "ret_tour_ops", "target": "seg_mice", "value": 15.0, "label": "Incentive group tours"},
+
+    {"source": "ret_event_plan", "target": "seg_mice", "value": 30.0, "label": "Conferences & conventions"}
+]
+
+# Convert link string IDs to indices
+sankey_links = []
+for l in links:
+    sankey_links.append({
+        "source": node_indices[l["source"]],
+        "target": node_indices[l["target"]],
+        "value": l["value"],
+        "source_id": l["source"],
+        "target_id": l["target"],
+        "label": l["label"]
+    })
+
+# 3. Revenue & Cost Split (Earnings Style Waterfall & Split)
+revenue_cost_split = {
+    "gross_booking_value": 600.0,
+    "intermediary_friction": [
+        {"item": "OTA Commissions", "amount": 35.1, "pct_of_gbv": 5.85, "channel_base": 195.0, "rate_pct": "18.0% blended", "desc": "Booking.com, Expedia, Agoda standard margins (15-22%)"},
+        {"item": "Bedbank & Wholesale Markups", "amount": 13.2, "pct_of_gbv": 2.20, "channel_base": 60.0, "rate_pct": "22.0% net margin", "desc": "Hotelbeds, WebBeds net-to-gross markups"},
+        {"item": "GDS Segment & Booking Fees", "amount": 4.8, "pct_of_gbv": 0.80, "channel_base": 105.0, "rate_pct": "$4.50-$6/booking", "desc": "Sabre, Amadeus, Travelport transaction fees"},
+        {"item": "TMC Management & Tech Fees", "amount": 5.7, "pct_of_gbv": 0.95, "channel_base": 90.0, "rate_pct": "6.3% blended", "desc": "Amex GBT, BCD, CWT transaction & management fees"},
+        {"item": "Retail Agent & Consortia Commissions", "amount": 4.5, "pct_of_gbv": 0.75, "channel_base": 40.0, "rate_pct": "10.0% standard", "desc": "Virtuoso, Signature, high-street travel agent commissions"},
+        {"item": "Metasearch Ad Spend / CPC", "amount": 5.2, "pct_of_gbv": 0.87, "channel_base": 65.0, "rate_pct": "8.0% of influenced GBV", "desc": "Google Hotel Ads, Trivago, Tripadvisor CPC/CPA fees"},
+        {"item": "Tech Stack (CRS/CM/Switch SaaS)", "amount": 4.2, "pct_of_gbv": 0.70, "channel_base": 600.0, "rate_pct": "0.7% of total", "desc": "SaaS and per-transaction fees for SiteMinder, SynXis, Opera"},
+        {"item": "Payment Processing & Interchange", "amount": 15.0, "pct_of_gbv": 2.50, "channel_base": 600.0, "rate_pct": "2.5% blended", "desc": "Credit card merchant acquiring fees (Visa/MC/Amex/Virtual Cards)"}
+    ],
+    "net_room_revenue": 512.3,
+    "hotel_operating_costs": [
+        {"item": "Rooms Dept Operating Expenses", "amount": 128.1, "pct_of_net": 25.0, "desc": "Housekeeping labor, linens, room amenities, laundry"},
+        {"item": "Brand Franchise & Royalty Fees", "amount": 46.1, "pct_of_net": 9.0, "desc": "Marriott/Hilton royalty, marketing fund, loyalty program fees (8-12%)"},
+        {"item": "Property Ops, Maintenance & Utilities (POM)", "amount": 51.2, "pct_of_net": 10.0, "desc": "Electricity, HVAC, water, facility repairs and upkeep"},
+        {"item": "Local Sales & Property Marketing", "amount": 35.9, "pct_of_net": 7.0, "desc": "On-property sales managers, local advertising, PR"},
+        {"item": "G&A, Property Taxes & Insurance", "amount": 56.4, "pct_of_net": 11.0, "desc": "Administrative staff, municipal property tax, commercial liability"}
+    ],
+    "gross_operating_profit": 194.6, # GOP / EBITDA
+    "gop_margin_pct_of_net": 38.0,
+    "gop_margin_pct_of_gbv": 32.4
+}
+
+# 4. The 10 Specific Hospitality Room Journey Archetypes
+journey_archetypes = [
+    {
+        "id": "pathway_1",
+        "title": "Hotelbeds Wholesale to TMC Corporate",
+        "formula": "Hotel ➔ Channel Manager ➔ Hotelbeds (Bedbank) ➔ TMC ➔ Corporate Guest",
+        "category": "Corporate Wholesale B2B",
+        "adr_example": 200.0,
+        "steps": [
+            {"node": "Hotel Room Supply", "entity": "Independent City Hotel", "role": "Supplies room at contracted net rate ($156)", "cost": 0.0, "retained": 156.0},
+            {"node": "Channel Manager", "entity": "SiteMinder / RateGain", "role": "Distributes dynamic/static rate to bedbank", "cost": 2.0, "retained": 154.0},
+            {"node": "Bedbank / Wholesaler", "entity": "Hotelbeds / WebBeds", "role": "Marks up net rate by 20% to B2B wholesale rate ($187.20)", "cost": 31.2, "retained": 156.0},
+            {"node": "Corporate TMC", "entity": "Amex GBT / BCD Travel", "role": "Presents hotel via OBT API, applies corporate markup ($200.00)", "cost": 12.8, "retained": 156.0},
+            {"node": "Corporate Guest", "entity": "Business Traveler", "role": "Books room via Concur / corporate tool at $200.00", "cost": 0.0, "retained": 0.0}
+        ],
+        "financial_summary": {
+            "guest_pays": 200.0,
+            "channel_manager_fee": 2.0,
+            "bedbank_markup": 31.2,
+            "tmc_markup": 12.8,
+            "hotel_net_received": 154.0,
+            "distribution_friction_pct": 23.0,
+            "net_yield_pct": 77.0
+        },
+        "tech_stack": "PMS ➔ OpenTravel XML / HTNG ➔ Channel Manager ➔ Bedbank B2B REST API ➔ Corporate OBT (Concur) ➔ Employee Mobile App",
+        "key_characteristics": "High latency (rate caching), risk of rate leakage / unbundled wholesale selling on open web, credit line settlement (30-60 days)."
+    },
+    {
+        "id": "pathway_2",
+        "title": "GDS to Consortia / Travel Agent Luxury Journey",
+        "formula": "Hotel ➔ GDS ➔ Travel Agent / Consortia ➔ Corporate / Luxury Guest",
+        "category": "High-Yield Luxury & Corporate",
+        "adr_example": 400.0,
+        "steps": [
+            {"node": "Hotel Supply", "entity": "Luxury Resort / Branded Hotel", "role": "Publishes BAR & Consortia Rate (e.g. Virtuoso Rate)", "cost": 0.0, "retained": 400.0},
+            {"node": "Central Reservation System", "entity": "Sabre SynXis / Amadeus iHotelier", "role": "Pushes rate & availability to GDS switch", "cost": 4.5, "retained": 395.5},
+            {"node": "GDS Platform", "entity": "Sabre / Amadeus / Travelport", "role": "Processes PNR booking transaction", "cost": 12.0, "retained": 383.5},
+            {"node": "Luxury Travel Advisor", "entity": "Virtuoso / Amex FHR Advisor", "role": "Secures VIP upgrade, free breakfast, receives 10% commission", "cost": 40.0, "retained": 343.5},
+            {"node": "Luxury / Corporate Guest", "entity": "High-Net-Worth / Executive", "role": "Pays $400.00 at check-out (Hotel Collect)", "cost": 0.0, "retained": 0.0}
+        ],
+        "financial_summary": {
+            "guest_pays": 400.0,
+            "crs_fee": 4.5,
+            "gds_fee": 12.0,
+            "agent_commission": 40.0,
+            "credit_card_fee": 10.0,
+            "hotel_net_received": 333.5,
+            "distribution_friction_pct": 16.6,
+            "net_yield_pct": 83.4
+        },
+        "tech_stack": "CRS ➔ UltraSwitch / Pegasus ➔ GDS (EDIFACT / TTY) ➔ Sabre Red 360 / Amadeus Selling Platform Connect ➔ Advisor Desk",
+        "key_characteristics": "Highest ADR ($400+), high guest lifetime value, includes VIP amenities ($100 F&B credit, upgrade), GDS legacy green-screen infrastructure."
+    },
+    {
+        "id": "pathway_3",
+        "title": "Channel Manager to Mega-OTA Leisure Journey",
+        "formula": "Hotel ➔ Channel Manager ➔ Mega-OTA (Booking/Expedia) ➔ Leisure Guest",
+        "category": "Global Leisure Retail",
+        "adr_example": 150.0,
+        "steps": [
+            {"node": "Hotel Room Supply", "entity": "Boutique Beach Hotel", "role": "Publishes $150 room with 18% OTA commission tier", "cost": 0.0, "retained": 150.0},
+            {"node": "Channel Manager", "entity": "SiteMinder / Cloudbeds", "role": "Synchronizes ARI (Availability, Rates, Inventory)", "cost": 1.5, "retained": 148.5},
+            {"node": "Mega-OTA", "entity": "Booking.com / Expedia", "role": "Lists on global marketplace, runs PPC, captures booking", "cost": 27.0, "retained": 121.5},
+            {"node": "Payment Gateway", "entity": "Virtual Credit Card (VCC) / Stripe", "role": "OTA pays hotel via VCC (charges 3.0% merchant fee)", "cost": 4.5, "retained": 117.0},
+            {"node": "Leisure Guest", "entity": "Vacationer (FIT)", "role": "Books via Booking.com app with free cancellation", "cost": 0.0, "retained": 0.0}
+        ],
+        "financial_summary": {
+            "guest_pays": 150.0,
+            "channel_manager_fee": 1.5,
+            "ota_commission": 27.0,
+            "vcc_merchant_fee": 4.5,
+            "hotel_net_received": 117.0,
+            "distribution_friction_pct": 22.0,
+            "net_yield_pct": 78.0
+        },
+        "tech_stack": "PMS ➔ Channel Manager API ➔ OTA 2-way XML (OTA_HotelResNotifRQ) ➔ Booking.com / Expedia Partner Central ➔ iOS/Android App",
+        "key_characteristics": "High cancellation rate (35-40%), Billboard Effect (guest discovers hotel on OTA then searches direct), high VCC interchange fees."
+    },
+    {
+        "id": "pathway_4",
+        "title": "Metasearch Referral to Direct Brand.com",
+        "formula": "Hotel ➔ Metasearch (Google Hotels) ➔ Brand.com Booking Engine ➔ Guest",
+        "category": "Direct Acquisition & Search",
+        "adr_example": 180.0,
+        "steps": [
+            {"node": "Hotel Room Supply", "entity": "Chain Scale Branded Property", "role": "Provides rate feed to Google Hotel Ads", "cost": 0.0, "retained": 180.0},
+            {"node": "Metasearch Engine", "entity": "Google Hotels / Free Booking Links", "role": "Displays direct rate vs OTA rates, charges CPC or CPA (8%)", "cost": 14.4, "retained": 165.6},
+            {"node": "Brand.com Booking Engine", "entity": "Hotel Website / SynXis Booking Engine", "role": "Hosts direct checkout, captures guest email and loyalty opt-in", "cost": 3.0, "retained": 162.6},
+            {"node": "Direct Credit Card Acquiring", "entity": "Adyen / Chase Paymentech", "role": "Standard merchant interchange (2.2%)", "cost": 4.0, "retained": 158.6},
+            {"node": "Direct Guest", "entity": "Savvy Traveler", "role": "Books directly on Brand.com for perks/points", "cost": 0.0, "retained": 0.0}
+        ],
+        "financial_summary": {
+            "guest_pays": 180.0,
+            "metasearch_cpa": 14.4,
+            "booking_engine_fee": 3.0,
+            "merchant_fee": 4.0,
+            "hotel_net_received": 158.6,
+            "distribution_friction_pct": 11.9,
+            "net_yield_pct": 88.1
+        },
+        "tech_stack": "CRS ARI Feed ➔ Google Price Match API ➔ Google Travel Interface ➔ Deep-link to Brand.com ➔ Tokenized Payment Gateway",
+        "key_characteristics": "Lower cancellation rate (12-15%), hotel owns 100% of guest data (email, phone, preferences), future repeat bookings have $0 acquisition cost."
+    },
+    {
+        "id": "pathway_5",
+        "title": "Metasearch to OTA to Guest",
+        "formula": "Hotel ➔ Channel Manager ➔ OTA ➔ Metasearch (Trivago/Tripadvisor) ➔ Guest",
+        "category": "Double-Intermediated Leisure",
+        "adr_example": 160.0,
+        "steps": [
+            {"node": "Hotel Room Supply", "entity": "Independent Hotel", "role": "Supplies room to OTA at 18% commission", "cost": 0.0, "retained": 160.0},
+            {"node": "Channel Manager", "entity": "D-EDGE / SiteMinder", "role": "Pushes rate to OTA", "cost": 1.5, "retained": 158.5},
+            {"node": "Online Travel Agency", "entity": "Expedia / Agoda", "role": "Bids aggressively on Metasearch to win top slot", "cost": 28.8, "retained": 129.7},
+            {"node": "Metasearch Ad Platform", "entity": "Trivago / Kayak", "role": "Displays OTA bid price, passes click to OTA (funded from OTA margin)", "cost": 0.0, "retained": 129.7},
+            {"node": "Guest", "entity": "Deal-Seeking Leisure Traveler", "role": "Compares on Trivago, clicks through to Agoda, books room", "cost": 0.0, "retained": 0.0}
+        ],
+        "financial_summary": {
+            "guest_pays": 160.0,
+            "channel_manager_fee": 1.5,
+            "ota_commission": 28.8,
+            "credit_card_merchant": 3.8,
+            "hotel_net_received": 125.9,
+            "distribution_friction_pct": 21.3,
+            "net_yield_pct": 78.7
+        },
+        "tech_stack": "PMS ➔ Channel Manager ➔ OTA API ➔ OTA Bidding Algorithm ➔ Metasearch Meta-API ➔ OTA Mobile Landing Page",
+        "key_characteristics": "OTA pays $2-$5 CPC to Metasearch from its own margin; hotel is completely invisible in customer relationship."
+    },
+    {
+        "id": "pathway_6",
+        "title": "Bedbank to Tour Operator Package Holiday",
+        "formula": "Hotel ➔ Bedbank ➔ Tour Operator (TUI/Jet2) ➔ Package Tour Guest",
+        "category": "Wholesale Dynamic Packaging",
+        "adr_example": 120.0,
+        "steps": [
+            {"node": "Hotel Supply", "entity": "Mediterranean All-Inclusive Resort", "role": "Provides non-opaque wholesale net rate ($90)", "cost": 0.0, "retained": 90.0},
+            {"node": "Bedbank", "entity": "Hotelbeds / WebBeds", "role": "Aggregates inventory, provides financial guarantee", "cost": 12.0, "retained": 90.0},
+            {"node": "Tour Operator", "entity": "TUI Group / Jet2holidays", "role": "Bundles room with flight + transfer into €1,200 7-night package", "cost": 18.0, "retained": 90.0},
+            {"node": "Package Guest", "entity": "Family on Summer Holiday", "role": "Buys bundled package (room price not disclosed)", "cost": 0.0, "retained": 0.0}
+        ],
+        "financial_summary": {
+            "imputed_room_value": 120.0,
+            "hotel_net_received": 90.0,
+            "bedbank_markup": 12.0,
+            "tour_operator_margin": 18.0,
+            "distribution_friction_pct": 25.0,
+            "net_yield_pct": 75.0
+        },
+        "tech_stack": "Extranet Contract ➔ Bedbank XML Cache ➔ Tour Operator Dynamic Packaging Engine ➔ Travel Agency / TUI Retail Shop",
+        "key_characteristics": "Lowest cancellation rate (<5%), high length of stay (5-7 nights), advance commitment (6-9 months), opaque pricing protects public rate parity."
+    },
+    {
+        "id": "pathway_7",
+        "title": "Direct Loyalty Closed User Group (CUG)",
+        "formula": "Hotel ➔ CRS ➔ Loyalty Platform (Points + Cash) ➔ Loyalty Power User",
+        "category": "Direct Closed User Group",
+        "adr_example": 220.0,
+        "steps": [
+            {"node": "Hotel Supply", "entity": "Major Brand (Marriott / Hilton / IHG)", "role": "Offers 5-10% Member Rate discount ($205)", "cost": 0.0, "retained": 205.0},
+            {"node": "Central Reservation System", "entity": "Marriott MARSHA / Hilton OnQ", "role": "Validates member tier status (Titanium/Diamond)", "cost": 3.0, "retained": 202.0},
+            {"node": "Loyalty Program Fund", "entity": "Brand Loyalty Treasury", "role": "Deducts 4.5% loyalty marketing assessment fee", "cost": 9.2, "retained": 192.8},
+            {"node": "Loyalty Mobile App", "entity": "Marriott Bonvoy / Hilton Honors App", "role": "Enables mobile check-in, digital key on Apple Wallet", "cost": 0.0, "retained": 192.8},
+            {"node": "Loyalty Member", "entity": "Frequent Business/Leisure Elite", "role": "Completes stay, earns 10x points + bonus elite credits", "cost": 0.0, "retained": 0.0}
+        ],
+        "financial_summary": {
+            "guest_pays": 205.0,
+            "crs_transaction_fee": 3.0,
+            "loyalty_fund_assessment": 9.2,
+            "merchant_card_fee": 4.5,
+            "hotel_net_received": 188.3,
+            "distribution_friction_pct": 8.1,
+            "net_yield_pct": 91.9
+        },
+        "tech_stack": "PMS ➔ Enterprise Bus ➔ Loyalty CRM (Salesforce Service Cloud) ➔ Native iOS/Android App with BLE Digital Key",
+        "key_characteristics": "Highest repeat booking frequency, massive brand stickiness, zero OTA poaching risk, high ancillary spend on property (F&B, Spa)."
+    },
+    {
+        "id": "pathway_8",
+        "title": "Property Direct / Walk-In",
+        "formula": "Hotel ➔ PMS Front Desk ➔ Walk-In Guest",
+        "category": "Immediate Property Direct",
+        "adr_example": 160.0,
+        "steps": [
+            {"node": "Hotel Supply", "entity": "Airport / Interstate Hotel", "role": "Front desk agent checks real-time room availability", "cost": 0.0, "retained": 160.0},
+            {"node": "Property Management System", "entity": "Oracle Opera / Cloudbeds", "role": "Direct local reservation creation, key card encoding", "cost": 0.5, "retained": 159.5},
+            {"node": "Credit Card Terminal", "entity": "Verifone / Ingenico EMV Terminal", "role": "Card-present transaction (lowest interchange rate: 1.5%)", "cost": 2.4, "retained": 157.1},
+            {"node": "Walk-in Guest", "entity": "Stranded / Last-Minute Traveler", "role": "Checks in immediately without prior reservation", "cost": 0.0, "retained": 0.0}
+        ],
+        "financial_summary": {
+            "guest_pays": 160.0,
+            "pms_allocation_cost": 0.5,
+            "card_present_interchange": 2.4,
+            "hotel_net_received": 157.1,
+            "distribution_friction_pct": 1.8,
+            "net_yield_pct": 98.2
+        },
+        "tech_stack": "On-Premise / Cloud PMS ➔ Keycard Encoder (Assa Abloy / Salto) ➔ EMV Card Reader",
+        "key_characteristics": "Lowest distribution cost in industry (<2%), immediate cash flow, unpredictable volume, zero cancellation risk."
+    },
+    {
+        "id": "pathway_9",
+        "title": "GDS to Online Booking Tool (OBT) Corporate",
+        "formula": "Hotel ➔ GDS ➔ Concur / Cytric (OBT) ➔ Corporate Managed Guest",
+        "category": "Corporate Policy Managed",
+        "adr_example": 250.0,
+        "steps": [
+            {"node": "Hotel Supply", "entity": "Downtown Business Hotel", "role": "Loads Corporate Negotiated Rate ($210 vs $250 BAR)", "cost": 0.0, "retained": 210.0},
+            {"node": "GDS Switch", "entity": "Amadeus / Sabre", "role": "Validates Corporate Rate Code (e.g. IBM01)", "cost": 5.0, "retained": 205.0},
+            {"node": "Corporate OBT", "entity": "SAP Concur Travel", "role": "Applies corporate travel policy (max per diem check)", "cost": 3.0, "retained": 202.0},
+            {"node": "Corporate TMC", "entity": "BCD Travel / CWT", "role": "Manages duty of care, traveler tracking, ticketing support", "cost": 7.0, "retained": 195.0},
+            {"node": "Corporate Guest", "entity": "Management Consultant", "role": "Books compliant rate, expensed via corporate card", "cost": 0.0, "retained": 0.0}
+        ],
+        "financial_summary": {
+            "negotiated_rate_paid": 210.0,
+            "gds_fee": 5.0,
+            "obt_transaction_fee": 3.0,
+            "tmc_booking_fee": 7.0,
+            "merchant_fee": 4.5,
+            "hotel_net_received": 190.5,
+            "distribution_friction_pct": 9.3,
+            "net_yield_pct": 90.7
+        },
+        "tech_stack": "PMS ➔ CRS ➔ GDS Rate Loading (Rate Access Code) ➔ Concur OBT API ➔ Duty of Care Security Platform",
+        "key_characteristics": "Guaranteed weekday volume, high ancillary corporate spend, strict contract SLA, annual RFP renegotiation cycle."
+    },
+    {
+        "id": "pathway_10",
+        "title": "Group & MICE Direct Contracting",
+        "formula": "Hotel ➔ Sales & Catering (Delphi) ➔ Corporate Event Planner ➔ Conference Delegate",
+        "category": "Group & MICE B2B",
+        "adr_example": 180.0,
+        "steps": [
+            {"node": "Hotel Supply", "entity": "Convention Resort (1,000+ rooms)", "role": "Blocks 300 rooms for 3 nights with banquet commitment", "cost": 0.0, "retained": 180.0},
+            {"node": "Sales & Catering CRM", "entity": "Amadeus Delphi / Cvent", "role": "Manages room block, banquet event order (BEO), attrition clauses", "cost": 2.0, "retained": 178.0},
+            {"node": "Corporate Event Planner", "entity": "Enterprise Event Management", "role": "Negotiates $180 group rate with 10% room attrition allowance", "cost": 0.0, "retained": 178.0},
+            {"node": "Passkey / Group Portal", "entity": "Cvent Passkey Housing", "role": "Delegates self-register into group block", "cost": 3.0, "retained": 175.0},
+            {"node": "Conference Delegate", "entity": "Trade Show Attendee", "role": "Attends 3-day convention, stays in room block", "cost": 0.0, "retained": 0.0}
+        ],
+        "financial_summary": {
+            "group_rate_paid": 180.0,
+            "sales_crm_cost": 2.0,
+            "housing_tool_fee": 3.0,
+            "merchant_billing": 3.5,
+            "hotel_net_received": 171.5,
+            "distribution_friction_pct": 4.7,
+            "net_yield_pct": 95.3
+        },
+        "tech_stack": "Amadeus Delphi.fdc ➔ Cvent Passkey API ➔ PMS Group Master Folio ➔ On-property Event Kiosk",
+        "key_characteristics": "Enormous total revenue multiplier (F&B and meeting space add 1.5x room revenue), low distribution cost, contractually enforced attrition penalties."
+    }
+]
+
+# 5. Intermediary Comparison Matrix
+intermediary_benchmarks = [
+    {
+        "type": "Direct Brand.com / App",
+        "key_players": "Brand.com, Hotel App, SynXis Engine",
+        "take_rate_pct": "2% - 4%",
+        "channel_share_pct": "21.7%",
+        "cancellation_rate_pct": "12% - 15%",
+        "lead_time_days": "28 days",
+        "guest_data_ownership": "100% Owned",
+        "pros": "Zero commission friction, direct guest relationship, upsell opportunities",
+        "cons": "High digital marketing acquisition costs, constant tech development"
+    },
+    {
+        "type": "Hotel Loyalty (CUG)",
+        "key_players": "Marriott Bonvoy, Hilton Honors, IHG One",
+        "take_rate_pct": "4% - 5%",
+        "channel_share_pct": "5.8%",
+        "cancellation_rate_pct": "10% - 12%",
+        "lead_time_days": "22 days",
+        "guest_data_ownership": "100% Owned",
+        "pros": "Highest lifetime value, immune to OTA poaching, app digital key engagement",
+        "cons": "Brand assessment fee, cost of loyalty point redemption liabilities"
+    },
+    {
+        "type": "Global Mega-OTAs",
+        "key_players": "Booking.com, Expedia, Agoda, Trip.com",
+        "take_rate_pct": "15% - 22%",
+        "channel_share_pct": "27.5%",
+        "cancellation_rate_pct": "35% - 42%",
+        "lead_time_days": "36 days",
+        "guest_data_ownership": "Masked Email / Restricted",
+        "pros": "Massive global reach, fills distressed inventory, multilingual customer service",
+        "cons": "High commission erosion, high cancellation rates, Virtual Credit Card fees"
+    },
+    {
+        "type": "Metasearch Engines",
+        "key_players": "Google Hotels, Trivago, Tripadvisor, Kayak",
+        "take_rate_pct": "6% - 12% (CPC/CPA)",
+        "channel_share_pct": "10.8% (Influenced)",
+        "cancellation_rate_pct": "15% - 20%",
+        "lead_time_days": "30 days",
+        "guest_data_ownership": "Owned if directed to Direct",
+        "pros": "Levels playing field against OTAs, direct traffic acquisition funnel",
+        "cons": "Complex bid management, rate disparity easily exposed, cost per click risk"
+    },
+    {
+        "type": "Global Distribution Systems (GDS)",
+        "key_players": "Sabre, Amadeus, Travelport",
+        "take_rate_pct": "$4.50 - $12 / booking",
+        "channel_share_pct": "17.5%",
+        "cancellation_rate_pct": "18% - 25%",
+        "lead_time_days": "14 days",
+        "guest_data_ownership": "PNR Traveler Data Shared",
+        "pros": "Access to high-spending corporate accounts, global agency network",
+        "cons": "Legacy technology, multiple fee layers (GDS + Switch + Agency commission)"
+    },
+    {
+        "type": "Corporate TMCs & OBTs",
+        "key_players": "Amex GBT, BCD, CWT, Navan, SAP Concur",
+        "take_rate_pct": "5% - 8% blended",
+        "channel_share_pct": "15.0%",
+        "cancellation_rate_pct": "15% - 20%",
+        "lead_time_days": "10 days",
+        "guest_data_ownership": "Corporate Profile Shared",
+        "pros": "High ADR weekday demand, loyal business travelers, corporate compliance",
+        "cons": "Demanding RFP process, last-room availability (LRA) mandates, strict amenities"
+    },
+    {
+        "type": "Bedbanks & Wholesalers",
+        "key_players": "Hotelbeds, WebBeds, Travco",
+        "take_rate_pct": "18% - 25% net markup",
+        "channel_share_pct": "10.0%",
+        "cancellation_rate_pct": "15% - 18%",
+        "lead_time_days": "45 days",
+        "guest_data_ownership": "Wholesale Opaque",
+        "pros": "Guaranteed advance commitments, distribution into exotic/unreachable markets",
+        "cons": "Rate leakage (wholesale rates appearing on unapproved public OTAs), opaque margins"
+    },
+    {
+        "type": "Luxury Consortia",
+        "key_players": "Virtuoso, Amex FHR, Signature",
+        "take_rate_pct": "10% commission + amenities",
+        "channel_share_pct": "5.8%",
+        "cancellation_rate_pct": "8% - 12%",
+        "lead_time_days": "60 days",
+        "guest_data_ownership": "Advisor Relationship",
+        "pros": "Highest ADR ($400-$1000+), high suite absorption, substantial on-property spend",
+        "cons": "Cost of complimentary perks (breakfast, $100 credit, room upgrade)"
+    },
+    {
+        "type": "Tour Operators & Packaging",
+        "key_players": "TUI, Jet2holidays, Der Touristik",
+        "take_rate_pct": "20% - 28% margin",
+        "channel_share_pct": "5.8%",
+        "cancellation_rate_pct": "< 5%",
+        "lead_time_days": "90 - 180 days",
+        "guest_data_ownership": "Tour Operator Managed",
+        "pros": "Guaranteed seasonal base load, longest stays (7+ nights), virtually zero cancellations",
+        "cons": "Lowest net room rate, high seasonal dependence, heavy contract concessions"
+    },
+    {
+        "type": "Direct Property & Walk-In",
+        "key_players": "On-Property Front Desk, Local Phone",
+        "take_rate_pct": "1% - 2% (card fee only)",
+        "channel_share_pct": "4.2%",
+        "cancellation_rate_pct": "0%",
+        "lead_time_days": "0 days",
+        "guest_data_ownership": "100% Owned",
+        "pros": "Lowest cost channel, immediate revenue, 0% cancellation risk",
+        "cons": "Unpredictable volume, limited to walk-by or drive-by traffic"
+    }
+]
+
+# Output complete JSON
+output_data = {
+    "global_metrics": global_metrics,
+    "nodes": nodes,
+    "links": sankey_links,
+    "revenue_cost_split": revenue_cost_split,
+    "journey_archetypes": journey_archetypes,
+    "intermediary_benchmarks": intermediary_benchmarks
+}
+
+json_path = os.path.join(labs_dir, "data", "hospitality_distribution_data.json")
+with open(json_path, "w", encoding="utf-8") as f:
+    json.dump(output_data, f, indent=2)
+
+print(f"Saved {json_path} with {len(nodes)} nodes, {len(sankey_links)} links, {len(journey_archetypes)} archetypes.")
+
+# Output CSV summary of links
+csv_path = os.path.join(labs_dir, "data", "channel_breakdown.csv")
+with open(csv_path, "w", newline="", encoding="utf-8") as f:
+    writer = csv.writer(f)
+    writer.writerow(["Source Node", "Target Node", "Value ($ Billions)", "Share of Global GBV (%)", "Flow Description"])
+    for l in sankey_links:
+        src_name = nodes[l["source"]]["name"]
+        tgt_name = nodes[l["target"]]["name"]
+        val = l["value"]
+        pct = round((val / 600.0) * 100, 2)
+        writer.writerow([src_name, tgt_name, val, f"{pct}%", l["label"]])
+
+print(f"Saved {csv_path} with {len(sankey_links)} link rows.")

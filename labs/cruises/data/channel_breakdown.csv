@@ -1,0 +1,54 @@
+Source Node,Target Node,Value ($ Billions),Share of Global GBV (%),Flow Description
+Mega-Ship Contemporary Lines,Brand Reservation Engines (Polar / Espresso),14.5,38.16%,Mega-line direct engine
+Mega-Ship Contemporary Lines,Cruise B2B Switches & Aggregators,7.0,18.42%,GDS & switch feed
+Mega-Ship Contemporary Lines,Onboard Future Cruise Desks,2.0,5.26%,Onboard desk bookings
+Mega-Ship Contemporary Lines,MICE & Charter Sales Engines,0.5,1.32%,Theme charters
+Premium & Mid-Size Lines,Brand Reservation Engines (Polar / Espresso),4.0,10.53%,Premium line engine
+Premium & Mid-Size Lines,Cruise B2B Switches & Aggregators,3.0,7.89%,Agency switch
+Premium & Mid-Size Lines,Onboard Future Cruise Desks,1.0,2.63%,Onboard future cruise
+Premium & Mid-Size Lines,MICE & Charter Sales Engines,0.5,1.32%,Corporate groups
+Luxury & Ultra-Luxury Lines,Brand Reservation Engines (Polar / Espresso),1.5,3.95%,Luxury direct portal
+Luxury & Ultra-Luxury Lines,Cruise B2B Switches & Aggregators,1.2,3.16%,Virtuoso/Signature switch
+Luxury & Ultra-Luxury Lines,Onboard Future Cruise Desks,0.3,0.79%,Luxury world cruise desk
+Luxury & Ultra-Luxury Lines,MICE & Charter Sales Engines,0.5,1.32%,Luxury ship buyouts
+Expedition & River Cruise Lines,Brand Reservation Engines (Polar / Espresso),1.0,2.63%,Expedition direct res
+Expedition & River Cruise Lines,Cruise B2B Switches & Aggregators,0.8,2.11%,Specialist agency switch
+Expedition & River Cruise Lines,Onboard Future Cruise Desks,0.2,0.53%,Re-booking discount
+Brand Reservation Engines (Polar / Espresso),Direct Brand.com & Outbound PVP,7.0,18.42%,Brand website & app
+Brand Reservation Engines (Polar / Espresso),Travel Advisors & Host Agencies,8.0,21.05%,Host agency direct API
+Brand Reservation Engines (Polar / Espresso),Cruise Specialist OTAs & Portals,3.5,9.21%,OTA direct connect
+Brand Reservation Engines (Polar / Espresso),"Big Box Retailers (Costco, AAA)",2.5,6.58%,Big box wholesale feed
+Cruise B2B Switches & Aggregators,Travel Advisors & Host Agencies,5.5,14.47%,Amadeus/Sabre Cruise to Agents
+Cruise B2B Switches & Aggregators,Cruise Specialist OTAs & Portals,3.5,9.21%,Revelex/Versonix to OTAs
+Cruise B2B Switches & Aggregators,"Luxury Consortia (Virtuoso, Signature)",2.0,5.26%,Consortia GDS terminal
+Cruise B2B Switches & Aggregators,"Big Box Retailers (Costco, AAA)",1.0,2.63%,Costco Travel switch
+Onboard Future Cruise Desks,Direct Brand.com & Outbound PVP,2.0,5.26%,Onboard direct booking
+Onboard Future Cruise Desks,"Luxury Consortia (Virtuoso, Signature)",1.0,2.63%,Transferred to guest advisor
+Onboard Future Cruise Desks,Travel Advisors & Host Agencies,0.5,1.32%,Assigned to booking agency
+MICE & Charter Sales Engines,Full-Ship Charters & Corporate MICE,2.0,5.26%,Full ship charter contracts
+Travel Advisors & Host Agencies,Home-Based Advisor Desks,13.5,35.53%,Home-based advisor execution
+Cruise Specialist OTAs & Portals,Cruise OTA Portals & Call Centers,7.0,18.42%,Cruise OTA booking desk
+Direct Brand.com & Outbound PVP,Brand Direct & Onboard Desks,9.0,23.68%,Consumer web & PVP call center
+"Big Box Retailers (Costco, AAA)",Club Travel Desks,3.5,9.21%,Club member booking
+"Luxury Consortia (Virtuoso, Signature)",Bespoke Luxury Advisors,3.0,7.89%,Bespoke luxury advisory
+Full-Ship Charters & Corporate MICE,Corporate Event Organizers,2.0,5.26%,Corporate meeting planners
+Home-Based Advisor Desks,Family & Multigen Cruisers,5.5,14.47%,Family cruise bookings
+Home-Based Advisor Desks,Mature & Retiree Cruisers,5.0,13.16%,Mature destination cruisers
+Home-Based Advisor Desks,Couples & Honeymooners,2.0,5.26%,Romantic getaway sailings
+Home-Based Advisor Desks,Expedition & River Explorers,1.0,2.63%,River cruise bookings
+Cruise OTA Portals & Call Centers,Family & Multigen Cruisers,3.5,9.21%,Discount family packages
+Cruise OTA Portals & Call Centers,Couples & Honeymooners,1.5,3.95%,Caribbean last-minute
+Cruise OTA Portals & Call Centers,Mature & Retiree Cruisers,1.5,3.95%,Alaska / Europe deals
+Cruise OTA Portals & Call Centers,Solo & Studio Cruisers,0.5,1.32%,Solo studio promotions
+Brand Direct & Onboard Desks,Family & Multigen Cruisers,3.0,7.89%,Brand.com direct family
+Brand Direct & Onboard Desks,Mature & Retiree Cruisers,2.5,6.58%,Loyalty tier members
+Brand Direct & Onboard Desks,Luxury & World Cruisers,1.5,3.95%,Viking / Silversea direct
+Brand Direct & Onboard Desks,Expedition & River Explorers,1.5,3.95%,Expedition direct web
+Brand Direct & Onboard Desks,Solo & Studio Cruisers,0.5,1.32%,Direct solo bookings
+Club Travel Desks,Family & Multigen Cruisers,1.0,2.63%,Costco family buyers
+Club Travel Desks,Mature & Retiree Cruisers,1.5,3.95%,AAA member itineraries
+Club Travel Desks,Couples & Honeymooners,0.5,1.32%,Costco honeymooners
+Club Travel Desks,Luxury & World Cruisers,0.5,1.32%,Club luxury sailings
+Bespoke Luxury Advisors,Luxury & World Cruisers,2.5,6.58%,Virtuoso world cruisers
+Bespoke Luxury Advisors,Expedition & River Explorers,0.5,1.32%,Luxury expedition yachts
+Corporate Event Organizers,Corporate Incentive & MICE,2.0,5.26%,Corporate incentive charter

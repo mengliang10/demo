@@ -1,0 +1,48 @@
+Source Node,Target Node,Value ($ Billions),Share of Global GBV (%),Flow Description
+Iconic Attractions & Theme Parks,Turnstile & Enterprise Ticketing,40.0,25.0%,Enterprise turnstile system
+Iconic Attractions & Theme Parks,Cloud ResTech Platforms,10.0,6.25%,ResTech API integration
+Iconic Attractions & Theme Parks,Offline POS / Cash Register,5.0,3.12%,Cash gate admissions
+Independent Day Tour Operators,Cloud ResTech Platforms,45.0,28.12%,FareHarbor/Bókun booking
+Independent Day Tour Operators,Offline POS / Cash Register,15.0,9.38%,Street kiosk cash/card
+"Outdoor, Adventure & Sports",Cloud ResTech Platforms,20.0,12.5%,Peek/Rezdy digital waiver
+"Outdoor, Adventure & Sports",Offline POS / Cash Register,5.0,3.12%,Beach hut walk-up
+Multi-Day Guided Expeditions,Tour Operator ERP & Inbound PSS,15.0,9.38%,Tourplan group PSS
+Multi-Day Guided Expeditions,Turnstile & Enterprise Ticketing,5.0,3.12%,Charter manifest
+Cloud ResTech Platforms,Direct Website & Mobile Booking,40.0,25.0%,Direct website widget
+Cloud ResTech Platforms,Experience Mega-OTAs,25.0,15.62%,Viator/GYG 2-way API
+Cloud ResTech Platforms,Hotel Concierge & In-Room QR,5.0,3.12%,Hotel concierge API
+Cloud ResTech Platforms,Cruise Line Shore Excursions,5.0,3.12%,Port Shorex feed
+Turnstile & Enterprise Ticketing,Direct Offline Ticket Booth & Walk-Up,30.0,18.75%,Attraction box office
+Turnstile & Enterprise Ticketing,Experience Mega-OTAs,13.0,8.12%,Tiqets/GetYourGuide barcode
+Turnstile & Enterprise Ticketing,Inbound DMCs & Receptive Operators,2.0,1.25%,Group voucher entry
+Offline POS / Cash Register,Direct Offline Ticket Booth & Walk-Up,20.0,12.5%,Manual cash ticket booth
+Offline POS / Cash Register,Hotel Concierge & In-Room QR,3.0,1.88%,Concierge phone call
+Offline POS / Cash Register,Cruise Line Shore Excursions,2.0,1.25%,Pier taxi/van walk-up
+Tour Operator ERP & Inbound PSS,Inbound DMCs & Receptive Operators,10.0,6.25%,Wholesale group contract
+Tour Operator ERP & Inbound PSS,Cruise Line Shore Excursions,5.0,3.12%,Contracted shore excursion
+Direct Offline Ticket Booth & Walk-Up,On-Site Box Office & Gates,50.0,31.25%,Physical box office
+Direct Website & Mobile Booking,ResTech Web Checkouts,40.0,25.0%,ResTech widget
+Experience Mega-OTAs,OTA Consumer Marketplaces,38.0,23.75%,Viator/GYG/Klook
+Cruise Line Shore Excursions,Cruise Shorex Desks & Port Teams,12.0,7.5%,Cruise Shorex team
+Inbound DMCs & Receptive Operators,DMC Tour Wholesale Desks,12.0,7.5%,DMC wholesale desk
+Hotel Concierge & In-Room QR,Concierge Desks & Tablet Apps,8.0,5.0%,Hotel lobby concierge
+On-Site Box Office & Gates,Family Vacationers & Theme Parks,25.0,15.62%,Theme park gate tickets
+On-Site Box Office & Gates,Independent Sightseers (FIT),15.0,9.38%,Walk-up museum visitors
+On-Site Box Office & Gates,Adventure & Adrenaline Seekers,5.0,3.12%,Rental beach walk-up
+On-Site Box Office & Gates,Cruise Ship Day Visitors (Shorex),5.0,3.12%,Independent cruise walk-up
+ResTech Web Checkouts,Independent Sightseers (FIT),25.0,15.62%,Direct tour bookings
+ResTech Web Checkouts,Adventure & Adrenaline Seekers,8.0,5.0%,Direct outdoor sports
+ResTech Web Checkouts,Family Vacationers & Theme Parks,5.0,3.12%,Advance family tickets
+ResTech Web Checkouts,Corporate Teambuilding & Groups,2.0,1.25%,Private party charters
+OTA Consumer Marketplaces,Independent Sightseers (FIT),20.0,12.5%,OTA city activities
+OTA Consumer Marketplaces,Family Vacationers & Theme Parks,8.0,5.0%,Skip-the-line attraction
+OTA Consumer Marketplaces,Adventure & Adrenaline Seekers,5.0,3.12%,OTA adventure sports
+OTA Consumer Marketplaces,Cruise Ship Day Visitors (Shorex),5.0,3.12%,Third-party port tour
+Cruise Shorex Desks & Port Teams,Cruise Ship Day Visitors (Shorex),5.0,3.12%,Official cruise shorex
+Cruise Shorex Desks & Port Teams,Family Vacationers & Theme Parks,2.0,1.25%,Family cruise beach club
+Cruise Shorex Desks & Port Teams,Adventure & Adrenaline Seekers,0.0,0.0%,Adventure shorex
+Cruise Shorex Desks & Port Teams,Multi-Day Cultural Tour Groups,5.0,3.12%,Pre/post cruise package
+DMC Tour Wholesale Desks,Multi-Day Cultural Tour Groups,9.0,5.62%,Escorted group travel
+DMC Tour Wholesale Desks,Corporate Teambuilding & Groups,3.0,1.88%,Corporate MICE tour
+Concierge Desks & Tablet Apps,Independent Sightseers (FIT),5.0,3.12%,Concierge recommended
+Concierge Desks & Tablet Apps,Corporate Teambuilding & Groups,3.0,1.88%,Corporate VIP dinner tour

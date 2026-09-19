@@ -1,0 +1,56 @@
+Source Node,Target Node,Value ($ Billions),Share of Global GBV (%),Flow Description
+Branded & Chain Hotels,Central Reservation Systems (CRS),190.0,31.67%,Chain CRS integration
+Branded & Chain Hotels,Channel Managers & Switches,50.0,8.33%,Franchise channel manager
+Branded & Chain Hotels,Direct Property PMS & Front Desk,20.0,3.33%,On-property front desk
+Branded & Chain Hotels,Group & MICE Sales Engines,10.0,1.67%,Brand group sales engine
+Independent & Boutique Hotels,Central Reservation Systems (CRS),50.0,8.33%,Independent CRS representation
+Independent & Boutique Hotels,Channel Managers & Switches,145.0,24.17%,Boutique channel manager
+Independent & Boutique Hotels,Direct Property PMS & Front Desk,40.0,6.67%,Local PMS direct
+Independent & Boutique Hotels,Group & MICE Sales Engines,15.0,2.5%,Direct sales RFP tools
+"Resorts, Casinos & Luxury",Central Reservation Systems (CRS),25.0,4.17%,Luxury CRS connectivity
+"Resorts, Casinos & Luxury",Channel Managers & Switches,15.0,2.5%,Resort channel switch
+"Resorts, Casinos & Luxury",Direct Property PMS & Front Desk,5.0,0.83%,VIP front desk
+"Resorts, Casinos & Luxury",Group & MICE Sales Engines,5.0,0.83%,Resort event sales
+Serviced Apts & Extended Stay,Central Reservation Systems (CRS),15.0,2.5%,Extended stay CRS
+Serviced Apts & Extended Stay,Channel Managers & Switches,10.0,1.67%,Serviced apt channel switch
+Serviced Apts & Extended Stay,Direct Property PMS & Front Desk,5.0,0.83%,Residence front desk
+Central Reservation Systems (CRS),Direct Brand.com Web & App,130.0,21.67%,Direct booking engine
+Central Reservation Systems (CRS),Loyalty Platform (Closed User Group),35.0,5.83%,Loyalty CUG engine
+Central Reservation Systems (CRS),Direct Voice & Call Center (CRO),20.0,3.33%,CRO central voice
+Central Reservation Systems (CRS),Global Distribution Systems (GDS),75.0,12.5%,GDS switch link
+Central Reservation Systems (CRS),Global Mega-OTAs,20.0,3.33%,Direct OTA 2-way connect
+Channel Managers & Switches,Global Mega-OTAs,145.0,24.17%,OTA 2-way XML API
+Channel Managers & Switches,Regional & Niche OTAs,30.0,5.0%,Regional OTA feed
+Channel Managers & Switches,Bedbanks & Wholesalers,45.0,7.5%,Wholesale rate feed
+Direct Property PMS & Front Desk,Property Direct & Walk-In,25.0,4.17%,Direct front desk check-in
+Direct Property PMS & Front Desk,Bedbanks & Wholesalers,15.0,2.5%,Direct contracted static bedbank
+Direct Property PMS & Front Desk,Global Distribution Systems (GDS),30.0,5.0%,Representation switch (Pegasus)
+Group & MICE Sales Engines,Direct Group & MICE Sales,30.0,5.0%,Direct MICE contracts
+Direct Brand.com Web & App,Direct Brand / Consumer Front-Ends,115.0,19.17%,Brand.com retail booking
+Direct Brand.com Web & App,Corporate Direct Booking Portals,15.0,2.5%,Corporate negotiated portal
+Loyalty Platform (Closed User Group),Direct Brand / Consumer Front-Ends,35.0,5.83%,Member app booking
+Direct Voice & Call Center (CRO),Direct Brand / Consumer Front-Ends,20.0,3.33%,CRO phone desk
+Property Direct & Walk-In,Direct Brand / Consumer Front-Ends,25.0,4.17%,Property front desk
+Global Mega-OTAs,OTA Consumer Apps & Sites,165.0,27.5%,Booking.com/Expedia consumer app
+Regional & Niche OTAs,OTA Consumer Apps & Sites,30.0,5.0%,Regional OTA app
+Global Distribution Systems (GDS),Corporate TMCs & OBTs,75.0,12.5%,Corporate GDS feed
+Global Distribution Systems (GDS),Retail Travel Agencies & Consortia,30.0,5.0%,Travel agent GDS terminal
+Bedbanks & Wholesalers,Corporate TMCs & OBTs,15.0,2.5%,Hotelbeds B2B API to TMC
+Bedbanks & Wholesalers,Tour Operators & Packaging,35.0,5.83%,Wholesale net rate package
+Bedbanks & Wholesalers,Retail Travel Agencies & Consortia,10.0,1.67%,Bedbank agent white-label
+Direct Group & MICE Sales,Group Event Planners & Organizers,30.0,5.0%,Group contract allocation
+Direct Brand / Consumer Front-Ends,Leisure FIT (Independent),115.0,19.17%,Direct leisure booking
+Direct Brand / Consumer Front-Ends,Loyalty Program Power Users,50.0,8.33%,Loyalty tier members
+Direct Brand / Consumer Front-Ends,Walk-In & Last-Minute Travelers,25.0,4.17%,Walk-in check-in
+Direct Brand / Consumer Front-Ends,Corporate Unmanaged / SME,5.0,0.83%,Unmanaged business direct
+Corporate Direct Booking Portals,Corporate Managed Travelers,15.0,2.5%,Corporate portal travelers
+OTA Consumer Apps & Sites,Leisure FIT (Independent),115.0,19.17%,OTA leisure booking
+OTA Consumer Apps & Sites,Corporate Unmanaged / SME,50.0,8.33%,OTA business travelers (Expedia Partner/Booking for Business)
+OTA Consumer Apps & Sites,Leisure Package & Holidaymakers,30.0,5.0%,OTA dynamic package (Flight+Hotel)
+Corporate TMCs & OBTs,Corporate Managed Travelers,80.0,13.33%,Corporate managed booking
+Corporate TMCs & OBTs,"Group, Conferences & MICE",10.0,1.67%,TMC corporate group travel
+Retail Travel Agencies & Consortia,Luxury & VIP Consortia Guests,35.0,5.83%,Virtuoso/FHR luxury travelers
+Retail Travel Agencies & Consortia,Leisure Package & Holidaymakers,5.0,0.83%,Agent bespoke holiday
+Tour Operators & Packaging,Leisure Package & Holidaymakers,20.0,3.33%,Charter & tour package
+Tour Operators & Packaging,"Group, Conferences & MICE",15.0,2.5%,Incentive group tours
+Group Event Planners & Organizers,"Group, Conferences & MICE",30.0,5.0%,Conferences & conventions

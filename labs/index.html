@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Travel & Hospitality Distribution Ecosystem Labs</title>
+  
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --bg-card-hover: rgba(31, 41, 55, 0.85);
+      --border-color: rgba(75, 85, 99, 0.35);
+      --border-highlight: rgba(59, 130, 246, 0.5);
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-purple: #8b5cf6;
+      --accent-emerald: #10b981;
+      --accent-orange: #f97316;
+      --accent-amber: #f59e0b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+      padding: 1.5rem 2rem 3rem;
+    }
+
+    .container { max-width: 1320px; margin: 0 auto; }
+    
+    .glass-panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.2s ease-in-out;
+    }
+    .glass-panel:hover { border-color: var(--border-highlight); }
+
+    /* Top Global Nav */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 0.85rem 1.25rem;
+      margin-bottom: 2rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 500;
+    }
+    .nav-link:hover { color: #60a5fa; }
+    .nav-badge {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.35);
+    }
+
+    .header { text-align: center; margin-bottom: 2.5rem; }
+    .header h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+    .header p { color: var(--text-secondary); font-size: 1.05rem; max-width: 850px; margin: 0 auto; }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+    .badge-blue { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.4); }
+
+    .grid-sectors {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.75rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .sector-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .sector-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+    }
+    .card-hotels::before { background: #3b82f6; }
+    .card-cruises::before { background: #06b6d4; }
+    .card-airlines::before { background: #8b5cf6; }
+    .card-tours::before { background: #10b981; }
+
+    .sector-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .sector-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .sector-scale { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem; }
+    .sector-desc { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem; flex-grow: 1; }
+
+    .sector-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-color);
+    }
+    .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
+    .stat-val { font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+
+    .btn-launch {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+    .btn-hotels { background: #2563eb; }
+    .btn-hotels:hover { background: #1d4ed8; box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
+
+    .btn-cruises { background: #0891b2; }
+    .btn-cruises:hover { background: #0e7490; box-shadow: 0 0 15px rgba(8, 145, 178, 0.4); }
+
+    .btn-airlines { background: #7c3aed; }
+    .btn-airlines:hover { background: #6d28d9; box-shadow: 0 0 15px rgba(124, 58, 237, 0.4); }
+
+    .btn-tours { background: #059669; }
+    .btn-tours:hover { background: #047857; box-shadow: 0 0 15px rgba(5, 150, 105, 0.4); }
+
+    /* Channel Sub-links */
+    .channel-links-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+    .channel-links-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-bottom: 0.75rem;
+      padding: 0.6rem;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 6px;
+    }
+    .channel-link-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      text-decoration: none;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    .channel-link-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+    }
+    .channel-link-item span { font-weight: 500; }
+    .channel-link-tag {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    .data-links {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .data-links a {
+      color: #93c5fd;
+      text-decoration: none;
+    }
+    .data-links a:hover { text-decoration: underline; }
+
+    /* Comparison Table */
+    .table-container { overflow-x: auto; margin-top: 1rem; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.85rem; }
+    th {
+      background: rgba(31, 41, 55, 0.8);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(75, 85, 99, 0.2); }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+    
+    .table-btn {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #93c5fd;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .table-btn:hover {
+      background: rgba(59, 130, 246, 0.35);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Top Navigation Bar -->
+    <div class="glass-panel top-nav">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span class="nav-badge">LABS SUITE</span>
+        <span style="font-weight: 600; color: #f9fafb;">Global Travel Distribution Architecture</span>
+      </div>
+      <div class="nav-links">
+        <a href="../index.html" class="nav-link">🏠 Masterclass Hub</a>
+        <a href="VISUALIZATION_AND_PRESENTATION_FRAMEWORKS_COMPENDIUM.md" class="nav-link">📚 Frameworks Compendium</a>
+        <a href="OPEN_SOURCE_CLI_TOOLS_AND_APPLICATIONS_COMPENDIUM.md" class="nav-link">🛠️ CLI Compendium</a>
+        <a href="https://github.com/mengliang10/demo" class="nav-link" target="_blank" rel="noopener">🐙 GitHub Repo</a>
+      </div>
+    </div>
+
+    <!-- Executive Header -->
+    <header class="header">
+      <span class="badge badge-blue">Interactive Production-Grade Labs</span>
+      <h1>Global Travel & Hospitality Distribution Labs</h1>
+      <p>
+        Comprehensive interactive multi-tier mapping of passenger and room journeys, trade intermediaries, connectivity stacks, and financial revenue/cost splits across all four major sectors of global travel ($1.6 Trillion Ecosystem).
+      </p>
+    </header>
+
+    <!-- 4 Sector Grid -->
+    <div class="grid-sectors">
+      
+      <!-- 1. Hotels -->
+      <div class="glass-panel sector-card card-hotels">
+        <div>
+          <div class="sector-icon">🏨</div>
+          <div class="sector-title">Hotels & Lodging</div>
+          <div class="sector-scale">Global Market: $600.0B GBV • 4.25B Room Nights</div>
+          <div class="sector-desc">
+            Room journeys across Branded chains, Independents, CRS (SynXis/MARSHA), Channel Managers (SiteMinder), Mega-OTAs (Booking/Expedia), Bedbanks (Hotelbeds), GDS, TMCs, and Metasearch (Google Hotels).
+          </div>
+        </div>
+        <div>
+          <div class="sector-stats">
+            <div>
+              <div class="stat-label">Direct Share</div>
+              <div class="stat-val" style="color: #60a5fa;">35.0%</div>
+            </div>
+            <div>
+              <div class="stat-label">Blended Take Rate</div>
+              <div class="stat-val" style="color: #f87171;">14.6% ($87.7B)</div>
+            </div>
+            <div>
+              <div class="stat-label">Net Hotel Revenue</div>
+              <div class="stat-val" style="color: #34d399;">$512.3B (85.4%)</div>
+            </div>
+            <div>
+              <div class="stat-label">Hotel EBITDA Margin</div>
+              <div class="stat-val" style="color: #fbbf24;">38.0% ($194.6B)</div>
+            </div>
+          </div>
+
+          <a href="hotels/index.html" class="btn-launch btn-hotels">Launch Full Hotels Dashboard ➔</a>
+
+          <div class="channel-links-title">Specific Channel Visualizations:</div>
+          <div class="channel-links-grid">
+            <a href="hotels/index.html#tab-journey" class="channel-link-item">
+              <span>🌊 5-Tier Room Journey Sankey</span>
+              <span class="channel-link-tag">All Channels</span>
+            </a>
+            <a href="hotels/index.html#tab-finance" class="channel-link-item">
+              <span>💰 Revenue & Cost Waterfall (EBITDA)</span>
+              <span class="channel-link-tag">$600B Split</span>
+            </a>
+            <a href="hotels/index.html#tab-pathways" class="channel-link-item">
+              <span>🧭 10 Specific Channel Archetypes</span>
+              <span class="channel-link-tag">OTA • GDS • Bedbank</span>
+            </a>
+            <a href="hotels/index.html#tab-matrix" class="channel-link-item">
+              <span>📋 Intermediary Benchmark Matrix</span>
+              <span class="channel-link-tag">Take Rates & Tech</span>
+            </a>
+            <a href="hotels/index.html#tab-simulator" class="channel-link-item">
+              <span>🎛️ What-If Channel Sensitivity Simulator</span>
+              <span class="channel-link-tag">Interactive</span>
+            </a>
+          </div>
+
+          <div class="data-links">
+            <span>Data:</span>
+            <a href="hotels/data/channel_breakdown.csv" target="_blank">CSV Breakdown</a> • 
+            <a href="hotels/data/hospitality_distribution_data.json" target="_blank">Ecosystem JSON</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Cruises -->
+      <div class="glass-panel sector-card card-cruises">
+        <div>
+          <div class="sector-icon">🚢</div>
+          <div class="sector-title">Cruises & Maritime</div>
+          <div class="sector-scale">Global Market: $38.0B GBV • 33.5M Passengers</div>
+          <div class="sector-desc">
+            Passenger flows across Mega-ships, Premium, Luxury & Expedition lines, Polar/Espresso engines, Host Agencies (Cruise Planners), Cruise OTAs (Vacations To Go), Consortia (Virtuoso), Costco, and Ticket vs Onboard splits.
+          </div>
+        </div>
+        <div>
+          <div class="sector-stats">
+            <div>
+              <div class="stat-label">Agency Share</div>
+              <div class="stat-val" style="color: #38bdf8;">76.3% (Trade Core)</div>
+            </div>
+            <div>
+              <div class="stat-label">Distribution Friction</div>
+              <div class="stat-val" style="color: #f87171;">12.5% ($4.75B)</div>
+            </div>
+            <div>
+              <div class="stat-label">Onboard Revenue</div>
+              <div class="stat-val" style="color: #c084fc;">$13.0B (0% Comm)</div>
+            </div>
+            <div>
+              <div class="stat-label">Cruise EBITDA Margin</div>
+              <div class="stat-val" style="color: #fbbf24;">30.5% ($10.15B)</div>
+            </div>
+          </div>
+
+          <a href="cruises/index.html" class="btn-launch btn-cruises">Launch Full Cruises Dashboard ➔</a>
+
+          <div class="channel-links-title">Specific Channel Visualizations:</div>
+          <div class="channel-links-grid">
+            <a href="cruises/index.html#tab-journey" class="channel-link-item">
+              <span>🌊 Maritime Passenger Flow Sankey</span>
+              <span class="channel-link-tag">33.5M Guests</span>
+            </a>
+            <a href="cruises/index.html#tab-finance" class="channel-link-item">
+              <span>💰 Ticket vs Onboard Revenue Waterfall</span>
+              <span class="channel-link-tag">30.5% EBITDA</span>
+            </a>
+            <a href="cruises/index.html#tab-pathways" class="channel-link-item">
+              <span>🧭 Cruise Distribution Archetypes</span>
+              <span class="channel-link-tag">Host • Consortia • Direct</span>
+            </a>
+            <a href="cruises/index.html#tab-matrix" class="channel-link-item">
+              <span>📋 Agency & Trade Benchmark Matrix</span>
+              <span class="channel-link-tag">Polar & Espresso</span>
+            </a>
+            <a href="cruises/index.html#tab-simulator" class="channel-link-item">
+              <span>🎛️ Cruise Sensitivity Simulator</span>
+              <span class="channel-link-tag">Interactive</span>
+            </a>
+          </div>
+
+          <div class="data-links">
+            <span>Data:</span>
+            <a href="cruises/data/channel_breakdown.csv" target="_blank">CSV Breakdown</a> • 
+            <a href="cruises/data/cruise_distribution_data.json" target="_blank">Ecosystem JSON</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Airlines -->
+      <div class="glass-panel sector-card card-airlines">
+        <div>
+          <div class="sector-icon">✈️</div>
+          <div class="sector-title">Airlines & Aviation</div>
+          <div class="sector-scale">Global Market: $800.0B GBV • 4.6B Passengers</div>
+          <div class="sector-desc">
+            Passenger journeys across Legacy Network carriers, LCCs, Passenger Service Systems (Altéa/SabreSonic), IATA NDC Direct Connect APIs, GDS EDIFACT switches, Corporate TMCs, and Ancillary merchandising.
+          </div>
+        </div>
+        <div>
+          <div class="sector-stats">
+            <div>
+              <div class="stat-label">Direct Digital Share</div>
+              <div class="stat-val" style="color: #c084fc;">52.5% (Web/App)</div>
+            </div>
+            <div>
+              <div class="stat-label">Distribution Friction</div>
+              <div class="stat-val" style="color: #f87171;">5.8% ($46.4B)</div>
+            </div>
+            <div>
+              <div class="stat-label">Ancillary Revenue</div>
+              <div class="stat-val" style="color: #60a5fa;">$160.0B (20.0%)</div>
+            </div>
+            <div>
+              <div class="stat-label">Airline EBIT Margin</div>
+              <div class="stat-val" style="color: #fbbf24;">7.4% ($55.6B)</div>
+            </div>
+          </div>
+
+          <a href="airlines/index.html" class="btn-launch btn-airlines">Launch Full Airlines Dashboard ➔</a>
+
+          <div class="channel-links-title">Specific Channel Visualizations:</div>
+          <div class="channel-links-grid">
+            <a href="airlines/index.html#tab-journey" class="channel-link-item">
+              <span>🌊 Aviation Passenger Journey Sankey</span>
+              <span class="channel-link-tag">4.6B Pax</span>
+            </a>
+            <a href="airlines/index.html#tab-finance" class="channel-link-item">
+              <span>💰 Base Fare & Ancillary Waterfall</span>
+              <span class="channel-link-tag">7.4% EBIT</span>
+            </a>
+            <a href="airlines/index.html#tab-pathways" class="channel-link-item">
+              <span>🧭 NDC vs GDS Booking Archetypes</span>
+              <span class="channel-link-tag">EDIFACT • API</span>
+            </a>
+            <a href="airlines/index.html#tab-matrix" class="channel-link-item">
+              <span>📋 PSS & GDS Benchmark Matrix</span>
+              <span class="channel-link-tag">Amadeus • Sabre</span>
+            </a>
+            <a href="airlines/index.html#tab-simulator" class="channel-link-item">
+              <span>🎛️ Airline Distribution Simulator</span>
+              <span class="channel-link-tag">Interactive</span>
+            </a>
+          </div>
+
+          <div class="data-links">
+            <span>Data:</span>
+            <a href="airlines/data/channel_breakdown.csv" target="_blank">CSV Breakdown</a> • 
+            <a href="airlines/data/airline_distribution_data.json" target="_blank">Ecosystem JSON</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Tours -->
+      <div class="glass-panel sector-card card-tours">
+        <div>
+          <div class="sector-icon">🎒</div>
+          <div class="sector-title">Tours & Experiences</div>
+          <div class="sector-scale">Global Market: $160.0B GBV • 1.4B Bookings</div>
+          <div class="sector-desc">
+            Activity flows across Iconic Attractions, Day Tours, Adventure sports, Cloud ResTech (FareHarbor/Bókun/Peek), Experience OTAs (Viator/GetYourGuide), Cruise Shore Excursions (Shorex), and DMCs.
+          </div>
+        </div>
+        <div>
+          <div class="sector-stats">
+            <div>
+              <div class="stat-label">Direct (Box + Web)</div>
+              <div class="stat-val" style="color: #34d399;">56.3%</div>
+            </div>
+            <div>
+              <div class="stat-label">Distribution Friction</div>
+              <div class="stat-val" style="color: #f87171;">17.1% ($27.4B)</div>
+            </div>
+            <div>
+              <div class="stat-label">OTA Take Rate</div>
+              <div class="stat-val" style="color: #fb923c;">22% - 30% (High)</div>
+            </div>
+            <div>
+              <div class="stat-label">Operator EBITDA</div>
+              <div class="stat-val" style="color: #fbbf24;">21.4% ($28.4B)</div>
+            </div>
+          </div>
+
+          <a href="tours/index.html" class="btn-launch btn-tours">Launch Full Tours Dashboard ➔</a>
+
+          <div class="channel-links-title">Specific Channel Visualizations:</div>
+          <div class="channel-links-grid">
+            <a href="tours/index.html#tab-journey" class="channel-link-item">
+              <span>🌊 Tour & Activity Flow Sankey</span>
+              <span class="channel-link-tag">1.4B Bookings</span>
+            </a>
+            <a href="tours/index.html#tab-finance" class="channel-link-item">
+              <span>💰 ResTech & OTA Margin Waterfall</span>
+              <span class="channel-link-tag">21.4% EBITDA</span>
+            </a>
+            <a href="tours/index.html#tab-pathways" class="channel-link-item">
+              <span>🧭 Attraction & Shorex Archetypes</span>
+              <span class="channel-link-tag">Viator • GYG • DMC</span>
+            </a>
+            <a href="tours/index.html#tab-matrix" class="channel-link-item">
+              <span>📋 ResTech & Marketplace Matrix</span>
+              <span class="channel-link-tag">FareHarbor • Peek</span>
+            </a>
+            <a href="tours/index.html#tab-simulator" class="channel-link-item">
+              <span>🎛️ Operator Margin Simulator</span>
+              <span class="channel-link-tag">Interactive</span>
+            </a>
+          </div>
+
+          <div class="data-links">
+            <span>Data:</span>
+            <a href="tours/data/channel_breakdown.csv" target="_blank">CSV Breakdown</a> • 
+            <a href="tours/data/tours_distribution_data.json" target="_blank">Ecosystem JSON</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Comparative Cross-Industry Matrix -->
+    <div class="glass-panel">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem;">
+        <div>
+          <h2 style="font-size: 1.3rem; font-weight: 700;">Cross-Industry Distribution & Commercial Benchmarks ($1.6 Trillion Global Spend)</h2>
+          <p style="color: var(--text-secondary); font-size: 0.85rem;">
+            Key structural differences in distribution architecture, intermediary reliance, and financial margins across travel verticals.
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="VISUALIZATION_AND_PRESENTATION_FRAMEWORKS_COMPENDIUM.md" class="table-btn">📚 Frameworks Compendium</a>
+          <a href="OPEN_SOURCE_CLI_TOOLS_AND_APPLICATIONS_COMPENDIUM.md" class="table-btn">🛠️ CLI Compendium</a>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Vertical</th>
+              <th>Global GBV</th>
+              <th>Direct Share</th>
+              <th>Intermediated Share</th>
+              <th>Blended Distribution Friction</th>
+              <th>Primary Intermediaries</th>
+              <th>Core Tech Infrastructure</th>
+              <th>Operating EBITDA Margin</th>
+              <th>Direct Channel Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight: 700; color: #60a5fa;">🏨 Hotels & Lodging</td>
+              <td>$600.0B</td>
+              <td>35.0%</td>
+              <td>65.0%</td>
+              <td><span style="color: #f87171; font-weight: 700;">14.6%</span> ($87.7B)</td>
+              <td>Mega-OTAs (Booking/Expedia), Bedbanks (Hotelbeds), GDS, TMCs</td>
+              <td>Central Reservation Systems (CRS), Channel Managers, PMS</td>
+              <td style="color: #34d399; font-weight: 700;">38.0% Net ($194.6B)</td>
+              <td><a href="hotels/index.html#tab-journey" class="table-btn">View Channels ➔</a></td>
+            </tr>
+            <tr>
+              <td style="font-weight: 700; color: #38bdf8;">🚢 Cruises & Maritime</td>
+              <td>$38.0B</td>
+              <td>23.7%</td>
+              <td>76.3%</td>
+              <td><span style="color: #f87171; font-weight: 700;">12.5%</span> ($4.75B)</td>
+              <td>Host Agencies (Cruise Planners), Cruise OTAs, Consortia, Costco</td>
+              <td>Polar, Espresso, Amadeus Cruise, Versonix Seaware</td>
+              <td style="color: #34d399; font-weight: 700;">30.5% Net ($10.15B)</td>
+              <td><a href="cruises/index.html#tab-journey" class="table-btn">View Channels ➔</a></td>
+            </tr>
+            <tr>
+              <td style="font-weight: 700; color: #c084fc;">✈️ Airlines & Aviation</td>
+              <td>$800.0B</td>
+              <td>52.5%</td>
+              <td>47.5%</td>
+              <td><span style="color: #34d399; font-weight: 700;">5.8%</span> ($46.4B)</td>
+              <td>GDS EDIFACT, IATA NDC APIs, Corporate TMCs, Flight OTAs</td>
+              <td>Passenger Service Systems (Altéa/SabreSonic), NDC Gateways</td>
+              <td style="color: #fbbf24; font-weight: 700;">7.4% Net ($55.6B)</td>
+              <td><a href="airlines/index.html#tab-journey" class="table-btn">View Channels ➔</a></td>
+            </tr>
+            <tr>
+              <td style="font-weight: 700; color: #34d399;">🎒 Tours & Experiences</td>
+              <td>$160.0B</td>
+              <td>56.3%</td>
+              <td>43.7%</td>
+              <td><span style="color: #f87171; font-weight: 700;">17.1%</span> ($27.4B)</td>
+              <td>Experience OTAs (Viator/GYG), Cruise Shorex, Inbound DMCs</td>
+              <td>Cloud ResTech (FareHarbor/Peek/Bókun), Turnstile RFID Gates</td>
+              <td style="color: #34d399; font-weight: 700;">21.4% Net ($28.4B)</td>
+              <td><a href="tours/index.html#tab-journey" class="table-btn">View Channels ➔</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospitality Distribution Ecosystem & Revenue / Cost Splits</title>
+  
+  <!-- External Libraries -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Dashboard Sticky Header -->
+  <header class="dashboard-header">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
+          <h1 style="font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em;">Hospitality Distribution & Revenue Split Ecosystem</h1>
+          <span class="badge-tag badge-blue">Global Scale $600B</span>
+          <span class="badge-tag badge-green">End-to-End Flows</span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.85rem;">
+          Interactive multi-tier visualization of room journeys, intermediaries, B2B wholesale, GDS, OTAs, TMCs, metasearch, and corporate revenue/cost splits.
+        </p>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <span class="badge-tag badge-purple">5-Tier Sankey</span>
+        <span class="badge-tag badge-orange">Earnings Waterfall</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Top KPI Grid -->
+  <div style="padding: 1.5rem 2rem 0 2rem;">
+    <div class="kpi-grid">
+      <div class="glass-panel kpi-card kpi-blue">
+        <div class="kpi-title">Global Room GBV</div>
+        <div class="kpi-value" id="kpi-gbv">$600.0B</div>
+        <div class="kpi-subtitle">Total gross accommodation bookings</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-red">
+        <div class="kpi-title">Intermediary & Distribution Friction</div>
+        <div class="kpi-value" id="kpi-friction">$87.7B</div>
+        <div class="kpi-subtitle">Commissions, GDS, TMC & tech fees</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-green">
+        <div class="kpi-title">Net Hotel Room Revenue</div>
+        <div class="kpi-value" id="kpi-net">$512.3B</div>
+        <div class="kpi-subtitle">85.4% retained by hoteliers</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-amber">
+        <div class="kpi-title">Direct Channel Share</div>
+        <div class="kpi-value" id="kpi-direct">35.0%</div>
+        <div class="kpi-subtitle">Brand.com, Loyalty, Voice & Walk-in</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-purple">
+        <div class="kpi-title">Blended Distribution Take Rate</div>
+        <div class="kpi-value" id="kpi-rate">14.6%</div>
+        <div class="kpi-subtitle">Weighted average distribution friction</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation Tabs -->
+  <nav class="tabs-nav">
+    <button class="tab-btn active" data-tab="tab-journey">
+      <span>🌊</span> 5-Tier Journey Sankey
+    </button>
+    <button class="tab-btn" data-tab="tab-finance">
+      <span>💰</span> Revenue & Cost Splits (EBITDA Waterfall)
+    </button>
+    <button class="tab-btn" data-tab="tab-pathways">
+      <span>🧭</span> 10 Specific Journey Pathways
+    </button>
+    <button class="tab-btn" data-tab="tab-matrix">
+      <span>📋</span> Intermediary Benchmark Matrix
+    </button>
+    <button class="tab-btn" data-tab="tab-simulator">
+      <span>🎛️</span> What-If Sensitivity Simulator
+    </button>
+  </nav>
+
+  <!-- TAB 1: Master 5-Tier Journey Sankey -->
+  <section id="tab-journey" class="tab-content active">
+    <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+        <div>
+          <h2 style="font-size: 1.2rem; font-weight: 700;">Global Room Journey Flow: Supply ➔ Tech ➔ Channels ➔ Intermediaries ➔ Customers</h2>
+          <p style="color: var(--text-secondary); font-size: 0.8rem;">
+            Drag nodes vertically to reorder. Hover over nodes or links to inspect flow volumes in $ Billions and percentage of global supply.
+          </p>
+        </div>
+        
+        <!-- Filter Toolbar -->
+        <div class="filter-bar glass-panel" style="margin-bottom: 0;">
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-right: 0.25rem;">PRESETS:</span>
+          <button class="filter-btn active" data-filter="all">All Channels ($600B)</button>
+          <button class="filter-btn" data-filter="direct">Direct Only ($210B)</button>
+          <button class="filter-btn" data-filter="corporate">Corporate & GDS/TMC</button>
+          <button class="filter-btn" data-filter="leisure">Leisure & OTAs</button>
+          <button class="filter-btn" data-filter="wholesale">Wholesale & Packages</button>
+          <button class="filter-btn" data-filter="luxury">Luxury & Consortia</button>
+          <button class="filter-btn" data-filter="mice">Group & MICE</button>
+        </div>
+      </div>
+
+      <!-- Sankey Container -->
+      <div id="master-sankey-chart" class="chart-container"></div>
+
+      <!-- Tier Legend Guide -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #3b82f6; text-transform: uppercase;">Tier 0: Hotel Supply</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">Chain / Independent / Luxury / Extended Stay ($600B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #ec4899; text-transform: uppercase;">Tier 1: Tech Infrastructure</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">CRS, Channel Managers, Switches & PMS ($600B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #f97316; text-transform: uppercase;">Tier 2: Primary Channels</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">Direct Web, OTAs, GDS, Bedbanks, Group ($600B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #9333ea; text-transform: uppercase;">Tier 3: Intermediaries</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">TMCs, Consortia, Tour Operators, OBTs ($600B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #10b981; text-transform: uppercase;">Tier 4: Customer Segments</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">Corporate Managed, FIT, Package, MICE ($600B)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 2: Financial Revenue & Cost Splits (EBITDA Waterfall) -->
+  <section id="tab-finance" class="tab-content">
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+      
+      <!-- Waterfall Chart -->
+      <div class="glass-panel" style="padding: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <div>
+            <h2 style="font-size: 1.2rem; font-weight: 700;">Corporate Revenue & Cost Split (Waterfall Analysis)</h2>
+            <p style="color: var(--text-secondary); font-size: 0.8rem;">
+              How $600.0B in Gross Room Bookings cascades down through distribution friction and hotel operating expenses to $194.6B in Gross Operating Profit (GOP / EBITDA).
+            </p>
+          </div>
+          <span class="badge-tag badge-green">38.0% Net GOP Margin</span>
+        </div>
+        
+        <div id="revenue-waterfall-chart" style="height: 480px; width: 100%;"></div>
+      </div>
+
+      <!-- Secondary Cost Split Sankey -->
+      <div class="glass-panel" style="padding: 1.5rem;">
+        <div style="margin-bottom: 1rem;">
+          <h2 style="font-size: 1.2rem; font-weight: 700;">Capital Allocation & Friction Split ($600.0B Gross Booking Value)</h2>
+          <p style="color: var(--text-secondary); font-size: 0.8rem;">
+            Breakdown showing how every dollar splits between Intermediaries ($87.7B), Property Operations ($317.7B), and Hotelier EBITDA ($194.6B).
+          </p>
+        </div>
+        <div id="cost-sankey-chart" style="height: 380px; width: 100%;"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TAB 3: Specific Journey Pathways Explorer -->
+  <section id="tab-pathways" class="tab-content">
+    <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+      <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.25rem;">10 Specific Hospitality Distribution Archetypes</h2>
+      <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 1.25rem;">
+        Select an archetype below to explore its end-to-end technical flow, financial mechanics, and dollar-by-dollar ADR retention.
+      </p>
+
+      <!-- Pathway Button Grid -->
+      <div class="pathway-selector" id="pathway-buttons"></div>
+
+      <!-- Active Pathway Detail View -->
+      <div class="glass-panel" style="padding: 1.5rem; background: rgba(17, 24, 39, 0.9); border-color: var(--border-highlight);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <span class="badge-tag badge-cyan" id="arch-category" style="margin-bottom: 0.5rem;">Category</span>
+            <h3 style="font-size: 1.4rem; font-weight: 700; color: #f9fafb;" id="arch-title">Archetype Title</h3>
+            <div style="font-family: monospace; font-size: 0.85rem; color: #60a5fa; margin-top: 0.25rem;" id="arch-formula">Flow Formula</div>
+          </div>
+        </div>
+
+        <!-- Step Progression Box -->
+        <div class="flow-steps-container" id="arch-steps"></div>
+
+        <!-- Two Column Layout: ADR Chart & Tech Details -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+          
+          <!-- ADR Chart -->
+          <div class="glass-panel" style="padding: 1rem;">
+            <div id="adr-breakdown-chart" style="height: 280px;"></div>
+          </div>
+
+          <!-- Technical & Operational Attributes -->
+          <div class="glass-panel" style="padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-around;">
+            <div>
+              <div style="font-size: 0.75rem; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Technical Connectivity Stack</div>
+              <div style="font-size: 0.85rem; color: #f9fafb; margin-top: 0.25rem; font-family: monospace;" id="arch-tech">Tech Details</div>
+            </div>
+            <div style="margin-top: 1rem;">
+              <div style="font-size: 0.75rem; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Channel Dynamics & Risks</div>
+              <div style="font-size: 0.85rem; color: #d1d5db; margin-top: 0.25rem;" id="arch-char">Characteristics</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 4: Intermediary Benchmark Matrix -->
+  <section id="tab-matrix" class="tab-content">
+    <div class="glass-panel" style="padding: 1.5rem;">
+      <div style="margin-bottom: 1.25rem;">
+        <h2 style="font-size: 1.2rem; font-weight: 700;">Hospitality Distribution Intermediary Benchmark Matrix</h2>
+        <p style="color: var(--text-secondary); font-size: 0.8rem;">
+          Comprehensive economic comparison of all primary distribution channels, take rates, cancellation liabilities, lead times, and data ownership.
+        </p>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Channel / Intermediary Type</th>
+              <th>Major Market Players</th>
+              <th>Take Rate / Cost %</th>
+              <th>Global Share</th>
+              <th>Cancellation Rate</th>
+              <th>Lead Time</th>
+              <th>Guest Data</th>
+              <th>Key Strategic Pros</th>
+              <th>Key Strategic Cons</th>
+            </tr>
+          </thead>
+          <tbody id="benchmark-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 5: What-If Sensitivity Simulator -->
+  <section id="tab-simulator" class="tab-content">
+    <div class="glass-panel" style="padding: 1.5rem;">
+      <div style="margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.2rem; font-weight: 700;">What-If Channel Shift & Take Rate Sensitivity Simulator</h2>
+        <p style="color: var(--text-secondary); font-size: 0.8rem;">
+          Simulate how shifts in direct booking share, OTA commission renegotiations, and GDS transaction fees impact the global hotel industry's bottom line.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+        
+        <!-- Controls Column -->
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1.25rem; color: #93c5fd;">Simulation Levers</h3>
+          
+          <!-- Slider 1 -->
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>Direct Booking Channel Shift</span>
+              <span id="val-direct-shift" style="color: var(--accent-blue); font-weight: 700;">0%</span>
+            </div>
+            <input type="range" id="sim-direct-shift" min="-10" max="15" step="1" value="0">
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Shift gross booking value between OTAs and Direct Brand.com</div>
+          </div>
+
+          <!-- Slider 2 -->
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>OTA Average Commission Rate</span>
+              <span id="val-ota-comm" style="color: var(--accent-orange); font-weight: 700;">18%</span>
+            </div>
+            <input type="range" id="sim-ota-comm" min="12" max="25" step="0.5" value="18">
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Blended commission rate charged by Booking.com & Expedia</div>
+          </div>
+
+          <!-- Slider 3 -->
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>GDS Fee per Booking</span>
+              <span id="val-gds-fee" style="color: var(--accent-purple); font-weight: 700;">$5.00</span>
+            </div>
+            <input type="range" id="sim-gds-fee" min="2" max="12" step="0.5" value="5">
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Average transaction fee charged by Sabre, Amadeus & Travelport</div>
+          </div>
+        </div>
+
+        <!-- Results Column -->
+        <div class="glass-panel" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-around;">
+          <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: #a7f3d0;">Simulated Financial Outcomes</h3>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Net Industry Savings / Loss</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;" id="sim-result-savings">$0.00B</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">Annual profit swing</div>
+            </div>
+
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Net Room Revenue</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #3b82f6;" id="sim-result-net">$512.3B</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">Retained by hotels</div>
+            </div>
+
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Total Distribution Friction</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #f97316;" id="sim-result-friction">$87.7B (14.6%)</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">Total intermediary cost</div>
+            </div>
+
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Net RevPAR Impact</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #a855f7;" id="sim-result-revpar">+$0.00</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">Per available room night</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Application Logic -->
+  <script src="js/app.js"></script>
+</body>
+</html>

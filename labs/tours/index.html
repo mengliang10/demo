@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tours & Activities Distribution Ecosystem & Economics</title>
+  
+  <!-- External Libraries -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Dashboard Sticky Header -->
+  <header class="dashboard-header">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
+          <h1 style="font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em;">🎒 Tours, Activities & Experiences Distribution Ecosystem</h1>
+          <span class="badge-tag badge-blue">Global Scale $160.0B</span>
+          <span class="badge-tag badge-cyan">1.4B Bookings</span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.85rem;">
+          Interactive multi-tier visualization of in-destination experiences: ResTech Platforms (FareHarbor, Bókun), Experience OTAs (Viator, GetYourGuide), Cruise Shorex, and EBITDA splits.
+        </p>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <a href="../index.html" class="badge-tag badge-purple" style="text-decoration: none;">🏠 Master Portal</a>
+        <span class="badge-tag badge-orange">Experiences Economics</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Top KPI Grid -->
+  <div style="padding: 1.5rem 2rem 0 2rem;">
+    <div class="kpi-grid">
+      <div class="glass-panel kpi-card kpi-blue">
+        <div class="kpi-title">Global Experience GBV</div>
+        <div class="kpi-value" id="kpi-gbv">$160.0B</div>
+        <div class="kpi-subtitle">Attractions, tours & outdoor activities</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-purple">
+        <div class="kpi-title">Direct vs Intermediated</div>
+        <div class="kpi-value" id="kpi-direct-ota">56.3% / 43.7%</div>
+        <div class="kpi-subtitle">Box office + web direct vs OTAs/trade</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-red">
+        <div class="kpi-title">Distribution Friction</div>
+        <div class="kpi-value" id="kpi-friction">$27.4B</div>
+        <div class="kpi-subtitle">OTA commissions, Shorex markups, ResTech</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-green">
+        <div class="kpi-title">Net Operator Revenue</div>
+        <div class="kpi-value" id="kpi-net">$132.6B</div>
+        <div class="kpi-subtitle">82.9% retained by tour operators</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-amber">
+        <div class="kpi-title">Blended Take Rate</div>
+        <div class="kpi-value" id="kpi-take-rate">17.1%</div>
+        <div class="kpi-subtitle">Highest commission friction in travel</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs-nav">
+    <button class="tab-btn active" data-tab="tab-journey">
+      <span>🌊</span> 5-Tier Journey Sankey
+    </button>
+    <button class="tab-btn" data-tab="tab-finance">
+      <span>💰</span> Revenue & Cost Splits (EBITDA Waterfall)
+    </button>
+    <button class="tab-btn" data-tab="tab-pathways">
+      <span>🧭</span> 10 Specific Tour Archetypes
+    </button>
+    <button class="tab-btn" data-tab="tab-matrix">
+      <span>📋</span> Experience Benchmark Matrix
+    </button>
+    <button class="tab-btn" data-tab="tab-simulator">
+      <span>🎛️</span> Tours Sensitivity Simulator
+    </button>
+  </nav>
+
+  <!-- TAB 1: Master Tours Sankey -->
+  <section id="tab-journey" class="tab-content active">
+    <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+        <div>
+          <h2 style="font-size: 1.2rem; font-weight: 700;">Global Experiences Flow: Attractions & Operators ➔ ResTech ➔ Channels ➔ Front-Ends ➔ Travelers</h2>
+          <p style="color: var(--text-secondary); font-size: 0.8rem;">
+            Interactive flow of $160.0B tours, activities, and attractions bookings across Viator, GetYourGuide, ResTech widgets, and Box Offices.
+          </p>
+        </div>
+        
+        <div class="filter-bar glass-panel" style="margin-bottom: 0;">
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-right: 0.25rem;">PRESETS:</span>
+          <button class="filter-btn active" data-filter="all">All Channels ($160B)</button>
+          <button class="filter-btn" data-filter="direct">Direct Offline & Web (56.3%)</button>
+          <button class="filter-btn" data-filter="ota">Experience OTAs (Viator/GYG)</button>
+          <button class="filter-btn" data-filter="shorex">Cruise Shore Excursions</button>
+          <button class="filter-btn" data-filter="dmc">Inbound DMCs & Wholesale</button>
+          <button class="filter-btn" data-filter="concierge">Hotel Concierge & QR</button>
+        </div>
+      </div>
+
+      <div id="master-sankey-chart" class="chart-container"></div>
+
+      <!-- Tier Legend -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #3b82f6; text-transform: uppercase;">Tier 0: Operator Supply</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">Theme Parks, Day Tours, Adventure, Multi-Day ($160B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #ec4899; text-transform: uppercase;">Tier 1: ResTech & Gates</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">FareHarbor, Bókun, Peek, Turnstiles, POS ($160B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #f97316; text-transform: uppercase;">Tier 2: Primary Channels</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">Box Office, Web Widgets, OTAs, Shorex, DMCs ($160B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #9333ea; text-transform: uppercase;">Tier 3: Intermediaries</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">On-Site Gates, OTA Apps, Shorex Desks, Concierges ($160B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #10b981; text-transform: uppercase;">Tier 4: Guest Segments</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">FIT Sightseers, Families, Cruise Visitors, Adventure ($160B)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 2: Financial Revenue & Cost Splits -->
+  <section id="tab-finance" class="tab-content">
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+      <div class="glass-panel" style="padding: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <div>
+            <h2 style="font-size: 1.2rem; font-weight: 700;">Tours & Activities Financial Waterfall: Gross Bookings to EBITDA ($160.0B)</h2>
+            <p style="color: var(--text-secondary); font-size: 0.8rem;">
+              Tracking experience economics: Heavy 25-30% OTA commissions, tour guide labor, boat fuel, national park fees, liability insurance, and operator EBITDA.
+            </p>
+          </div>
+          <span class="badge-tag badge-green">21.4% Net EBITDA Margin</span>
+        </div>
+        <div id="revenue-waterfall-chart" style="height: 480px; width: 100%;"></div>
+      </div>
+
+      <div class="glass-panel" style="padding: 1.5rem;">
+        <div style="margin-bottom: 1rem;">
+          <h2 style="font-size: 1.2rem; font-weight: 700;">Capital Allocation & Friction Split ($160.0B Gross Bookings)</h2>
+          <p style="color: var(--text-secondary); font-size: 0.8rem;">
+            Notice that distribution friction ($27.4B) nearly equals total operator EBITDA ($28.4B), highlighting the immense value of driving direct bookings!
+          </p>
+        </div>
+        <div id="cost-sankey-chart" style="height: 380px; width: 100%;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 3: Specific Tour Archetypes -->
+  <section id="tab-pathways" class="tab-content">
+    <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+      <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.25rem;">10 Specific Experience Distribution Archetypes</h2>
+      <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 1.25rem;">
+        Select an archetype below to explore its booking flow, ResTech integrations, OTA take rates, and dollar-by-dollar operator margin retention.
+      </p>
+
+      <div class="pathway-selector" id="pathway-buttons"></div>
+
+      <div class="glass-panel" style="padding: 1.5rem; background: rgba(17, 24, 39, 0.9); border-color: var(--border-highlight);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <span class="badge-tag badge-cyan" id="arch-category" style="margin-bottom: 0.5rem;">Category</span>
+            <h3 style="font-size: 1.4rem; font-weight: 700; color: #f9fafb;" id="arch-title">Archetype Title</h3>
+            <div style="font-family: monospace; font-size: 0.85rem; color: #38bdf8; margin-top: 0.25rem;" id="arch-formula">Flow Formula</div>
+          </div>
+        </div>
+
+        <div class="flow-steps-container" id="arch-steps"></div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+          <div class="glass-panel" style="padding: 1rem;">
+            <div id="adr-breakdown-chart" style="height: 280px;"></div>
+          </div>
+          <div class="glass-panel" style="padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-around;">
+            <div>
+              <div style="font-size: 0.75rem; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Technical Connectivity Stack</div>
+              <div style="font-size: 0.85rem; color: #f9fafb; margin-top: 0.25rem; font-family: monospace;" id="arch-tech">Tech Details</div>
+            </div>
+            <div style="margin-top: 1rem;">
+              <div style="font-size: 0.75rem; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Commercial Dynamics & Channel Nuances</div>
+              <div style="font-size: 0.85rem; color: #d1d5db; margin-top: 0.25rem;" id="arch-char">Characteristics</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 4: Tours Benchmark Matrix -->
+  <section id="tab-matrix" class="tab-content">
+    <div class="glass-panel" style="padding: 1.5rem;">
+      <div style="margin-bottom: 1.25rem;">
+        <h2 style="font-size: 1.2rem; font-weight: 700;">Tours & Activities Intermediary Benchmark Matrix</h2>
+        <p style="color: var(--text-secondary); font-size: 0.8rem;">
+          Comparing direct on-site box offices, ResTech web widgets, experience OTAs, cruise shore excursions, DMCs, and hotel concierges.
+        </p>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Channel / Intermediary Type</th>
+              <th>Major Market Players</th>
+              <th>Take Rate / Commission</th>
+              <th>Global Share</th>
+              <th>Cancellation Rate</th>
+              <th>Lead Time</th>
+              <th>Customer Data</th>
+              <th>Key Strategic Pros</th>
+              <th>Key Strategic Cons</th>
+            </tr>
+          </thead>
+          <tbody id="benchmark-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 5: What-If Sensitivity Simulator -->
+  <section id="tab-simulator" class="tab-content">
+    <div class="glass-panel" style="padding: 1.5rem;">
+      <div style="margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.2rem; font-weight: 700;">What-If Experience Channel Shift Simulator</h2>
+        <p style="color: var(--text-secondary); font-size: 0.8rem;">
+          Simulate shifts from high-commission OTAs to direct ResTech web bookings, OTA commission renegotiations, and cruise shorex markup adjustments.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1.25rem; color: #93c5fd;">Simulation Levers</h3>
+          
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>Direct Booking Shift</span>
+              <span id="val-direct-shift" style="color: var(--accent-blue); font-weight: 700;">0%</span>
+            </div>
+            <input type="range" id="sim-direct-shift" min="-10" max="20" step="1" value="0">
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Shift gross volume from Experience OTAs to Direct Web/Box Office</div>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>OTA Average Commission Rate</span>
+              <span id="val-ota-comm" style="color: var(--accent-orange); font-weight: 700;">26%</span>
+            </div>
+            <input type="range" id="sim-ota-comm" min="18" max="32" step="0.5" value="26">
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Blended commission rate charged by Viator, GetYourGuide & Klook</div>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>Cruise Shorex Markup</span>
+              <span id="val-shorex-markup" style="color: var(--accent-purple); font-weight: 700;">45%</span>
+            </div>
+            <input type="range" id="sim-shorex-markup" min="25" max="65" step="1" value="45">
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Wholesale markup retained by cruise lines on shore excursions</div>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-around;">
+          <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: #a7f3d0;">Simulated Operator Outcomes</h3>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Net Industry Savings / Gain</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;" id="sim-result-savings">$0.00B</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">Annual profit change</div>
+            </div>
+
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Net Operator Revenue</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #3b82f6;" id="sim-result-net">$132.6B</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">Retained by operators</div>
+            </div>
+
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Total Distribution Cost</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #f97316;" id="sim-result-friction">$27.4B (17.1%)</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">OTA, Shorex & ResTech friction</div>
+            </div>
+
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Margin Per Booking</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #a855f7;" id="sim-result-booking">+$0.00</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">Per tour booking net impact</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Application JS -->
+  <script src="js/app.js"></script>
+</body>
+</html>

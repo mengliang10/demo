@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Airline Distribution Ecosystem & Revenue / Cost Splits</title>
+  
+  <!-- External Libraries -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Dashboard Sticky Header -->
+  <header class="dashboard-header">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
+          <h1 style="font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em;">✈️ Airline Distribution & Economics Ecosystem</h1>
+          <span class="badge-tag badge-blue">Global Scale $800.0B</span>
+          <span class="badge-tag badge-cyan">4.6B Passengers</span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.85rem;">
+          Interactive multi-tier visualization of commercial aviation distribution: GDS EDIFACT, IATA NDC Direct Connect, PSS Stacks, Ancillary Merchandising, and Airline EBIT splits.
+        </p>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <a href="../index.html" class="badge-tag badge-purple" style="text-decoration: none;">🏠 Master Portal</a>
+        <span class="badge-tag badge-orange">Aviation Economics</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Top KPI Grid -->
+  <div style="padding: 1.5rem 2rem 0 2rem;">
+    <div class="kpi-grid">
+      <div class="glass-panel kpi-card kpi-blue">
+        <div class="kpi-title">Global Airline Passenger GBV</div>
+        <div class="kpi-value" id="kpi-gbv">$800.0B</div>
+        <div class="kpi-subtitle">Total gross airfare & ancillary bookings</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-purple">
+        <div class="kpi-title">Base Fare vs Ancillary</div>
+        <div class="kpi-value" id="kpi-fare-ancillary">$640.0B / $160.0B</div>
+        <div class="kpi-subtitle">80.0% Base / 20.0% Ancillary spend</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-red">
+        <div class="kpi-title">Distribution Friction</div>
+        <div class="kpi-value" id="kpi-friction">$46.4B</div>
+        <div class="kpi-subtitle">GDS fees, card interchange, TMC overrides</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-green">
+        <div class="kpi-title">Net Airline Passenger Revenue</div>
+        <div class="kpi-value" id="kpi-net">$753.6B</div>
+        <div class="kpi-subtitle">94.2% retained by commercial airlines</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-amber">
+        <div class="kpi-title">Direct Digital Share</div>
+        <div class="kpi-value" id="kpi-direct">52.5%</div>
+        <div class="kpi-subtitle">Airline.com & Native Mobile Apps</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs-nav">
+    <button class="tab-btn active" data-tab="tab-journey">
+      <span>🌊</span> 5-Tier Journey Sankey
+    </button>
+    <button class="tab-btn" data-tab="tab-finance">
+      <span>💰</span> Revenue & Cost Splits (EBIT Waterfall)
+    </button>
+    <button class="tab-btn" data-tab="tab-pathways">
+      <span>🧭</span> 10 Specific Airline Archetypes
+    </button>
+    <button class="tab-btn" data-tab="tab-matrix">
+      <span>📋</span> Aviation Intermediary Benchmark Matrix
+    </button>
+    <button class="tab-btn" data-tab="tab-simulator">
+      <span>🎛️</span> Airline Sensitivity Simulator
+    </button>
+  </nav>
+
+  <!-- TAB 1: Master Airline Sankey -->
+  <section id="tab-journey" class="tab-content active">
+    <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+        <div>
+          <h2 style="font-size: 1.2rem; font-weight: 700;">Global Airline Passenger Journey: Fleet ➔ PSS/NDC ➔ Channels ➔ Retail ➔ Passengers</h2>
+          <p style="color: var(--text-secondary); font-size: 0.8rem;">
+            Interactive flow of $800.0B commercial passenger aviation revenue across GDS EDIFACT, IATA NDC, OTAs, and Direct Digital channels.
+          </p>
+        </div>
+        
+        <div class="filter-bar glass-panel" style="margin-bottom: 0;">
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-right: 0.25rem;">PRESETS:</span>
+          <button class="filter-btn active" data-filter="all">All Channels ($800B)</button>
+          <button class="filter-btn" data-filter="direct">Direct Digital (52.5%)</button>
+          <button class="filter-btn" data-filter="gds">Legacy GDS EDIFACT</button>
+          <button class="filter-btn" data-filter="ndc">IATA NDC Direct Connect</button>
+          <button class="filter-btn" data-filter="corporate">Corporate TMCs & OBTs</button>
+          <button class="filter-btn" data-filter="ota">Flight OTAs & Metas</button>
+        </div>
+      </div>
+
+      <div id="master-sankey-chart" class="chart-container"></div>
+
+      <!-- Tier Legend -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #3b82f6; text-transform: uppercase;">Tier 0: Airline Supply</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">Network Legacy, LCC, Regional, Charter ($800B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #ec4899; text-transform: uppercase;">Tier 1: Tech & PSS</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">Altéa, SabreSonic, Navitaire, NDC Hubs ($800B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #f97316; text-transform: uppercase;">Tier 2: Primary Channels</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">Direct Web, GDS EDIFACT, NDC APIs, OTAs ($800B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #9333ea; text-transform: uppercase;">Tier 3: Intermediaries</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">TMCs, Concur OBT, Travel Agents, Brokers ($800B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #10b981; text-transform: uppercase;">Tier 4: Passenger Segments</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">Corporate Managed, SME, Leisure, VFR, Elites ($800B)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 2: Financial Revenue & Cost Splits -->
+  <section id="tab-finance" class="tab-content">
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+      <div class="glass-panel" style="padding: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <div>
+            <h2 style="font-size: 1.2rem; font-weight: 700;">Aviation Financial Waterfall: Gross Bookings to EBIT ($800.0B)</h2>
+            <p style="color: var(--text-secondary); font-size: 0.8rem;">
+              Tracking commercial airline cash flows: Base fares, ancillary fees, GDS costs, jet fuel, crew labor, MRO, and operating profit (EBIT).
+            </p>
+          </div>
+          <span class="badge-tag badge-green">7.4% Net EBIT Margin</span>
+        </div>
+        <div id="revenue-waterfall-chart" style="height: 480px; width: 100%;"></div>
+      </div>
+
+      <div class="glass-panel" style="padding: 1.5rem;">
+        <div style="margin-bottom: 1rem;">
+          <h2 style="font-size: 1.2rem; font-weight: 700;">Base Airfare vs Ancillary Retailing ($800.0B Total Passenger Value)</h2>
+          <p style="color: var(--text-secondary); font-size: 0.8rem;">
+            Notice how Ancillary Revenue ($160.0B) carries near 0% GDS/agency friction, delivering the vast majority of net operating profit!
+          </p>
+        </div>
+        <div id="cost-sankey-chart" style="height: 380px; width: 100%;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 3: Specific Airline Archetypes -->
+  <section id="tab-pathways" class="tab-content">
+    <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+      <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.25rem;">10 Specific Airline Distribution Archetypes</h2>
+      <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 1.25rem;">
+        Select an archetype below to explore its booking flow, GDS vs NDC technology, ancillary splits, and dollar-by-dollar passenger yield.
+      </p>
+
+      <div class="pathway-selector" id="pathway-buttons"></div>
+
+      <div class="glass-panel" style="padding: 1.5rem; background: rgba(17, 24, 39, 0.9); border-color: var(--border-highlight);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <span class="badge-tag badge-cyan" id="arch-category" style="margin-bottom: 0.5rem;">Category</span>
+            <h3 style="font-size: 1.4rem; font-weight: 700; color: #f9fafb;" id="arch-title">Archetype Title</h3>
+            <div style="font-family: monospace; font-size: 0.85rem; color: #38bdf8; margin-top: 0.25rem;" id="arch-formula">Flow Formula</div>
+          </div>
+        </div>
+
+        <div class="flow-steps-container" id="arch-steps"></div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+          <div class="glass-panel" style="padding: 1rem;">
+            <div id="adr-breakdown-chart" style="height: 280px;"></div>
+          </div>
+          <div class="glass-panel" style="padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-around;">
+            <div>
+              <div style="font-size: 0.75rem; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Technical Connectivity Stack</div>
+              <div style="font-size: 0.85rem; color: #f9fafb; margin-top: 0.25rem; font-family: monospace;" id="arch-tech">Tech Details</div>
+            </div>
+            <div style="margin-top: 1rem;">
+              <div style="font-size: 0.75rem; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Aviation Commercial Dynamics & GDS / NDC Friction</div>
+              <div style="font-size: 0.85rem; color: #d1d5db; margin-top: 0.25rem;" id="arch-char">Characteristics</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 4: Airline Benchmark Matrix -->
+  <section id="tab-matrix" class="tab-content">
+    <div class="glass-panel" style="padding: 1.5rem;">
+      <div style="margin-bottom: 1.25rem;">
+        <h2 style="font-size: 1.2rem; font-weight: 700;">Aviation Distribution Channel Benchmark Matrix</h2>
+        <p style="color: var(--text-secondary); font-size: 0.8rem;">
+          Comparing airline direct web, IATA NDC APIs, legacy GDS EDIFACT, flight OTAs, and air consolidators on fees, cancellation rates, and data control.
+        </p>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Channel / Intermediary Type</th>
+              <th>Major Market Players</th>
+              <th>Take Rate / Fee Structure</th>
+              <th>Global Share</th>
+              <th>Cancellation Rate</th>
+              <th>Lead Time</th>
+              <th>Passenger Data</th>
+              <th>Key Strategic Pros</th>
+              <th>Key Strategic Cons</th>
+            </tr>
+          </thead>
+          <tbody id="benchmark-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 5: What-If Sensitivity Simulator -->
+  <section id="tab-simulator" class="tab-content">
+    <div class="glass-panel" style="padding: 1.5rem;">
+      <div style="margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.2rem; font-weight: 700;">What-If Airline Distribution & NDC Shift Simulator</h2>
+        <p style="color: var(--text-secondary); font-size: 0.8rem;">
+          Simulate the financial impact of shifting corporate volume from legacy GDS EDIFACT to IATA NDC Direct Connect, GDS fee adjustments, and ancillary revenue growth.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1.25rem; color: #93c5fd;">Simulation Levers</h3>
+          
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>Shift from GDS EDIFACT to NDC</span>
+              <span id="val-ndc-shift" style="color: var(--accent-blue); font-weight: 700;">0%</span>
+            </div>
+            <input type="range" id="sim-ndc-shift" min="-10" max="30" step="1" value="0">
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Percentage of GDS flight segments migrated to zero-surcharge NDC APIs</div>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>Average GDS Segment Fee</span>
+              <span id="val-gds-fee" style="color: var(--accent-purple); font-weight: 700;">$6.00</span>
+            </div>
+            <input type="range" id="sim-gds-fee" min="3" max="12" step="0.5" value="6">
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Blended fee per flight segment charged by Sabre, Amadeus & Travelport</div>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>Ancillary Revenue Expansion</span>
+              <span id="val-ancillary" style="color: var(--accent-emerald); font-weight: 700;">0%</span>
+            </div>
+            <input type="range" id="sim-ancillary-growth" min="-5" max="25" step="1" value="0">
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Growth in high-margin seats, baggage, Wi-Fi and loyalty retailing</div>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-around;">
+          <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: #a7f3d0;">Simulated Airline Financial Outcomes</h3>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Net Industry Savings / Gain</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;" id="sim-result-savings">$0.00B</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">Annual profit change</div>
+            </div>
+
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Net Airline Revenue</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #3b82f6;" id="sim-result-net">$753.6B</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">Retained passenger revenue</div>
+            </div>
+
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Total Distribution Cost</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #f97316;" id="sim-result-friction">$46.4B (5.8%)</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">GDS, interchange & TMC fees</div>
+            </div>
+
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Net Margin Per Passenger</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #a855f7;" id="sim-result-pax">+$0.00</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">Per passenger net impact</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Application JS -->
+  <script src="js/app.js"></script>
+</body>
+</html>

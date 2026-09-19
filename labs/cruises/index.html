@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cruise Distribution Ecosystem & Revenue / Cost Splits</title>
+  
+  <!-- External Libraries -->
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Dashboard Sticky Header -->
+  <header class="dashboard-header">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
+          <h1 style="font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em;">🚢 Cruise Distribution & Revenue Split Ecosystem</h1>
+          <span class="badge-tag badge-blue">Global Scale $38.0B</span>
+          <span class="badge-tag badge-cyan">33.5M Passengers</span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.85rem;">
+          Interactive multi-tier visualization of maritime cruise journeys: Host Agencies, Cruise OTAs, Consortia, Big Box Clubs, Ticket vs Onboard spend, and EBITDA splits.
+        </p>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <a href="../index.html" class="badge-tag badge-purple" style="text-decoration: none;">🏠 Master Portal</a>
+        <span class="badge-tag badge-orange">Maritime Economics</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Top KPI Grid -->
+  <div style="padding: 1.5rem 2rem 0 2rem;">
+    <div class="kpi-grid">
+      <div class="glass-panel kpi-card kpi-blue">
+        <div class="kpi-title">Global Cruise GBV</div>
+        <div class="kpi-value" id="kpi-gbv">$38.0B</div>
+        <div class="kpi-subtitle">Total passenger ticket + onboard spend</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-purple">
+        <div class="kpi-title">Ticket vs Onboard Revenue</div>
+        <div class="kpi-value" id="kpi-ticket-onboard">$25.0B / $13.0B</div>
+        <div class="kpi-subtitle">65.8% Ticket / 34.2% Onboard spend</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-red">
+        <div class="kpi-title">Intermediary Distribution Friction</div>
+        <div class="kpi-value" id="kpi-friction">$4.75B</div>
+        <div class="kpi-subtitle">Agent commissions, OTA margins, consortia</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-green">
+        <div class="kpi-title">Net Cruise Line Revenue</div>
+        <div class="kpi-value" id="kpi-net">$33.25B</div>
+        <div class="kpi-subtitle">87.5% retained by cruise operators</div>
+      </div>
+      <div class="glass-panel kpi-card kpi-amber">
+        <div class="kpi-title">Trade / Agency Intermediated</div>
+        <div class="kpi-value" id="kpi-agent-share">76.3%</div>
+        <div class="kpi-subtitle">Travel agents, OTAs & Big Box clubs</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs-nav">
+    <button class="tab-btn active" data-tab="tab-journey">
+      <span>🌊</span> 5-Tier Journey Sankey
+    </button>
+    <button class="tab-btn" data-tab="tab-finance">
+      <span>💰</span> Revenue & Cost Splits (EBITDA Waterfall)
+    </button>
+    <button class="tab-btn" data-tab="tab-pathways">
+      <span>🧭</span> 10 Specific Cruise Archetypes
+    </button>
+    <button class="tab-btn" data-tab="tab-matrix">
+      <span>📋</span> Cruise Intermediary Benchmark Matrix
+    </button>
+    <button class="tab-btn" data-tab="tab-simulator">
+      <span>🎛️</span> Cruise Sensitivity Simulator
+    </button>
+  </nav>
+
+  <!-- TAB 1: Master Cruise Sankey -->
+  <section id="tab-journey" class="tab-content active">
+    <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+        <div>
+          <h2 style="font-size: 1.2rem; font-weight: 700;">Global Cruise Passenger Journey: Fleet ➔ Res Engines ➔ Trade Channels ➔ Desks ➔ Cruisers</h2>
+          <p style="color: var(--text-secondary); font-size: 0.8rem;">
+            Interactive flow of $38.0B global cruise bookings. Drag nodes vertically or filter by channel type below.
+          </p>
+        </div>
+        
+        <!-- Filter Toolbar -->
+        <div class="filter-bar glass-panel" style="margin-bottom: 0;">
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-right: 0.25rem;">PRESETS:</span>
+          <button class="filter-btn active" data-filter="all">All Channels ($38B)</button>
+          <button class="filter-btn" data-filter="agents">Host Agencies & Advisors</button>
+          <button class="filter-btn" data-filter="direct">Direct & Onboard Desks</button>
+          <button class="filter-btn" data-filter="luxury">Luxury & Consortia</button>
+          <button class="filter-btn" data-filter="ota">Cruise OTAs & Big Box</button>
+        </div>
+      </div>
+
+      <div id="master-sankey-chart" class="chart-container"></div>
+
+      <!-- Tier Legend -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #3b82f6; text-transform: uppercase;">Tier 0: Cruise Lines</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">Mega, Premium, Luxury, River & Expedition ($38B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #ec4899; text-transform: uppercase;">Tier 1: Tech & Res Engines</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">Polar, Espresso, Amadeus Cruise, Versonix ($38B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #a855f7; text-transform: uppercase;">Tier 2: Primary Channels</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">Host Agencies, Cruise OTAs, Direct, Costco ($38B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #9333ea; text-transform: uppercase;">Tier 3: Advisory Desks</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">Home-Based Advisors, OTA Call Centers, PVP ($38B)</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: #10b981; text-transform: uppercase;">Tier 4: Passenger Segments</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">Families, Retirees, Luxury World Cruisers ($38B)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 2: Financial Revenue & Cost Splits -->
+  <section id="tab-finance" class="tab-content">
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+      <div class="glass-panel" style="padding: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <div>
+            <h2 style="font-size: 1.2rem; font-weight: 700;">Cruise Line Financial Waterfall: Gross Bookings to EBITDA ($38.0B)</h2>
+            <p style="color: var(--text-secondary); font-size: 0.8rem;">
+              Tracking cruise cash flows: Ticket fares, onboard spending, agent commissions, ship fuel, crew payroll, and EBITDA.
+            </p>
+          </div>
+          <span class="badge-tag badge-green">30.5% Net EBITDA Margin</span>
+        </div>
+        <div id="revenue-waterfall-chart" style="height: 480px; width: 100%;"></div>
+      </div>
+
+      <div class="glass-panel" style="padding: 1.5rem;">
+        <div style="margin-bottom: 1rem;">
+          <h2 style="font-size: 1.2rem; font-weight: 700;">Ticket vs Onboard Economics ($38.0B Total Passenger Value)</h2>
+          <p style="color: var(--text-secondary); font-size: 0.8rem;">
+            Notice how Onboard Spend ($13.0B) carries 0% trade commission friction, flowing straight to the cruise line's net revenue!
+          </p>
+        </div>
+        <div id="cost-sankey-chart" style="height: 380px; width: 100%;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 3: Specific Cruise Archetypes -->
+  <section id="tab-pathways" class="tab-content">
+    <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+      <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.25rem;">10 Specific Cruise Distribution Archetypes</h2>
+      <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 1.25rem;">
+        Select an archetype below to explore its booking flow, agency commission dynamics, NCCF deductions, and dollar-by-dollar spend splits.
+      </p>
+
+      <div class="pathway-selector" id="pathway-buttons"></div>
+
+      <div class="glass-panel" style="padding: 1.5rem; background: rgba(17, 24, 39, 0.9); border-color: var(--border-highlight);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <span class="badge-tag badge-cyan" id="arch-category" style="margin-bottom: 0.5rem;">Category</span>
+            <h3 style="font-size: 1.4rem; font-weight: 700; color: #f9fafb;" id="arch-title">Archetype Title</h3>
+            <div style="font-family: monospace; font-size: 0.85rem; color: #38bdf8; margin-top: 0.25rem;" id="arch-formula">Flow Formula</div>
+          </div>
+        </div>
+
+        <div class="flow-steps-container" id="arch-steps"></div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+          <div class="glass-panel" style="padding: 1rem;">
+            <div id="adr-breakdown-chart" style="height: 280px;"></div>
+          </div>
+          <div class="glass-panel" style="padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-around;">
+            <div>
+              <div style="font-size: 0.75rem; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Technical Connectivity Stack</div>
+              <div style="font-size: 0.85rem; color: #f9fafb; margin-top: 0.25rem; font-family: monospace;" id="arch-tech">Tech Details</div>
+            </div>
+            <div style="margin-top: 1rem;">
+              <div style="font-size: 0.75rem; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Cruise Trade Dynamics & NCCF Nuances</div>
+              <div style="font-size: 0.85rem; color: #d1d5db; margin-top: 0.25rem;" id="arch-char">Characteristics</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 4: Cruise Benchmark Matrix -->
+  <section id="tab-matrix" class="tab-content">
+    <div class="glass-panel" style="padding: 1.5rem;">
+      <div style="margin-bottom: 1.25rem;">
+        <h2 style="font-size: 1.2rem; font-weight: 700;">Cruise Distribution Intermediary Benchmark Matrix</h2>
+        <p style="color: var(--text-secondary); font-size: 0.8rem;">
+          Comparing host agencies, cruise OTAs, luxury consortia, big box clubs, and direct channels on commissions, cancellation risks, and lead times.
+        </p>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Channel / Intermediary Type</th>
+              <th>Major Market Players</th>
+              <th>Commission / Take Rate</th>
+              <th>Global Share</th>
+              <th>Cancellation Rate</th>
+              <th>Lead Time</th>
+              <th>Guest Data</th>
+              <th>Key Strategic Pros</th>
+              <th>Key Strategic Cons</th>
+            </tr>
+          </thead>
+          <tbody id="benchmark-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 5: What-If Sensitivity Simulator -->
+  <section id="tab-simulator" class="tab-content">
+    <div class="glass-panel" style="padding: 1.5rem;">
+      <div style="margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.2rem; font-weight: 700;">What-If Cruise Distribution Sensitivity Simulator</h2>
+        <p style="color: var(--text-secondary); font-size: 0.8rem;">
+          Simulate shifts between Travel Agent and Direct booking shares, agency commission rate changes, and Non-Commissionable Cruise Fare (NCCF) exclusions.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1.25rem; color: #93c5fd;">Simulation Levers</h3>
+          
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>Direct Booking Shift</span>
+              <span id="val-direct-shift" style="color: var(--accent-blue); font-weight: 700;">0%</span>
+            </div>
+            <input type="range" id="sim-direct-shift" min="-10" max="15" step="1" value="0">
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Shift ticket revenue between Travel Agents and Direct Web/PVP</div>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>Travel Agent Base Commission</span>
+              <span id="val-agent-comm" style="color: var(--accent-purple); font-weight: 700;">14%</span>
+            </div>
+            <input type="range" id="sim-agent-comm" min="10" max="18" step="0.5" value="14">
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Average commission rate paid to host agencies and advisors</div>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>NCCF Exclusion Deduction</span>
+              <span id="val-nccf" style="color: var(--accent-amber); font-weight: 700;">20% of fare</span>
+            </div>
+            <input type="range" id="sim-nccf-deduction" min="10" max="30" step="1" value="20">
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Non-Commissionable Cruise Fare portion excluded from agency commission</div>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-around;">
+          <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: #a7f3d0;">Simulated Cruise Outcomes</h3>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Net Industry Savings / Loss</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;" id="sim-result-savings">$0.00B</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">Annual profit change</div>
+            </div>
+
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Net Cruise Revenue</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #3b82f6;" id="sim-result-net">$33.25B</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">Retained by cruise lines</div>
+            </div>
+
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Total Trade Friction</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #f97316;" id="sim-result-friction">$4.75B (12.5%)</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">Commissions & tech fees</div>
+            </div>
+
+            <div class="glass-panel" style="padding: 1rem; background: rgba(31, 41, 55, 0.4);">
+              <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Per-Passenger Margin Swing</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: #a855f7;" id="sim-result-revpax">+$0.00</div>
+              <div style="font-size: 0.7rem; color: var(--text-secondary);">Per passenger cruise impact</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Application JS -->
+  <script src="js/app.js"></script>
+</body>
+</html>

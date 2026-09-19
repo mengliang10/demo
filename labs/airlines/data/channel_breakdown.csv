@@ -1,0 +1,47 @@
+Source Node,Target Node,Value ($ Billions),Share of Global GBV (%),Flow Description
+Network Legacy Carriers,Passenger Service Systems (PSS),270.0,33.75%,Altéa/SabreSonic core
+Network Legacy Carriers,IATA NDC Direct Connect APIs,120.0,15.0%,Legacy NDC APIs
+Network Legacy Carriers,GDS EDIFACT Core Switches,90.0,11.25%,GDS EDIFACT links
+Low-Cost Carriers (LCCs),Passenger Service Systems (PSS),100.0,12.5%,Navitaire LCC PSS
+Low-Cost Carriers (LCCs),IATA NDC Direct Connect APIs,50.0,6.25%,LCC direct connect API
+Low-Cost Carriers (LCCs),GDS EDIFACT Core Switches,30.0,3.75%,LCC light GDS participation
+Low-Cost Carriers (LCCs),Native Web & Mobile Booking Engines,60.0,7.5%,Pure direct web stack
+Regional & Hybrid Airlines,Passenger Service Systems (PSS),20.0,2.5%,Regional PSS
+Regional & Hybrid Airlines,IATA NDC Direct Connect APIs,10.0,1.25%,Regional NDC
+Regional & Hybrid Airlines,GDS EDIFACT Core Switches,25.0,3.12%,Major codeshare GDS
+"Charter, ACMI & VIP Private",Passenger Service Systems (PSS),10.0,1.25%,Charter booking engine
+"Charter, ACMI & VIP Private",GDS EDIFACT Core Switches,15.0,1.88%,ACM / Charter GDS
+Passenger Service Systems (PSS),Direct Airline.com & Mobile App,280.0,35.0%,Airline.com & App booking
+Passenger Service Systems (PSS),Global Distribution Systems (EDIFACT),80.0,10.0%,PSS to GDS switch
+Passenger Service Systems (PSS),Online Travel Agencies (OTAs),25.0,3.12%,OTA direct connect
+Passenger Service Systems (PSS),Air Consolidators & Wholesalers,15.0,1.88%,Bulk net fare desk
+IATA NDC Direct Connect APIs,IATA NDC Aggregators & Direct APIs,100.0,12.5%,IATA NDC 21.3 standard API
+IATA NDC Direct Connect APIs,Direct Airline.com & Mobile App,80.0,10.0%,NDC dynamic packaging
+GDS EDIFACT Core Switches,Global Distribution Systems (EDIFACT),100.0,12.5%,Sabre/Amadeus EDIFACT
+GDS EDIFACT Core Switches,Online Travel Agencies (OTAs),40.0,5.0%,OTA GDS booking
+GDS EDIFACT Core Switches,Air Consolidators & Wholesalers,20.0,2.5%,Consolidator GDS queue
+Native Web & Mobile Booking Engines,Direct Airline.com & Mobile App,60.0,7.5%,Ryanair/Southwest direct
+Direct Airline.com & Mobile App,Direct Passenger Front-Ends,420.0,52.5%,Direct consumer portal
+Global Distribution Systems (EDIFACT),Corporate TMCs & OBTs,115.0,14.37%,GDS to TMCs
+Global Distribution Systems (EDIFACT),Retail Agencies & Consortia,35.0,4.38%,Traditional agents GDS
+Global Distribution Systems (EDIFACT),OTA Consumer Sites & Metas,30.0,3.75%,OTA GDS fulfillment
+IATA NDC Aggregators & Direct APIs,Corporate TMCs & OBTs,60.0,7.5%,NDC to Concur/Navan
+IATA NDC Aggregators & Direct APIs,OTA Consumer Sites & Metas,30.0,3.75%,NDC to Skyscanner/Kayak
+IATA NDC Aggregators & Direct APIs,Retail Agencies & Consortia,10.0,1.25%,Agent NDC portals
+Online Travel Agencies (OTAs),OTA Consumer Sites & Metas,65.0,8.12%,Expedia/Booking OTA apps
+Air Consolidators & Wholesalers,Consolidator Ticket Brokers,35.0,4.38%,Wholesale consolidator
+Direct Passenger Front-Ends,Leisure Vacationers,160.0,20.0%,Direct leisure flights
+Direct Passenger Front-Ends,Corporate Unmanaged / SME,75.0,9.38%,SME direct booking
+Direct Passenger Front-Ends,Frequent Flyer Loyalty Elites,80.0,10.0%,Frequent flyer award flights
+Direct Passenger Front-Ends,VFR (Visiting Friends & Relatives),80.0,10.0%,Direct VFR travelers
+Direct Passenger Front-Ends,"Group, Sports & Charters",25.0,3.12%,Direct group sales
+Corporate TMCs & OBTs,Corporate Managed Travelers,160.0,20.0%,Corporate managed policy
+Corporate TMCs & OBTs,Corporate Unmanaged / SME,15.0,1.88%,SME business travel
+OTA Consumer Sites & Metas,Leisure Vacationers,80.0,10.0%,OTA leisure booking
+OTA Consumer Sites & Metas,VFR (Visiting Friends & Relatives),30.0,3.75%,OTA price comparison
+OTA Consumer Sites & Metas,Corporate Unmanaged / SME,15.0,1.88%,Unmanaged business
+Retail Agencies & Consortia,Corporate Managed Travelers,15.0,1.88%,Executive travel
+Retail Agencies & Consortia,Leisure Vacationers,20.0,2.5%,Package holidays
+Retail Agencies & Consortia,"Group, Sports & Charters",10.0,1.25%,Tour groups
+Consolidator Ticket Brokers,VFR (Visiting Friends & Relatives),30.0,3.75%,Ethnic VFR consolidator
+Consolidator Ticket Brokers,"Group, Sports & Charters",5.0,0.62%,Pilgrimage groups
